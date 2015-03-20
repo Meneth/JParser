@@ -1,14 +1,20 @@
 package parser;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.LinkedList;
 
 public class IO {
+	public static BufferedReader getReader(String fileName) throws FileNotFoundException {
+		return new BufferedReader(new FileReader(fileName));
+	}
+	
 	public static LinkedList<String> readFile(String fileName) throws IOException {
 		LinkedList<String> lines = new LinkedList<>();
-		BufferedReader in = new BufferedReader(new FileReader(fileName));
+		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
 			// Get rid of comments
@@ -46,6 +52,23 @@ public class IO {
 		}
 		in.close();
 		return lines;
+	}
+	
+	public static void readLocalisation(String fileName, Map<String, String> map) throws IOException {
+		BufferedReader in = getReader(fileName);
+		String line = in.readLine();
+		while (line != null) {
+			int index = line.indexOf(": ");
+			if (index == -1) {
+				line = in.readLine();
+				continue;
+			}
+			String key = line.substring(0, index);
+			// ": " used as delimiter, so index + 2
+			String value = line.substring(index + 2);
+			map.put(key, value);
+			line = in.readLine();
+		}
 	}
 	
 	public static void main(String[] args) {

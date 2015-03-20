@@ -2,9 +2,13 @@ package parser;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class Parsing {
+	private static final Map<String, String> statements = new HashMap<>();
+	
 	public static Collection<String> parseBlock(Block block, Collection<String> output) {
 		int nesting = 0, i = 0, start = 0;
 		String type = null;
@@ -40,8 +44,13 @@ public class Parsing {
 		output.add(token.toString());
 	}
 	
+	static String getStatement(String statement) {
+		return statements.get(statement);
+	}
+	
 	public static void main(String[] args) {
 		try {
+			IO.readLocalisation("statements/statements.txt", statements);
 			LinkedList<String> list = IO.readFile("cleanup.txt");
 			Collection<String> output = parseBlock(new Block(null, null, list), new LinkedList<String>());
 			for (String string : output) {
@@ -86,7 +95,9 @@ class Token {
 	}
 
 	private String lookup(String type, String value) {
-		// TODO Auto-generated method stub
-		return type + ": " + value;
+		String output = Parsing.getStatement(type);
+		if (output != null && output.contains("%s"))
+			return String.format(output, value);
+		return output;
 	}
 }
