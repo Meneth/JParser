@@ -21,7 +21,10 @@ public class IO {
 			line = line.replace("}", "\n}");
 			
 			// Handle multiple actions in one line
-			line = line.replaceAll("(=[\\s]*\"?[\\w ]*\"?) ([\\w]*[\\s]*=)", "$1\n$2");
+			String value = "=[\\s]*[\\w]*";
+			String quotedValue = "=[\\s]*\"[\\w ]*\"";
+			
+			line = line.replaceAll("(" + value + "|" + quotedValue + ") ([\\w]*[\\s]*=)", "$1\n$2");
 			
 			int start = 0;
 			int end = line.indexOf('\n');
@@ -47,7 +50,7 @@ public class IO {
 	
 	public static void main(String[] args) {
 		try {
-			LinkedList<String> list = readFile("flavorKOL.txt");
+			LinkedList<String> list = readFile("cleanup.txt");
 			for (String s : list)
 				System.out.println(s);
 		} catch (IOException e) {

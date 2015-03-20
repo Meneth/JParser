@@ -36,7 +36,7 @@ public class Parsing {
 		if (index == -1)
 			token = new Token(s.substring(0, index).trim());
 		else
-			token = new Token(s.substring(0, index).trim(), s.substring(index).trim());
+			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim());
 		output.add(token.toString());
 	}
 	
@@ -85,8 +85,8 @@ class Token {
 		return lookup(type, value);
 	}
 
-	private String lookup(String type2, String value2) {
+	private String lookup(String type, String value) {
 		// TODO Auto-generated method stub
-		return null;
+		return type + ": " + value;
 	}
 }
