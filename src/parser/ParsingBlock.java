@@ -36,6 +36,8 @@ public class ParsingBlock {
 			output(type, output, nesting - 1);
 		String type = null;
 		for (String s : contents) {
+			i++; // Done at the start so that the line defining the start of a
+					// block doesn't get included when parsing recursively
 			if (s.endsWith("{")) {
 				localNesting++;
 				if (start == -1) {
