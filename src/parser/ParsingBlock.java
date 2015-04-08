@@ -48,8 +48,7 @@ public class ParsingBlock {
 				if (localNesting == 0) {
 					new ParsingBlock(type, this, contents.subList(start, i), nesting + 1, output);
 					start = -1;
-				} else
-					continue; // Nothing more to be done
+				}
 			}
 			else {
 				if (localNesting == 0) {
