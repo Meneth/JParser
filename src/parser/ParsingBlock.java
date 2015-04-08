@@ -15,8 +15,9 @@ public class ParsingBlock {
 	private final int nesting;
 	private final List<String> contents;
 	private final Collection<String> output;
-	
-	public ParsingBlock(String type, ParsingBlock parent, List<String> contents, int nesting, Collection<String> output) {
+
+	public ParsingBlock(String type, ParsingBlock parent,
+			List<String> contents, int nesting, Collection<String> output) {
 		this.contents = contents;
 		this.output = output;
 		this.type = type;
@@ -24,7 +25,7 @@ public class ParsingBlock {
 		this.nesting = nesting;
 		parseBlock();
 	}
-	
+
 	/**
 	 * Recursively parses a block of code
 	 */
@@ -35,22 +36,23 @@ public class ParsingBlock {
 			output(type, output, nesting - 1);
 		String type = null;
 		for (String s : contents) {
-			i++;
 			if (s.endsWith("{")) {
 				localNesting++;
 				if (start == -1) {
 					type = getType(s);
 					start = i;
 				}
-			}
-			else if (s.equals("}")) {
+			} else if (s.equals("}")) {
 				localNesting--;
 				if (localNesting == 0) {
-					new ParsingBlock(type, this, contents.subList(start, i), nesting + 1, output);
+					// When local nesting is back down to 0, a full block has
+					// necessarily been iterated through
+					// So that block can then be recursively parsed
+					new ParsingBlock(type, this, contents.subList(start, i),
+							nesting + 1, output);
 					start = -1;
 				}
-			}
-			else {
+			} else {
 				if (localNesting == 0) {
 					output(s, output, nesting);
 				}
@@ -72,31 +74,32 @@ public class ParsingBlock {
 		if (index == -1)
 			token = new Token(s);
 		else
-			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim());
+			token = new Token(s.substring(0, index).trim(), s.substring(
+					index + 1).trim());
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < nesting; i++) {
-		    builder.append('*');
+			builder.append('*');
 		}
 		if (nesting != 0)
 			builder.append(" ");
 		builder.append(token.toString());
 		output.add(builder.toString());
 	}
-	
+
 	static String getStatement(String statement) {
 		return statements.get(statement);
 	}
-	
 
 	private Collection<String> getOutput() {
 		return output;
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 			IO.readLocalisation("statements/statements.txt", statements);
 			LinkedList<String> list = IO.readFile("cleanup.txt");
-			Collection<String> output = new ParsingBlock(null, null, list, 0, new LinkedList<String>()).getOutput();
+			Collection<String> output = new ParsingBlock(null, null, list, 0,
+					new LinkedList<String>()).getOutput();
 			for (String string : output) {
 				System.out.println(string);
 			}
@@ -109,7 +112,7 @@ public class ParsingBlock {
 class Token {
 	private final String type;
 	private final String value;
-	
+
 	public Token(String type) {
 		super();
 		this.type = type;
@@ -121,7 +124,7 @@ class Token {
 		this.type = type;
 		this.value = value;
 	}
-	
+
 	public String toString() {
 		return lookup(type, value);
 	}
