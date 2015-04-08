@@ -4,28 +4,30 @@ public class Token {
 	public final String type;
 	public final String value;
 
-	public Token(String type) {
+	public Token(String type, boolean negative) {
+		this(type, null, negative);
+	}
+	
+	public Token(String type, String value, boolean negative) {
 		super();
-		this.type = type;
-		value = null;
+		if (negative)
+			this.type = type + "_false";
+		else
+			this.type = type;
+		this.value = value;
 	}
 
-	public static Token tokenize(String s) {
+	public static Token tokenize(String s, boolean negative) {
 		Token token;
 		int index = s.indexOf('=');
 		if (index == -1)
-			token = new Token(s);
+			token = new Token(s, negative);
 		else
 			token = new Token(s.substring(0, index).trim(), s.substring(
-					index + 1).trim());
+					index + 1).trim(), negative);
 		return token;
 	}
 
-	public Token(String type, String value) {
-		super();
-		this.type = type;
-		this.value = value;
-	}
 
 	public String toString() {
 		return lookup(type, value);
