@@ -44,7 +44,6 @@ public class ParsingBlock {
 					String pos = exceptions.get(token.type);
 					if (pos == null) {
 						System.out.println(token.type + " is not in the exceptions list!");
-						v2 = token.value;
 					}
 					else if (pos.equals("value1"))
 						v1 = token.value;
