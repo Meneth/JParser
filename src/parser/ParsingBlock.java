@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class ParsingBlock {
 	private static final Map<String, String> statements = new HashMap<>();
+	private static final Map<String, String> exceptions = new HashMap<>();
 	private final String type;
 	private final ParsingBlock parent;
 	private final int nesting;
@@ -32,8 +33,30 @@ public class ParsingBlock {
 	private void parseBlock() {
 		int localNesting = 0;
 		int i = 0, start = -1;
-		if (type != null)
-			output(type, output, nesting - 1);
+		if (type != null) {
+			if (exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands")) {
+				String v1 = null;
+				String v2 = null;
+				for (String s : contents) {
+					if (s.equals("}"))
+						break;
+					Token token = Token.tokenize(s);
+					String pos = exceptions.get(token.type);
+					if (pos == null) {
+						System.out.println(token.type + " is not in the exceptions list!");
+						v2 = token.value;
+					}
+					else if (pos.equals("value1"))
+						v1 = token.value;
+					else
+						v2 = token.value;
+				}
+				String s = String.format(getStatement(type), v1, v2);
+				output(s, output, nesting);
+				return; // Nothing more to do
+			}
+			output(Token.tokenize(type).toString(), output, nesting - 1);
+		}
 		String type = null;
 		for (String s : contents) {
 			i++; // Done at the start so that the line defining the start of a
@@ -41,7 +64,7 @@ public class ParsingBlock {
 			if (s.endsWith("{")) {
 				localNesting++;
 				if (start == -1) {
-					type = getType(s);
+					type = Token.tokenize(s).type;
 					start = i;
 				}
 			} else if (s.equals("}")) {
@@ -56,39 +79,24 @@ public class ParsingBlock {
 				}
 			} else {
 				if (localNesting == 0) {
-					output(s, output, nesting);
+					output(Token.tokenize(s).toString(), output, nesting);
 				}
 			}
 		}
 	}
 
-	private String getType(String s) {
-		int index = s.indexOf('=');
-		if (index == -1)
-			return s;
-		else
-			return s.substring(0, index).trim();
-	}
-
 	private static void output(String s, Collection<String> output, int nesting) {
-		Token token;
-		int index = s.indexOf('=');
-		if (index == -1)
-			token = new Token(s);
-		else
-			token = new Token(s.substring(0, index).trim(), s.substring(
-					index + 1).trim());
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < nesting; i++) {
 			builder.append('*');
 		}
 		if (nesting != 0)
 			builder.append(" ");
-		builder.append(token.toString());
+		builder.append(s);
 		output.add(builder.toString());
 	}
 
-	static String getStatement(String statement) {
+	public static String getStatement(String statement) {
 		return statements.get(statement);
 	}
 
@@ -99,6 +107,8 @@ public class ParsingBlock {
 	public static void main(String[] args) {
 		try {
 			IO.readLocalisation("statements/statements.txt", statements);
+			IO.readLocalisation("statements/special.txt", statements);
+			IO.readExceptions("statements/exceptions.txt", exceptions);
 			LinkedList<String> list = IO.readFile("cleanup.txt");
 			Collection<String> output = new ParsingBlock(null, null, list, 0,
 					new LinkedList<String>()).getOutput();
@@ -112,13 +122,24 @@ public class ParsingBlock {
 }
 
 class Token {
-	private final String type;
-	private final String value;
+	public final String type;
+	public final String value;
 
 	public Token(String type) {
 		super();
 		this.type = type;
 		value = null;
+	}
+
+	public static Token tokenize(String s) {
+		Token token;
+		int index = s.indexOf('=');
+		if (index == -1)
+			token = new Token(s);
+		else
+			token = new Token(s.substring(0, index).trim(), s.substring(
+					index + 1).trim());
+		return token;
 	}
 
 	public Token(String type, String value) {

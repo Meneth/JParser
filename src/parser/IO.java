@@ -22,8 +22,9 @@ public class IO {
 	public static LinkedList<String> readFile(String fileName) throws IOException {
 		LinkedList<String> lines = new LinkedList<>();
 		BufferedReader in = getReader(fileName);
-		String line = in.readLine().trim();
+		String line = in.readLine();
 		while (line != null) {
+			line = line.trim();
 			// Get rid of comments
 			int commentIndex = line.indexOf('#');
 			if (commentIndex != -1)
@@ -69,8 +70,9 @@ public class IO {
 	 */
 	public static void readLocalisation(String fileName, Map<String, String> map) throws IOException {
 		BufferedReader in = getReader(fileName);
-		String line = in.readLine().trim();
+		String line = in.readLine();
 		while (line != null) {
+			line = line.trim();
 			int index = line.indexOf(": ");
 			if (index == -1) {
 				line = in.readLine();
@@ -80,6 +82,32 @@ public class IO {
 			// ": " used as delimiter, so index + 2
 			String value = line.substring(index + 2);
 			map.put(key, value);
+			line = in.readLine();
+		}
+	}
+	
+	/**
+	 * Reads a YAML-esque exceptions file. Does not handle nesting
+	 * @param fileName Name of the file to be read. Full file path or relative path
+	 * @param map Map to add the exceptions to
+	 * @throws IOException
+	 */
+	public static void readExceptions(String fileName, Map<String, String> map) throws IOException {
+		BufferedReader in = getReader(fileName);
+		String line = in.readLine();
+		while (line != null) {
+			line = line.trim();
+			int index = line.indexOf(": ");
+			if (index == -1) {
+				line = in.readLine();
+				continue;
+			}
+			String value = line.substring(0, index);
+			// ": " used as delimiter, so index + 2
+			String[] keys = line.substring(index + 2).split(", ");
+			for (String key: keys) {
+				map.put(key, value);
+			}
 			line = in.readLine();
 		}
 	}
