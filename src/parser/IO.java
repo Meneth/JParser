@@ -72,7 +72,7 @@ public class IO {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
-			line = line.trim();
+			line = line.trim().replace("\"", "");
 			int index = line.indexOf(": ");
 			if (index == -1) {
 				line = in.readLine();

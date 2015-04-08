@@ -283,13 +283,13 @@ any_empty_neighbor_province_false: No uncolonized bordering province:
 random_country: Random country:
 every_country: Every country:
 any_country: Any country:
-any_country_false: No country:
+any_false_country: No country:
 all_country: Every country:
 
 random_known_country: Random known country:
 every_known_country: Every known country:
 any_known_country: Any known country:
-any_known_country_false: No known country:
+any_known_false_country: No known country:
 
 random_neighbor_province: Random bordering province:
 every_neighbor_province: Every bordering province:
@@ -314,27 +314,27 @@ any_active_trade_node_false: No active trade node:
 random_trade_node_member_country: Random member of the trade node:
 every_trade_node_member_country: Every member of the trade node:
 any_trade_node_member_country: Any member of the trade node:
-any_trade_node_member_country_false: No member of the trade node:
+any_trade_node_member_false_country: No member of the trade node:
 
 random_neighbor_country: Random neighbor country:
 every_neighbor_country: Every neighbor country:
 any_neighbor_country: Any neighbor country:
-any_neighbor_country_false: No neighbor country:
+any_neighbor_false_country: No neighbor country:
 
 random_rival_country: Random rival country:
 every_rival_country: Every rival country:
 any_rival_country: Any rival country:
-any_rival_country_false: No rival country:
+any_rival_false_country: No rival country:
 
 random_enemy_country: Random enemy country:
 every_enemy_country: Every enemy country:
 any_enemy_country: Any enemy country:
-any_enemy_country_false: No enemy country:
+any_enemy_false_country: No enemy country:
 
 random_core_country: Random country with provinces cored by this nation:
 every_core_country: Every country with provinces cored by this nation:
 any_core_country: Any country with provinces cored by this nation:
-any_core_country_false: No country with provinces cored by this nation:
+any_core_false_country: No country with provinces cored by this nation:
 
 random_ally: Random ally:
 every_ally: Every ally:
@@ -349,7 +349,7 @@ any_elector_false: No elector:
 random_subject_country: Random subject country:
 every_subject_country: Every subject country:
 any_subject_country: Any subject country:
-any_subject_country_false: No subject country:
+any_subject_false_country: No subject country:
 
 revolution_target: The target of the revolution:
 strongest_trade_power: Strongest trade power in node:
@@ -517,7 +517,7 @@ tag_false: Country is not %s
 is_year: Year is at least %s
 is_year_false: Year is less than %s
 exists_country: %s exists
-exists_country_false: %s does not exist
+exists_false_country: %s does not exist
 exists: Country exists
 exists_false: Country does not exist
 is_subject: Is a vassal
@@ -624,8 +624,8 @@ religion_false: Does not follow the %s religion
 religion_group_false: Is not in %s's religion group
 religion_country: Follows %s's religion
 religion_group_country: Is in %s's religion group
-religion_country_false: Does not follow %s's religion
-religion_group_country_false: Is not in %s's religion group
+religion_false_country: Does not follow %s's religion
+religion_group_false_country: Is not in %s's religion group
 has_idea: Has the idea %s
 has_idea_false: Does not have the idea %s
 overextension_percentage: Overextension is at least %s%%
@@ -677,15 +677,15 @@ tobacco_false:Has less than %s provinces producing tobacco
 culture_group: Culture group is %s
 culture_group_false: Culture group is not %s
 culture_group_country: Culture group is the same as %s
-culture_group_country_false: Culture group is not the same as %s
+culture_group_false_country: Culture group is not the same as %s
 primary_culture: Primary culture is %s
 primary_culture_false: Primary culture is not %s
 primary_culture_country: Primary culture is the same as in %s
-primary_culture_country_false: Primary culture is not the same as in %s
+primary_culture_false_country: Primary culture is not the same as in %s
 culture: Culture is %s
 culture_false: Culture is not %s
 culture_country: Culture is the same as %s
-culture_country_false: Culture is not the same as %s
+culture_false_country: Culture is not the same as %s
 dominant_culture: The dominant culture is the same as in %s
 dominant_culture_false: The dominant culture is not the same as in %s
 dominant_religion: The dominant religion is %s
@@ -723,7 +723,7 @@ has_province_flag_false: Does not have the province flag %s
 has_discovered: Has discovered %s
 has_discovered_false: Has not discovered %s
 has_discovered_country: Has been discovered by %s
-has_discovered_country_false: Has not been discovered by %s
+has_discovered_false_country: Has not been discovered by %s
 trade_income_percentage: Trade is at least %s%% of the country's income
 trade_income_percentage_false: Trade is less than %s%% of the country's income
 monthly_income: Monthly income is at least %s ducats
@@ -821,7 +821,7 @@ historical_friend_with_false: Is not historical friend of %s
 is_claim: Has a claim on %s
 is_claim_false: Has no claim on %s
 is_claim_country: The province is claimed by %s
-is_claim_country_false: The province is not claimed by %s
+is_claim_false_country: The province is not claimed by %s
 alliance_with: Is allied with %s
 alliance_with_false: Is not allied with %s
 num_of_allies: Has at least %s allies
@@ -883,7 +883,7 @@ luck_false: Is not a lucky nation
 accepted_culture: Accepts the %s culture
 accepted_culture_false: Does not accept the %s culture
 accepted_culture_country: Accepts the primary culture of %s
-accepted_culture_country_false: Does not accept the primary culture of %s
+accepted_culture_false_country: Does not accept the primary culture of %s
 is_bankrupt: Is bankrupt
 is_bankrupt_false: Is not bankrupt
 num_of_loans: Has at least %s active loans
@@ -935,7 +935,7 @@ galleys_in_province_false: Less than %s galleys in the province
 unit_in_siege: Is besieged
 unit_in_siege_false: Is not besieged
 knows_country: Has discovered %s
-knows_country_false: Has not discovered %s
+knows_false_country: Has not discovered %s
 catholic: %s or more Catholic provinces compared to state religion
 protestant: %s or more Protestant provinces compared to state religion
 reformed: %s or more Reformed provinces compared to state religion

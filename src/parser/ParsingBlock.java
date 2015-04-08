@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ParsingBlock {
-	private static final Map<String, String> statements = new HashMap<>();
 	private static final Map<String, String> exceptions = new HashMap<>();
 	private final String type;
 	private final ParsingBlock parent;
@@ -37,7 +36,7 @@ public class ParsingBlock {
 		// TODO: Handle inversion of scopes
 		int localNesting = 0;
 		int i = 0, start = -1;
-		if (type != null) {
+		if (type != null && nesting > 1) {
 			if (exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands")) {
 				String v1 = null;
 				String v2 = null;
@@ -55,7 +54,8 @@ public class ParsingBlock {
 					else
 						v2 = token.value;
 				}
-				String s = String.format(getStatement(type), v1, v2);
+				// TODO: Ensure localisation lookup is done
+				String s = String.format(Token.getStatement(type), v1, v2);
 				output(s, output, nesting);
 				return; // Nothing more to do
 			}
@@ -73,14 +73,14 @@ public class ParsingBlock {
 				}
 			}
 		}
-		String type = null;
+		String localType = null;
 		for (String s : contents) {
 			i++; // Done at the start so that the line defining the start of a
 					// block doesn't get included when parsing recursively
 			if (s.endsWith("{")) {
 				localNesting++;
 				if (start == -1) {
-					type = Token.tokenize(s, false).type;
+					localType = Token.tokenize(s, false).type;
 					start = i;
 				}
 			} else if (s.equals("}")) {
@@ -89,7 +89,7 @@ public class ParsingBlock {
 					// When local nesting is back down to 0, a full block has
 					// necessarily been iterated through
 					// So that block can then be recursively parsed
-					new ParsingBlock(type, this, contents.subList(start, i),
+					new ParsingBlock(localType, this, contents.subList(start, i),
 							nesting + 1, output, inversion);
 					start = -1;
 					if (this.type != null && isInversion(this.type))
@@ -99,7 +99,9 @@ public class ParsingBlock {
 				}
 			} else {
 				if (localNesting == 0) {
-					output(Token.tokenize(s, inversion).toString(), output, nesting);
+					Token t = Token.tokenize(s, inversion);
+					if (nesting > 1 || t.type.equals("title"))
+						output(t.toString(), output, nesting);
 				}
 			}
 		}
@@ -124,18 +126,13 @@ public class ParsingBlock {
 		output.add(builder.toString());
 	}
 
-	public static String getStatement(String statement) {
-		return statements.get(statement);
-	}
-
 	private Collection<String> getOutput() {
 		return output;
 	}
 
 	public static void main(String[] args) {
 		try {
-			IO.readLocalisation("statements/statements.txt", statements);
-			IO.readLocalisation("statements/special.txt", statements);
+			Token.initialize("E:\\Steam\\SteamApps\\common\\Europa Universalis IV");
 			IO.readExceptions("statements/exceptions.txt", exceptions);
 			LinkedList<String> list = IO.readFile("cleanup.txt");
 			Collection<String> output = new ParsingBlock(null, null, list, 0,
