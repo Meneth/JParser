@@ -12,10 +12,17 @@ public class IO {
 		return new BufferedReader(new FileReader(fileName));
 	}
 	
+	/**
+	 * Reads a PDX-script file, reducing it to only the statements therein.
+	 * Strips out comments, blank lines, and similar, and splits multiple statements on one line over multiple lines
+	 * @param fileName Name of the PDX-script file to be read. Full file path or relative path
+	 * @return Linked list consisting of the processed output
+	 * @throws IOException
+	 */
 	public static LinkedList<String> readFile(String fileName) throws IOException {
 		LinkedList<String> lines = new LinkedList<>();
 		BufferedReader in = getReader(fileName);
-		String line = in.readLine();
+		String line = in.readLine().trim();
 		while (line != null) {
 			// Get rid of comments
 			int commentIndex = line.indexOf('#');
@@ -54,9 +61,15 @@ public class IO {
 		return lines;
 	}
 	
+	/**
+	 * Reads a YAML localisation file. Does not handle nesting
+	 * @param fileName Name of the localisation file to be read. Full file path or relative path
+	 * @param map Map to add the localisation to, rather than returning a map, as one might often want to read several files into one map
+	 * @throws IOException
+	 */
 	public static void readLocalisation(String fileName, Map<String, String> map) throws IOException {
 		BufferedReader in = getReader(fileName);
-		String line = in.readLine();
+		String line = in.readLine().trim();
 		while (line != null) {
 			int index = line.indexOf(": ");
 			if (index == -1) {
