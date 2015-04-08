@@ -18,14 +18,10 @@ limit: Limited to:
 add_claim: Adds claim to %s
 add_claim_country: Gives %s claims
 add_mercantilism: Adds %s%% mercantilism
-OR: Any of the following:
 or: Any of the following:
-OR_false: None of the following:
 or_false: None of the following:
 and: All of the following:
-AND: All of the following:
 and_false: Not all of the following:
-AND_false: Not all of the following:
 tooltip: Tooltip:
 custom_tooltip:
 add_reform_desire: Adds %s%% reform desire

@@ -10,6 +10,7 @@ public class Token {
 	
 	public Token(String type, String value, boolean negative) {
 		super();
+		type = type.toLowerCase();
 		if (negative)
 			this.type = type + "_false";
 		else

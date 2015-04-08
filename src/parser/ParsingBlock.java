@@ -16,7 +16,8 @@ public class ParsingBlock {
 	private int nesting;
 	private final List<String> contents;
 	private final Collection<String> output;
-	private boolean negative;
+	private boolean inversion;
+	private boolean inversionOverride = false;
 
 	public ParsingBlock(String type, ParsingBlock parent,
 			List<String> contents, int nesting, Collection<String> output, boolean negative) {
@@ -25,7 +26,7 @@ public class ParsingBlock {
 		this.type = type;
 		this.parent = parent;
 		this.nesting = nesting;
-		this.negative = negative;
+		this.inversion = negative;
 		parseBlock();
 	}
 
@@ -40,7 +41,7 @@ public class ParsingBlock {
 			if (exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands")) {
 				String v1 = null;
 				String v2 = null;
-				String type = Token.tokenize(this.type, negative).type;
+				String type = Token.tokenize(this.type, inversion).type;
 				for (String s : contents) {
 					if (s.equals("}"))
 						break;
@@ -58,12 +59,19 @@ public class ParsingBlock {
 				output(s, output, nesting);
 				return; // Nothing more to do
 			}
-			if (type.equals("NOT")) {
-				negative = !negative;
+			if (isInversion(type)) {
+				inversion = !inversion;
 				nesting--;
 			}
-			else
-				output(Token.tokenize(type, negative).toString(), output, nesting - 1);
+			else {
+				output(Token.tokenize(type, inversion).toString(), output, nesting - 1);
+				// The following will indicate that inversion applies to everything nested below them,
+				// so inversion is overridden
+				if (inversion && overridesInversion(type)) {
+					inversion = false;
+					inversionOverride = true;
+				}
+			}
 		}
 		String type = null;
 		for (String s : contents) {
@@ -82,17 +90,27 @@ public class ParsingBlock {
 					// necessarily been iterated through
 					// So that block can then be recursively parsed
 					new ParsingBlock(type, this, contents.subList(start, i),
-							nesting + 1, output, negative);
+							nesting + 1, output, inversion);
 					start = -1;
-					if (this.type != null && this.type.equals("NOT"))
-						negative = !negative;
+					if (this.type != null && isInversion(this.type))
+						inversion = !inversion;
+					else if (inversionOverride)
+						inversion = true;
 				}
 			} else {
 				if (localNesting == 0) {
-					output(Token.tokenize(s, negative).toString(), output, nesting);
+					output(Token.tokenize(s, inversion).toString(), output, nesting);
 				}
 			}
 		}
+	}
+
+	private boolean isInversion(String type) {
+		return type.equals("not") || type.equals("nor");
+	}
+	
+	private boolean overridesInversion(String type) {
+		return type.startsWith("any_") || type.equals("or") || type.equals("and");
 	}
 
 	private static void output(String s, Collection<String> output, int nesting) {
