@@ -13,17 +13,19 @@ public class ParsingBlock {
 	private static final Map<String, String> exceptions = new HashMap<>();
 	private final String type;
 	private final ParsingBlock parent;
-	private final int nesting;
+	private int nesting;
 	private final List<String> contents;
 	private final Collection<String> output;
+	private boolean negative;
 
 	public ParsingBlock(String type, ParsingBlock parent,
-			List<String> contents, int nesting, Collection<String> output) {
+			List<String> contents, int nesting, Collection<String> output, boolean negative) {
 		this.contents = contents;
 		this.output = output;
 		this.type = type;
 		this.parent = parent;
 		this.nesting = nesting;
+		this.negative = negative;
 		parseBlock();
 	}
 
@@ -31,16 +33,18 @@ public class ParsingBlock {
 	 * Recursively parses a block of code
 	 */
 	private void parseBlock() {
+		// TODO: Handle inversion of scopes
 		int localNesting = 0;
 		int i = 0, start = -1;
 		if (type != null) {
 			if (exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands")) {
 				String v1 = null;
 				String v2 = null;
+				String type = Token.tokenize(this.type, negative).type;
 				for (String s : contents) {
 					if (s.equals("}"))
 						break;
-					Token token = Token.tokenize(s);
+					Token token = Token.tokenize(s, false);
 					String pos = exceptions.get(token.type);
 					if (pos == null) {
 						System.out.println(token.type + " is not in the exceptions list!");
@@ -54,7 +58,12 @@ public class ParsingBlock {
 				output(s, output, nesting);
 				return; // Nothing more to do
 			}
-			output(Token.tokenize(type).toString(), output, nesting - 1);
+			if (type.equals("NOT")) {
+				negative = !negative;
+				nesting--;
+			}
+			else
+				output(Token.tokenize(type, negative).toString(), output, nesting - 1);
 		}
 		String type = null;
 		for (String s : contents) {
@@ -63,7 +72,7 @@ public class ParsingBlock {
 			if (s.endsWith("{")) {
 				localNesting++;
 				if (start == -1) {
-					type = Token.tokenize(s).type;
+					type = Token.tokenize(s, false).type;
 					start = i;
 				}
 			} else if (s.equals("}")) {
@@ -73,12 +82,14 @@ public class ParsingBlock {
 					// necessarily been iterated through
 					// So that block can then be recursively parsed
 					new ParsingBlock(type, this, contents.subList(start, i),
-							nesting + 1, output);
+							nesting + 1, output, negative);
 					start = -1;
+					if (this.type != null && this.type.equals("NOT"))
+						negative = !negative;
 				}
 			} else {
 				if (localNesting == 0) {
-					output(Token.tokenize(s).toString(), output, nesting);
+					output(Token.tokenize(s, negative).toString(), output, nesting);
 				}
 			}
 		}
@@ -110,7 +121,7 @@ public class ParsingBlock {
 			IO.readExceptions("statements/exceptions.txt", exceptions);
 			LinkedList<String> list = IO.readFile("cleanup.txt");
 			Collection<String> output = new ParsingBlock(null, null, list, 0,
-					new LinkedList<String>()).getOutput();
+					new LinkedList<String>(), false).getOutput();
 			for (String string : output) {
 				System.out.println(string);
 			}
