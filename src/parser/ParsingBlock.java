@@ -1,7 +1,6 @@
 package parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 public class ParsingBlock {
 	private static final Map<String, String> exceptions = new HashMap<>();
+	private static final String header = "==";
 	private final String type;
 	private final ParsingBlock parent;
 	private int nesting;
@@ -56,7 +56,7 @@ public class ParsingBlock {
 				}
 				// TODO: Ensure localisation lookup is done
 				String s = String.format(Token.getStatement(type), v1, v2);
-				output(s, output, nesting);
+				output(s, output, nesting - 1);
 				return; // Nothing more to do
 			}
 			if (isInversion(type)) {
@@ -100,8 +100,10 @@ public class ParsingBlock {
 			} else {
 				if (localNesting == 0) {
 					Token t = Token.tokenize(s, inversion);
-					if (nesting > 1 || t.type.equals("title"))
+					if (nesting > 1)
 						output(t.toString(), output, nesting);
+					else if (t.type.equals("title"))
+						output(t.toString(), output, nesting - 1);
 				}
 			}
 		}
@@ -116,7 +118,14 @@ public class ParsingBlock {
 	}
 
 	private static void output(String s, Collection<String> output, int nesting) {
+		if (nesting == 0) {
+			output.add("\n" + header + " " + s + " " + header);
+			return;
+		}
 		StringBuilder builder = new StringBuilder();
+		if (nesting == 1) {
+			builder.append("\n");
+		}
 		for (int i = 0; i < nesting; i++) {
 			builder.append('*');
 		}
