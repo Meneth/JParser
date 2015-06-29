@@ -43,7 +43,7 @@ public class ParsingBlock {
 		handleBlockType();
 		handleBlockContents();
 	}
-	
+
 	/**
 	 * Handles all contents in the parsing block, including recursive calls
 	 */
@@ -53,7 +53,7 @@ public class ParsingBlock {
 		String localType = null;
 		for (String s : contents) {
 			i++; // Done at the start so that the line defining the start of a
-					// block doesn't get included when parsing recursively
+			// block doesn't get included when parsing recursively
 			if (s.endsWith("{")) {
 				localNesting++;
 				if (start == -1) {
@@ -110,7 +110,7 @@ public class ParsingBlock {
 			}
 		}
 	}
-	
+
 	/**
 	 * Determines if a given type of token should be output
 	 * @param type The type of token
@@ -119,7 +119,7 @@ public class ParsingBlock {
 	private static boolean isOutputType(String type) {
 		return !isName(type);
 	}
-	
+
 	/**
 	 * Collects and outputs the name of a section
 	 */
@@ -136,19 +136,19 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(
-		     new String[] {"factor", "name"}
-		));
+			new String[] {"factor", "name"}
+			));
 	private static boolean isName(String type) {
 		return BLOCKNAMES.contains(type);
 	}
 
 	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(
-		     new String[] {"option", "modifier", "ai_chance"}
-		));
+			new String[] {"option", "modifier", "ai_chance"}
+			));
 	private static boolean needsName(String type) {
 		return NAMEDBLOCKS.contains(type);
 	}
-	
+
 	/**
 	 * Handles commands that go across multiple lines but need to be merged into a single line
 	 * plus potential modifiers
@@ -187,29 +187,36 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(
-		     new String[] {"not", "nor"}
-		));
+			new String[] {"not", "nor"}
+			));
 	private static boolean isInversion(String type) {
 		return NEGATIONS.contains(type);
 	}
-	
+
 	private static final Set<String> INVERSIONOVERRIDES = new HashSet<String>(Arrays.asList(
-		     new String[] {"option", "modifier", "ai_chance"}
-		));
+			new String[] {"option", "modifier", "ai_chance", "any_", "all_"}
+			));
+	private static final Set<String> INVERSIONOVERRIDEPREFIXES = new HashSet<String>(Arrays.asList(
+			new String[] {"any_", "all_"}
+			));
 	private static boolean overridesInversion(String type) {
-		return type.startsWith("any_") || INVERSIONOVERRIDES.contains(type);
+		boolean start = false;
+		for (String s : INVERSIONOVERRIDEPREFIXES)
+			if (type.startsWith(s))
+				start = true;
+		return start || INVERSIONOVERRIDES.contains(type);
 	}
 
-	private static final String HEADER = "==";
-	private static final String BOLD = "'''";
+	private static final String HEADER = "\n== %s ==";
+	private static final String BOLD = "\n'''%s'''\n";
 	private static void output(String s, Collection<String> output, int nesting) {
 		nesting = nesting - 2;
 		if (nesting == -1) {
-			output.add("\n" + HEADER + " " + s + " " + HEADER);
+			output.add(String.format(HEADER, s));
 			return;
 		}
 		else if (nesting == 0) {
-			output.add("\n" + BOLD + s + BOLD + "\n");
+			output.add(String.format(BOLD, s));
 			return;
 		}
 		StringBuilder builder = new StringBuilder();
