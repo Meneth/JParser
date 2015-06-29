@@ -202,7 +202,7 @@ shock: %s skill in shock
 fire: %s skill in fire
 siege: %s skill in siege
 manuever: %s skill in manuever
-name: Named "%s"
+name: Option "%s":
 fixed: Ruler skills are not random
 add_republican_tradition: Changes republican tradition by %s%%
 form_coalition_against: Forms a coalition against %s
@@ -510,6 +510,7 @@ years_of_nationalism: %s years of nationalism
 accepted_culture_threshold: %s%% accepted culture threshold
 culture_conversion_cost: %s%% culture conversion cost
 global_unrest: %s global unrest
+global_autonomy: %s monthly autonomy change
 
 BINARY STATEMENTS
 

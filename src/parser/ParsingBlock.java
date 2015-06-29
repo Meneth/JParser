@@ -9,7 +9,9 @@ import java.util.Map;
 
 public class ParsingBlock {
 	private static final Map<String, String> exceptions = new HashMap<>();
-	private static final String header = "==";
+	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
+	private static final String HEADER = "==";
+	private static final String BOLD = "'''";
 	private final String type;
 	private final ParsingBlock parent;
 	private int nesting;
@@ -33,38 +35,24 @@ public class ParsingBlock {
 	 * Recursively parses a block of code
 	 */
 	private void parseBlock() {
-		// TODO: Handle inversion of scopes
 		int localNesting = 0;
 		int i = 0, start = -1;
+		// Handle special commands, inversion, and scope headers
 		if (type != null && nesting > 1) {
-			if (exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands")) {
-				String v1 = null;
-				String v2 = null;
-				String type = Token.tokenize(this.type, inversion).type;
-				for (String s : contents) {
-					if (s.equals("}"))
-						break;
-					Token token = Token.tokenize(s, false);
-					String pos = exceptions.get(token.type);
-					if (pos == null) {
-						System.out.println(token.type + " is not in the exceptions list!");
-					}
-					else if (pos.equals("value1"))
-						v1 = token.value;
-					else
-						v2 = token.value;
-				}
-				// TODO: Ensure localisation lookup is done
-				String s = String.format(Token.getStatement(type), v1, v2);
-				output(s, output, nesting - 1);
+			if (isSpecialCommand(type)) {
+				handleSpecialCommand();
 				return; // Nothing more to do
 			}
-			if (isInversion(type)) {
+			else if (needsName(type)) {
+				handleName();
+			}
+			else if (isInversion(type)) {
+				// "NOT" in the game code means NOR, so can simply be handled by inverting everything within a block
 				inversion = !inversion;
 				nesting--;
 			}
 			else {
-				output(Token.tokenize(type, inversion).toString(), output, nesting - 1);
+				output(Token.tokenize(type, inversion).toString(), output, nesting);
 				// The following will indicate that inversion applies to everything nested below them,
 				// so inversion is overridden
 				if (inversion && overridesInversion(type)) {
@@ -92,7 +80,7 @@ public class ParsingBlock {
 					new ParsingBlock(localType, this, contents.subList(start, i),
 							nesting + 1, output, inversion);
 					start = -1;
-					if (this.type != null && isInversion(this.type))
+					if (type != null && isInversion(type))
 						inversion = !inversion;
 					else if (inversionOverride)
 						inversion = true;
@@ -100,36 +88,94 @@ public class ParsingBlock {
 			} else {
 				if (localNesting == 0) {
 					Token t = Token.tokenize(s, inversion);
-					if (nesting > 1)
-						output(t.toString(), output, nesting);
+					if (nesting > 1 && isOutputType(t.type))
+						output(t.toString(), output, nesting + 1);
 					else if (t.type.equals("title"))
-						output(t.toString(), output, nesting - 1);
+						output(t.toString(), output, nesting);
 				}
 			}
 		}
 	}
 
-	private boolean isInversion(String type) {
+	private static boolean isOutputType(String type) {
+		return !isName(type);
+	}
+
+	private void handleName() {
+		for (String s : contents) {
+			Token token = Token.tokenize(s, false);
+			if (isName(token.type)) {
+				output(token.toString(), output, nesting);
+				return;
+			}
+		}
+		throw new IllegalStateException("No valid name found.");
+	}
+
+	private static boolean isName(String type) {
+		return type.equals("factor") || type.equals("name");
+	}
+
+	private static boolean needsName(String type) {
+		return type.equals("option") || type.equals("modifier");
+	}
+
+	private void handleSpecialCommand() {
+		String v1 = null;
+		String v2 = null;
+		String modifier = null;
+		String type = Token.tokenize(this.type, inversion).type;
+		for (String s : contents) {
+			if (s.equals("}"))
+				break;
+			Token token = Token.tokenize(s, false);
+			String pos = exceptions.get(token.type);
+			if (pos == null) {
+				System.out.println(token.type + " is not in the exceptions list!");
+			}
+			else if (pos.equals("value1"))
+				v1 = token.getLocalisedValue();
+			else
+				v2 = token.getLocalisedValue();
+			if (token.type.equals("name")) {
+				modifier = token.value.replace("\"", "");
+			}
+		}
+		output(String.format(Token.getStatement(type), v1, v2), output, nesting);
+		if (modifier != null) {
+			for (String effect : modifiers.get(modifier)) {
+				output(effect, output, nesting + 1);
+			}
+		}
+	}
+
+	private static boolean isSpecialCommand(String type) {
+		return exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands");
+	}
+
+	private static boolean isInversion(String type) {
 		return type.equals("not") || type.equals("nor");
 	}
 	
-	private boolean overridesInversion(String type) {
+	private static boolean overridesInversion(String type) {
 		return type.startsWith("any_") || type.equals("or") || type.equals("and");
 	}
 
 	private static void output(String s, Collection<String> output, int nesting) {
-		if (nesting == 0) {
-			output.add("\n" + header + " " + s + " " + header);
+		nesting = nesting - 2;
+		if (nesting == -1) {
+			output.add("\n" + HEADER + " " + s + " " + HEADER);
+			return;
+		}
+		else if (nesting == 0) {
+			output.add("\n" + BOLD + s + BOLD + "\n");
 			return;
 		}
 		StringBuilder builder = new StringBuilder();
-		if (nesting == 1) {
-			builder.append("\n");
-		}
 		for (int i = 0; i < nesting; i++) {
 			builder.append('*');
 		}
-		if (nesting != 0)
+		if (nesting != -1)
 			builder.append(" ");
 		builder.append(s);
 		output.add(builder.toString());
@@ -141,7 +187,7 @@ public class ParsingBlock {
 
 	public static void main(String[] args) {
 		try {
-			Token.initialize("E:\\Steam\\SteamApps\\common\\Europa Universalis IV");
+			Token.initialize("E:/Steam/SteamApps/common/Europa Universalis IV");
 			IO.readExceptions("statements/exceptions.txt", exceptions);
 			LinkedList<String> list = IO.readFile("cleanup.txt");
 			Collection<String> output = new ParsingBlock(null, null, list, 0,
@@ -151,6 +197,26 @@ public class ParsingBlock {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static void parseModifiers(List<String> readFile) {
+		String name = null;
+		List<String> effects = new LinkedList<>();
+		int i = 0;
+		for (String line : readFile) {
+			i++;
+			if (i > 2000)
+				break;
+			if (line.endsWith("{"))
+				name = Token.tokenize(line, false).type;
+			else if (line.equals("}")) {
+				modifiers.put(name, new LinkedList<>(effects));
+				effects.clear();
+			}
+			else {
+				effects.add(Token.tokenize(line, false).toString());
+			}
 		}
 	}
 }

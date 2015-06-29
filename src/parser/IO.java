@@ -68,11 +68,13 @@ public class IO {
 	 * @param map Map to add the localisation to, rather than returning a map, as one might often want to read several files into one map
 	 * @throws IOException
 	 */
-	public static void readLocalisation(String fileName, Map<String, String> map) throws IOException {
+	public static void readLocalisation(String fileName, Map<String, String> map, boolean ignoreQuotes) throws IOException {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
-			line = line.trim().replace("\"", "");
+			line = line.trim();
+			if (ignoreQuotes)
+				line = line.replace("\"", "");
 			int index = line.indexOf(": ");
 			if (index == -1) {
 				line = in.readLine();
