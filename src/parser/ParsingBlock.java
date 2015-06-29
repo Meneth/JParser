@@ -230,7 +230,6 @@ public class ParsingBlock {
 		String name = null;
 		List<String> effects = new LinkedList<>();
 		for (String line : readFile) {
-			i++;
 			if (line.endsWith("{"))
 				name = Token.tokenize(line, false).type;
 			else if (line.equals("}")) {
