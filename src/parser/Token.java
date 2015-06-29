@@ -23,7 +23,7 @@ public class Token {
 			IO.readLocalisation("statements/special.txt", statements, false);
 			IO.readExceptions("statements/lookupRules.txt", lookupRules);
 			readLocalisation(path, "countries");
-			readLocalisation(path, "eu4");
+			readLocalisation(path, "EU4");
 			readLocalisation(path, "text");
 			readLocalisation(path, "opinions");
 			readLocalisation(path, "powers_and_ideas");
@@ -41,6 +41,8 @@ public class Token {
 			readLocalisation(path, "tags_phase4");
 			readLocalisation(path, "flavor_events");
 			readLocalisation(path, "generic_events");
+			readLocalisation(path, "aow");
+			readLocalisation(path, "prov_names");
 			ParsingBlock.parseModifiers(IO.readFile(path + "/common/event_modifiers/00_event_modifiers.txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -155,11 +157,17 @@ public class Token {
 		String loc = localisation.get(key);
 		if (loc != null)
 			return loc;
+		loc = localisation.get("building_" + key);
+		if (loc != null)
+			return loc;
+		loc = localisation.get(key + "_title");
+		if (loc != null)
+			return loc;
 		return key;
 	}
 
 	private static String getProvince(String id) {
-		return getLocalisation("PROV_" + id);
+		return getLocalisation("PROV" + id);
 	}
 	
 	private static String getCountry(String id) {

@@ -130,12 +130,13 @@ type:
 emperor: Holy Roman Emperor:
 inherit: Inherit %s
 factor: Multiplies value by %s:
+modifier: Multiplies value by %s:
 factor_base: Base chance of %s
 modifier:
 years: Base mean time to happen of %s years
 months: Base mean time to happen of %s months
 days: Base mean time to happen of %s days
-ai_chance: AI chance:
+ai_chance: Base AI chance of %s
 remove_claim: Removes claim on %s
 remove_claim_country: Removes %s's claim
 FROM: Our country:
@@ -203,6 +204,7 @@ fire: %s skill in fire
 siege: %s skill in siege
 manuever: %s skill in manuever
 name: Option "%s":
+option: Option "%s":
 fixed: Ruler skills are not random
 add_republican_tradition: Changes republican tradition by %s%%
 form_coalition_against: Forms a coalition against %s

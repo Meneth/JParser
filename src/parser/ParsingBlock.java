@@ -44,7 +44,7 @@ public class ParsingBlock {
 				return; // Nothing more to do
 			}
 			else if (needsName(type)) {
-				handleName();
+				handleName(type);
 			}
 			else if (isInversion(type)) {
 				// "NOT" in the game code means NOR, so can simply be handled by inverting everything within a block
@@ -101,10 +101,11 @@ public class ParsingBlock {
 		return !isName(type);
 	}
 
-	private void handleName() {
+	private void handleName(String type) {
 		for (String s : contents) {
 			Token token = Token.tokenize(s, false);
 			if (isName(token.type)) {
+				token = new Token(type, token.value, false);
 				output(token.toString(), output, nesting);
 				return;
 			}
@@ -117,7 +118,7 @@ public class ParsingBlock {
 	}
 
 	private static boolean needsName(String type) {
-		return type.equals("option") || type.equals("modifier");
+		return type.equals("option") || type.equals("modifier") || type.equals("ai_chance");
 	}
 
 	private void handleSpecialCommand() {
@@ -189,7 +190,7 @@ public class ParsingBlock {
 		try {
 			Token.initialize("E:/Steam/SteamApps/common/Europa Universalis IV");
 			IO.readExceptions("statements/exceptions.txt", exceptions);
-			LinkedList<String> list = IO.readFile("cleanup.txt");
+			LinkedList<String> list = IO.readFile("E:/Steam/SteamApps/common/Europa Universalis IV/events/CanalEvents.txt");
 			Collection<String> output = new ParsingBlock(null, null, list, 0,
 					new LinkedList<String>(), false).getOutput();
 			for (String string : output) {
