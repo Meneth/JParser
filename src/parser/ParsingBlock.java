@@ -1,17 +1,18 @@
 package parser;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ParsingBlock {
 	private static final Map<String, String> exceptions = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
-	private static final String HEADER = "==";
-	private static final String BOLD = "'''";
 	private final String type;
 	private final ParsingBlock parent;
 	private int nesting;
@@ -134,12 +135,18 @@ public class ParsingBlock {
 		throw new IllegalStateException("No valid name found.");
 	}
 
+	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(
+		     new String[] {"factor", "name"}
+		));
 	private static boolean isName(String type) {
-		return type.equals("factor") || type.equals("name");
+		return BLOCKNAMES.contains(type);
 	}
 
+	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(
+		     new String[] {"option", "modifier", "ai_chance"}
+		));
 	private static boolean needsName(String type) {
-		return type.equals("option") || type.equals("modifier") || type.equals("ai_chance");
+		return NAMEDBLOCKS.contains(type);
 	}
 	
 	/**
@@ -179,14 +186,22 @@ public class ParsingBlock {
 		return exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands");
 	}
 
+	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(
+		     new String[] {"not", "nor"}
+		));
 	private static boolean isInversion(String type) {
-		return type.equals("not") || type.equals("nor");
+		return NEGATIONS.contains(type);
 	}
 	
+	private static final Set<String> INVERSIONOVERRIDES = new HashSet<String>(Arrays.asList(
+		     new String[] {"option", "modifier", "ai_chance"}
+		));
 	private static boolean overridesInversion(String type) {
-		return type.startsWith("any_") || type.equals("or") || type.equals("and");
+		return type.startsWith("any_") || INVERSIONOVERRIDES.contains(type);
 	}
 
+	private static final String HEADER = "==";
+	private static final String BOLD = "'''";
 	private static void output(String s, Collection<String> output, int nesting) {
 		nesting = nesting - 2;
 		if (nesting == -1) {
