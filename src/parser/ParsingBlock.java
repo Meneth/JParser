@@ -21,8 +21,8 @@ public class ParsingBlock {
 	private boolean inversion;
 	private boolean inversionOverride = false;
 
-	public ParsingBlock(String type, ParsingBlock parent,
-			List<String> contents, int nesting, Collection<String> output, boolean negative) {
+	public ParsingBlock(String type, ParsingBlock parent, List<String> contents, int nesting,
+			Collection<String> output, boolean negative) {
 		this.contents = contents;
 		this.output = output;
 		this.type = type;
@@ -66,8 +66,8 @@ public class ParsingBlock {
 					// When local nesting is back down to 0, a full block has
 					// necessarily been iterated through
 					// So that block can then be recursively parsed
-					new ParsingBlock(localType, this, contents.subList(start, i),
-							nesting + 1, output, inversion);
+					new ParsingBlock(localType, this, contents.subList(start, i), nesting + 1,
+							output, inversion);
 					start = -1;
 					if (type != null && isInversion(type))
 						inversion = !inversion;
@@ -87,21 +87,22 @@ public class ParsingBlock {
 	}
 
 	/**
-	 * Handles everything related to the type of the block, which is currently inversion and scope headers
+	 * Handles everything related to the type of the block, which is currently
+	 * inversion and scope headers
 	 */
 	private void handleBlockType() {
 		if (type != null && nesting > 1) {
 			if (needsName(type)) {
 				handleName();
-			}
-			else if (isInversion(type)) {
-				// "NOT" in the game code means NOR, so can simply be handled by inverting everything within a block
+			} else if (isInversion(type)) {
+				// "NOT" in the game code means NOR, so can simply be handled by
+				// inverting everything within a block
 				inversion = !inversion;
 				nesting--;
-			}
-			else {
+			} else {
 				output(Token.tokenize(type, inversion).toString(), output, nesting);
-				// The following will indicate that inversion applies to everything nested below them,
+				// The following will indicate that inversion applies to
+				// everything nested below them,
 				// so inversion is overridden
 				if (inversion && overridesInversion(type)) {
 					inversion = false;
@@ -113,7 +114,9 @@ public class ParsingBlock {
 
 	/**
 	 * Determines if a given type of token should be output
-	 * @param type The type of token
+	 * 
+	 * @param type
+	 *            The type of token
 	 * @return Whether it should be output
 	 */
 	private static boolean isOutputType(String type) {
@@ -135,23 +138,23 @@ public class ParsingBlock {
 		throw new IllegalStateException("No valid name found.");
 	}
 
-	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(
-			new String[] {"factor", "name"}
-			));
+	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(new String[] {
+			"factor", "name" }));
+
 	private static boolean isName(String type) {
 		return BLOCKNAMES.contains(type);
 	}
 
-	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(
-			new String[] {"option", "modifier", "ai_chance"}
-			));
+	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(new String[] {
+			"option", "modifier", "ai_chance" }));
+
 	private static boolean needsName(String type) {
 		return NAMEDBLOCKS.contains(type);
 	}
 
 	/**
-	 * Handles commands that go across multiple lines but need to be merged into a single line
-	 * plus potential modifiers
+	 * Handles commands that go across multiple lines but need to be merged into
+	 * a single line plus potential modifiers
 	 */
 	private void handleSpecialCommand() {
 		String v1 = null;
@@ -165,8 +168,7 @@ public class ParsingBlock {
 			String pos = exceptions.get(token.type);
 			if (pos == null) {
 				System.out.println(token.type + " is not in the exceptions list!");
-			}
-			else if (pos.equals("value1"))
+			} else if (pos.equals("value1"))
 				v1 = token.getLocalisedValue();
 			else
 				v2 = token.getLocalisedValue();
@@ -186,19 +188,18 @@ public class ParsingBlock {
 		return exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands");
 	}
 
-	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(
-			new String[] {"not", "nor"}
-			));
+	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(new String[] {
+			"not", "nor" }));
+
 	private static boolean isInversion(String type) {
 		return NEGATIONS.contains(type);
 	}
 
-	private static final Set<String> INVERSIONOVERRIDES = new HashSet<String>(Arrays.asList(
-			new String[] {"option", "modifier", "ai_chance", "any_", "all_"}
-			));
-	private static final Set<String> INVERSIONOVERRIDEPREFIXES = new HashSet<String>(Arrays.asList(
-			new String[] {"any_", "all_"}
-			));
+	private static final Set<String> INVERSIONOVERRIDES = new HashSet<String>(
+			Arrays.asList(new String[] { "option", "modifier", "ai_chance", "any_", "all_" }));
+	private static final Set<String> INVERSIONOVERRIDEPREFIXES = new HashSet<String>(
+			Arrays.asList(new String[] { "any_", "all_" }));
+
 	private static boolean overridesInversion(String type) {
 		boolean start = false;
 		for (String s : INVERSIONOVERRIDEPREFIXES)
@@ -209,13 +210,13 @@ public class ParsingBlock {
 
 	private static final String HEADER = "\n== %s ==";
 	private static final String BOLD = "\n'''%s'''\n";
+
 	private static void output(String s, Collection<String> output, int nesting) {
 		nesting = nesting - 2;
 		if (nesting == -1) {
 			output.add(String.format(HEADER, s));
 			return;
-		}
-		else if (nesting == 0) {
+		} else if (nesting == 0) {
 			output.add(String.format(BOLD, s));
 			return;
 		}
@@ -237,7 +238,8 @@ public class ParsingBlock {
 		try {
 			Token.initialize("E:/Steam/SteamApps/common/Europa Universalis IV");
 			IO.readExceptions("statements/exceptions.txt", exceptions);
-			LinkedList<String> list = IO.readFile("E:/Steam/SteamApps/common/Europa Universalis IV/events/CanalEvents.txt");
+			LinkedList<String> list = IO
+					.readFile("E:/Steam/SteamApps/common/Europa Universalis IV/events/CanalEvents.txt");
 			Collection<String> output = new ParsingBlock(null, null, list, 0,
 					new LinkedList<String>(), false).getOutput();
 			for (String string : output) {
@@ -257,11 +259,9 @@ public class ParsingBlock {
 			else if (line.equals("}")) {
 				modifiers.put(name, new LinkedList<>(effects));
 				effects.clear();
-			}
-			else {
+			} else {
 				effects.add(Token.tokenize(line, false).toString());
 			}
 		}
 	}
 }
-

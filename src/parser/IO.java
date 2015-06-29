@@ -11,11 +11,15 @@ public class IO {
 	public static BufferedReader getReader(String fileName) throws FileNotFoundException {
 		return new BufferedReader(new FileReader(fileName));
 	}
-	
+
 	/**
 	 * Reads a PDX-script file, reducing it to only the statements therein.
-	 * Strips out comments, blank lines, and similar, and splits multiple statements on one line over multiple lines
-	 * @param fileName Name of the PDX-script file to be read. Full file path or relative path
+	 * Strips out comments, blank lines, and similar, and splits multiple
+	 * statements on one line over multiple lines
+	 * 
+	 * @param fileName
+	 *            Name of the PDX-script file to be read. Full file path or
+	 *            relative path
 	 * @return Linked list consisting of the processed output
 	 * @throws IOException
 	 */
@@ -29,23 +33,25 @@ public class IO {
 			int commentIndex = line.indexOf('#');
 			if (commentIndex != -1)
 				line = line.substring(0, commentIndex);
-			
+
 			// Handle brackets
 			line = line.replace("{", "{\n");
 			line = line.replace("}", "\n}");
-			
+
 			// Handle multiple actions in one line
 			String value = "=[\\s]*[\\w]*";
 			String quotedValue = "=[\\s]*\"[\\w ]*\"";
-			
+
 			line = line.replaceAll("(" + value + "|" + quotedValue + ") ([\\w]*[\\s]*=)", "$1\n$2");
-			
+
 			int start = 0;
 			int end = line.indexOf('\n');
 			String s;
-			do { // Substring and indexOf are used as it is faster than StringTokenizer or split
-				try { s = line.substring(start, end); }
-				catch (StringIndexOutOfBoundsException e) {
+			do { // Substring and indexOf are used as it is faster than
+					// StringTokenizer or split
+				try {
+					s = line.substring(start, end);
+				} catch (StringIndexOutOfBoundsException e) {
 					s = line.substring(start); // Final part
 				}
 				// Get rid of whitespace
@@ -61,14 +67,20 @@ public class IO {
 		in.close();
 		return lines;
 	}
-	
+
 	/**
 	 * Reads a YAML localisation file. Does not handle nesting
-	 * @param fileName Name of the localisation file to be read. Full file path or relative path
-	 * @param map Map to add the localisation to, rather than returning a map, as one might often want to read several files into one map
+	 * 
+	 * @param fileName
+	 *            Name of the localisation file to be read. Full file path or
+	 *            relative path
+	 * @param map
+	 *            Map to add the localisation to, rather than returning a map,
+	 *            as one might often want to read several files into one map
 	 * @throws IOException
 	 */
-	public static void readLocalisation(String fileName, Map<String, String> map, boolean ignoreQuotes) throws IOException {
+	public static void readLocalisation(String fileName, Map<String, String> map,
+			boolean ignoreQuotes) throws IOException {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
@@ -87,11 +99,14 @@ public class IO {
 			line = in.readLine();
 		}
 	}
-	
+
 	/**
 	 * Reads a YAML-esque exceptions file. Does not handle nesting
-	 * @param fileName Name of the file to be read. Full file path or relative path
-	 * @param map Map to add the exceptions to
+	 * 
+	 * @param fileName
+	 *            Name of the file to be read. Full file path or relative path
+	 * @param map
+	 *            Map to add the exceptions to
 	 * @throws IOException
 	 */
 	public static void readExceptions(String fileName, Map<String, String> map) throws IOException {
@@ -107,13 +122,13 @@ public class IO {
 			String value = line.substring(0, index);
 			// ": " used as delimiter, so index + 2
 			String[] keys = line.substring(index + 2).split(", ");
-			for (String key: keys) {
+			for (String key : keys) {
 				map.put(key, value);
 			}
 			line = in.readLine();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 			LinkedList<String> list = readFile("cleanup.txt");

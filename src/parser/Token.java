@@ -43,20 +43,21 @@ public class Token {
 			readLocalisation(path, "generic_events");
 			readLocalisation(path, "aow");
 			readLocalisation(path, "prov_names");
-			ParsingBlock.parseModifiers(IO.readFile(path + "/common/event_modifiers/00_event_modifiers.txt"));
+			ParsingBlock.parseModifiers(IO.readFile(path
+					+ "/common/event_modifiers/00_event_modifiers.txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void readLocalisation(String path, String file) throws IOException {
 		IO.readLocalisation(path + "/localisation/" + file + "_l_english.yml", localisation, true);
 	}
-	
+
 	public Token(String type, boolean negative) {
 		this(type, null, negative);
 	}
-	
+
 	public Token(String type, String value, boolean negative) {
 		super();
 		type = type.toLowerCase();
@@ -75,11 +76,9 @@ public class Token {
 		if (index == -1)
 			token = new Token(s, negative);
 		else
-			token = new Token(s.substring(0, index).trim(), s.substring(
-					index + 1).trim(), negative);
+			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim(), negative);
 		return token;
 	}
-
 
 	public String toString() {
 		return lookup(type, value);
@@ -91,18 +90,19 @@ public class Token {
 				key += "_country";
 		}
 		value = getValue(key, value);
-		
+
 		String output = statements.get(key);
 		if (output == null)
 			return key + ": " + value;
 		if (value != null)
 			try {
-	            float f = Float.parseFloat(value);
-	            if (output.contains("%%"))
-	            	value = "" + (int) (f * 100);
-	            if (output.startsWith("%s") && f > 0)
-	            	value = "+" + value;
-	        } catch (NumberFormatException e) { }
+				float f = Float.parseFloat(value);
+				if (output.contains("%%"))
+					value = "" + (int) (f * 100);
+				if (output.startsWith("%s") && f > 0)
+					value = "+" + value;
+			} catch (NumberFormatException e) {
+			}
 		if (output.contains("%s"))
 			return String.format(output, value);
 		return output;
@@ -149,7 +149,8 @@ public class Token {
 	}
 
 	private static boolean isCountry(String value) {
-		return country.matcher(value).matches() || value.equalsIgnoreCase("root") || value.equalsIgnoreCase("this") || value.equalsIgnoreCase("from");
+		return country.matcher(value).matches() || value.equalsIgnoreCase("root")
+				|| value.equalsIgnoreCase("this") || value.equalsIgnoreCase("from");
 	}
 
 	private static String getLocalisation(String key) {
@@ -169,11 +170,11 @@ public class Token {
 	private static String getProvince(String id) {
 		return getLocalisation("PROV" + id);
 	}
-	
+
 	private static String getCountry(String id) {
 		switch (id) {
 		case "":
-			
+
 			return null;
 
 		default:
