@@ -35,32 +35,20 @@ public class ParsingBlock {
 	 * Recursively parses a block of code
 	 */
 	private void parseBlock() {
+		if (isSpecialCommand(type)) {
+			handleSpecialCommand();
+			return; // Nothing more to do
+		}
+		handleBlockType();
+		handleBlockContents();
+	}
+	
+	/**
+	 * Handles all contents in the parsing block, including recursive calls
+	 */
+	private void handleBlockContents() {
 		int localNesting = 0;
 		int i = 0, start = -1;
-		// Handle special commands, inversion, and scope headers
-		if (type != null && nesting > 1) {
-			if (isSpecialCommand(type)) {
-				handleSpecialCommand();
-				return; // Nothing more to do
-			}
-			else if (needsName(type)) {
-				handleName(type);
-			}
-			else if (isInversion(type)) {
-				// "NOT" in the game code means NOR, so can simply be handled by inverting everything within a block
-				inversion = !inversion;
-				nesting--;
-			}
-			else {
-				output(Token.tokenize(type, inversion).toString(), output, nesting);
-				// The following will indicate that inversion applies to everything nested below them,
-				// so inversion is overridden
-				if (inversion && overridesInversion(type)) {
-					inversion = false;
-					inversionOverride = true;
-				}
-			}
-		}
 		String localType = null;
 		for (String s : contents) {
 			i++; // Done at the start so that the line defining the start of a
@@ -97,11 +85,44 @@ public class ParsingBlock {
 		}
 	}
 
+	/**
+	 * Handles everything related to the type of the block, which is currently inversion and scope headers
+	 */
+	private void handleBlockType() {
+		if (type != null && nesting > 1) {
+			if (needsName(type)) {
+				handleName();
+			}
+			else if (isInversion(type)) {
+				// "NOT" in the game code means NOR, so can simply be handled by inverting everything within a block
+				inversion = !inversion;
+				nesting--;
+			}
+			else {
+				output(Token.tokenize(type, inversion).toString(), output, nesting);
+				// The following will indicate that inversion applies to everything nested below them,
+				// so inversion is overridden
+				if (inversion && overridesInversion(type)) {
+					inversion = false;
+					inversionOverride = true;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Determines if a given type of token should be output
+	 * @param type The type of token
+	 * @return Whether it should be output
+	 */
 	private static boolean isOutputType(String type) {
 		return !isName(type);
 	}
-
-	private void handleName(String type) {
+	
+	/**
+	 * Collects and outputs the name of a section
+	 */
+	private void handleName() {
 		for (String s : contents) {
 			Token token = Token.tokenize(s, false);
 			if (isName(token.type)) {
@@ -120,7 +141,11 @@ public class ParsingBlock {
 	private static boolean needsName(String type) {
 		return type.equals("option") || type.equals("modifier") || type.equals("ai_chance");
 	}
-
+	
+	/**
+	 * Handles commands that go across multiple lines but need to be merged into a single line
+	 * plus potential modifiers
+	 */
 	private void handleSpecialCommand() {
 		String v1 = null;
 		String v2 = null;
