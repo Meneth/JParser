@@ -229,11 +229,8 @@ public class ParsingBlock {
 	public static void parseModifiers(List<String> readFile) {
 		String name = null;
 		List<String> effects = new LinkedList<>();
-		int i = 0;
 		for (String line : readFile) {
 			i++;
-			if (i > 2000)
-				break;
 			if (line.endsWith("{"))
 				name = Token.tokenize(line, false).type;
 			else if (line.equals("}")) {
