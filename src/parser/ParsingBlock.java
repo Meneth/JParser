@@ -280,35 +280,6 @@ public class ParsingBlock {
 		output.add(builder.toString());
 	}
 
-	private Collection<String> getOutput() {
-		return output;
-	}
-
-	public static void main(String[] args) {
-		try {
-			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
-			Localisation.initialize(path);
-			IO.readExceptions("statements/exceptions.txt", exceptions);
-			Files.walk(Paths.get(path + "/events")).forEachOrdered(
-					filePath -> {
-						if (Files.isRegularFile(filePath)) {
-							System.out.println(filePath);
-							try {
-								LinkedList<String> list = IO.readFile(filePath.toString());
-								Collection<String> output = new ParsingBlock(null, null, list, 0,
-										new LinkedList<String>(), false).getOutput();
-								IO.writeFile("output/" + filePath.getFileName(), output);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-					});
-			IO.writeFile("output/errors.txt", Localisation.errors);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Reads all event modifiers and converts them to human-readable text, so
 	 * that they can be displayed when a modifier is added
@@ -328,6 +299,32 @@ public class ParsingBlock {
 			} else {
 				effects.add(Token.tokenize(line, false).toString());
 			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		try {
+			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
+			Localisation.initialize(path);
+			IO.readExceptions("statements/exceptions.txt", exceptions);
+			Files.walk(Paths.get(path + "/events")).forEachOrdered(
+					filePath -> {
+						if (Files.isRegularFile(filePath)) {
+							System.out.println(filePath);
+							try {
+								LinkedList<String> list = IO.readFile(filePath.toString());
+								Collection<String> output = new LinkedList<>();
+								new ParsingBlock(null, null, list, 0,
+										output, false);
+								IO.writeFile("output/" + filePath.getFileName(), output);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+			IO.writeFile("output/errors.txt", Localisation.errors);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
