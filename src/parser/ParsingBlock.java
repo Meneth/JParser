@@ -229,11 +229,6 @@ public class ParsingBlock {
 		return NEGATIONS.contains(type);
 	}
 
-	private static final Set<String> INVERSIONOVERRIDES = new HashSet<String>(
-			Arrays.asList(new String[] { "option", "modifier", "ai_chance" }));
-	private static final Set<String> INVERSIONOVERRIDEPREFIXES = new HashSet<String>(
-			Arrays.asList(new String[] { "any_", "all_" }));
-
 	/**
 	 * Determines whether tokens within a given section can ignore inversion
 	 * specified outside it due to the inversion being applied to the section
@@ -301,27 +296,25 @@ public class ParsingBlock {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
 			Localisation.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
-			Files.walk(Paths.get(path + "/events")).forEachOrdered(
-					filePath -> {
-						if (Files.isRegularFile(filePath)) {
-							System.out.println(filePath);
-							try {
-								LinkedList<String> list = IO.readFile(filePath.toString());
-								Collection<String> output = new LinkedList<>();
-								new ParsingBlock(null, null, list, 0,
-										output, false);
-								IO.writeFile("output/" + filePath.getFileName(), output);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-					});
+			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
+				if (Files.isRegularFile(filePath)) {
+					System.out.println(filePath);
+					try {
+						LinkedList<String> list = IO.readFile(filePath.toString());
+						Collection<String> output = new LinkedList<>();
+						new ParsingBlock(null, null, list, 0, output, false);
+						IO.writeFile("output/" + filePath.getFileName(), output);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
 			IO.writeFile("output/errors.txt", Localisation.errors);
 		} catch (IOException e) {
 			e.printStackTrace();
