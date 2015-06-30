@@ -143,6 +143,13 @@ public class ParsingBlock {
 	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(new String[] {
 			"factor", "name" }));
 
+	/**
+	 * Determines whether a token type should be used to name a section
+	 * 
+	 * @param type
+	 *            The token type
+	 * @return Whether it should be used to name a section
+	 */
 	private static boolean isName(String type) {
 		return BLOCKNAMES.contains(type);
 	}
@@ -150,6 +157,14 @@ public class ParsingBlock {
 	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(new String[] {
 			"option", "modifier", "ai_chance" }));
 
+	/**
+	 * Determines whether a section needs to fetch a name further down in the
+	 * game code
+	 * 
+	 * @param type
+	 *            The token type
+	 * @return Whether it needs to fetch a name further down
+	 */
 	private static boolean needsName(String type) {
 		return NAMEDBLOCKS.contains(type);
 	}
@@ -178,7 +193,7 @@ public class ParsingBlock {
 				modifier = token.value.replace("\"", "");
 			}
 		}
-		output(String.format(Token.getStatement(type), v1, v2), output, nesting);
+		output(Token.formatStatement(type, v1, v2), output, nesting);
 		if (modifier != null) {
 			Iterable<String> effects = modifiers.get(modifier);
 			if (effects != null)
@@ -188,6 +203,14 @@ public class ParsingBlock {
 		}
 	}
 
+	/**
+	 * Determines whether a command has to be handled differently due to
+	 * spanning multiple lines
+	 * 
+	 * @param type
+	 *            The name of the command
+	 * @return Whether it has to be handled differently
+	 */
 	private static boolean isSpecialCommand(String type) {
 		return exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands");
 	}
@@ -195,6 +218,13 @@ public class ParsingBlock {
 	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(new String[] {
 			"not", "nor" }));
 
+	/**
+	 * Determines whether a section inverts everything within it
+	 * 
+	 * @param type
+	 *            The section name
+	 * @return Wheter it inverts everything within it
+	 */
 	private static boolean isInversion(String type) {
 		return NEGATIONS.contains(type);
 	}
@@ -204,6 +234,15 @@ public class ParsingBlock {
 	private static final Set<String> INVERSIONOVERRIDEPREFIXES = new HashSet<String>(
 			Arrays.asList(new String[] { "any_", "all_" }));
 
+	/**
+	 * Determines whether tokens within a given section can ignore inversion
+	 * specified outside it due to the inversion being applied to the section
+	 * name instead
+	 * 
+	 * @param type
+	 *            The section type
+	 * @return Whether it overrides inversion
+	 */
 	private static boolean overridesInversion(String type) {
 		return Token.getStatement(type).endsWith(":");
 	}
@@ -211,6 +250,17 @@ public class ParsingBlock {
 	private static final String HEADER = "\n== %s ==";
 	private static final String BOLD = "\n'''%s'''\n";
 
+	/**
+	 * Formats a string based on how deeply nested it is, and adds it to the
+	 * output collection
+	 * 
+	 * @param s
+	 *            The string to be output
+	 * @param output
+	 *            The collection the formatted string is to be added to
+	 * @param nesting
+	 *            How deeply nested the string is
+	 */
 	private static void output(String s, Collection<String> output, int nesting) {
 		nesting = nesting - 2;
 		if (nesting == -1) {
@@ -259,6 +309,13 @@ public class ParsingBlock {
 		}
 	}
 
+	/**
+	 * Reads all event modifiers and converts them to human-readable text, so
+	 * that they can be displayed when a modifier is added
+	 * 
+	 * @param readFile
+	 *            A formatted file containing modifiers
+	 */
 	public static void parseModifiers(List<String> readFile) {
 		String name = null;
 		List<String> effects = new LinkedList<>();

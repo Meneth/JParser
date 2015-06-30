@@ -26,6 +26,12 @@ public class Token {
 	private static final String TIME = "time";
 	public static final Set<String> errors = new HashSet<>();
 
+	/**
+	 * Loads all info needed in order to run the parser
+	 * 
+	 * @param path
+	 *            The path to the game folder
+	 */
 	public static void initialize(String path) {
 		try {
 			Files.walk(Paths.get("statements/localisation")).forEach(filePath -> {
@@ -59,6 +65,8 @@ public class Token {
 			IO.readLocalisation("statements/variations.txt", variationFiles, false);
 			variationFiles.forEach((localisation, param) -> {
 				try {
+					if (localisation.startsWith("#"))
+						return;
 					String[] params = param.split(", ");
 					Collection<String> vars = new HashSet<>();
 					IO.readHeaders(path + params[0], vars, Integer.parseInt(params[1]));
@@ -76,6 +84,16 @@ public class Token {
 		}
 	}
 
+	/**
+	 * Reads a localisation file and adds all localisation to the "localisation"
+	 * map
+	 * 
+	 * @param path
+	 *            The path to the game folder
+	 * @param file
+	 *            The localisation file to be read
+	 * @throws IOException
+	 */
 	private static void readLocalisation(String path, String file) throws IOException {
 		IO.readLocalisation(path + "/localisation/" + file + "_l_english.yml", localisation, true);
 	}
@@ -95,6 +113,15 @@ public class Token {
 		this.value = value;
 	}
 
+	/**
+	 * Creates from a string a new token and returns it
+	 * 
+	 * @param s
+	 *            The string to be tokenized
+	 * @param negative
+	 *            Whether or not the token has been inverted by surrounding code
+	 * @return A token generated from the string
+	 */
 	public static Token tokenize(String s, boolean negative) {
 		Token token;
 		int index = s.indexOf('=');
@@ -106,28 +133,33 @@ public class Token {
 	}
 
 	public String toString() {
-		return lookup(type, value);
+		return formatToken(type, value);
 	}
 
-	private static String lookup(String key, String value) {
-		if (variations.containsKey(key)) {
-			String output = statements.get(variations.get(key));
-			return String.format(output, key, value);
+	/**
+	 * Formats a token
+	 * @param type The type of token
+	 * @param value The value of the token
+	 * @return The formatted string
+	 */
+	private static String formatToken(String type, String value) {
+		if (variations.containsKey(type)) {
+			return formatStatement(variations.get(type), type, value);
 		}
 
 		// Some tokens are localized differently if referring to a country
-		if (COUNTRY.equals(lookupRules.get(key.replace("_false", "")))) {
+		if (COUNTRY.equals(lookupRules.get(type.replace("_false", "")))) {
 			if (isCountry(value))
-				key += "_country";
+				type += "_country";
 		}
-		value = getValue(key, value);
+		value = formatValue(type, value);
 
-		String output = statements.get(key);
+		String output = statements.get(type);
 		if (output == null) {
-			output = getScopeLocalisation(key);
-			if (!output.equals(key))
+			output = getScopeLocalisation(type);
+			if (!output.equals(type))
 				return output;
-			return key + ": " + value;
+			return type + ": " + value;
 		}
 		if (value != null)
 			try {
@@ -138,23 +170,27 @@ public class Token {
 					value = "+" + value;
 			} catch (NumberFormatException e) {
 			}
-		if (output.contains("%s"))
-			return String.format(output, value);
-		return output;
+		return formatStatement(type, value);
 	}
 
 	private static boolean isBoolean(String value) {
 		return value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("no");
 	}
 
-	private static String getValue(String key, String value) {
-		String type;
-		type = lookupRules.get(key.replace("_false", ""));
-		if (key.endsWith(COUNTRY))
-			type = COUNTRY;
+	/**
+	 * Formats a token's value
+	 * @param type The type of the token
+	 * @param value The value of the token
+	 * @return The formatted value
+	 */
+	private static String formatValue(String type, String value) {
+		String targetType;
+		targetType = lookupRules.get(type.replace("_false", ""));
+		if (type.endsWith(COUNTRY))
+			targetType = COUNTRY;
 		if (value != null) {
-			if (type != null) {
-				switch (type) {
+			if (targetType != null) {
+				switch (targetType) {
 				case PROVINCE:
 					return getProvince(value);
 				case COUNTRY:
@@ -179,15 +215,30 @@ public class Token {
 		return value;
 	}
 
+	/**
+	 * Determines whether the parser should try to look up a given token value in the game localisation
+	 * @param value The token's value
+	 * @return Whether it should be looked up
+	 */
 	private static boolean isLookup(String value) {
 		return !noLookup.matcher(value).matches();
 	}
 
+	/**
+	 * Determines whether a given token value refers to a country
+	 * @param value The token's value
+	 * @return Whether it refers to a country
+	 */
 	private static boolean isCountry(String value) {
 		return country.matcher(value).matches() || value.equalsIgnoreCase("root")
 				|| value.equalsIgnoreCase("this") || value.equalsIgnoreCase("from");
 	}
 
+	/**
+	 * Attempts to find the game localisation for a given type or value
+	 * @param key The type or value to be localised
+	 * @return The localisation found. The key provided is returned if no localisation is found
+	 */
 	private static String getLocalisation(String key) {
 		key = key.replace("\"", "");
 		String loc = localisation.get(key);
@@ -202,8 +253,13 @@ public class Token {
 		return key;
 	}
 
-	private static String getScopeLocalisation(String key) {
-		String key2 = key.replace("_false", "");
+	/**
+	 * Attemps to find the game localisation for a given scope
+	 * @param scope The scope to localise
+	 * @return The localisation found, plus formatting. The scope provided is returned if no localisation is found
+	 */
+	private static String getScopeLocalisation(String scope) {
+		String key2 = scope.replace("_false", "");
 		String loc = null;
 		while (true) {
 			if (regions.contains(key2))
@@ -221,19 +277,29 @@ public class Token {
 			break;
 		}
 		if (loc == null) {
-			errors.add(key);
-			return key;
+			errors.add(scope);
+			return scope;
 		}
-		if (key.endsWith("_false"))
+		if (scope.endsWith("_false"))
 			loc += " - not all of the following";
 		loc += ":";
 		return loc;
 	}
 
+	/**
+	 * Looks up a province name
+	 * @param id The ID of the province
+	 * @return The province's name
+	 */
 	private static String getProvince(String id) {
 		return localisation.get("prov" + id);
 	}
 
+	/**
+	 * Looks up a country name
+	 * @param id The ID of the country
+	 * @return The country's name
+	 */
 	private static String getCountry(String id) {
 		switch (id) {
 		case "":
@@ -243,18 +309,36 @@ public class Token {
 		case "THIS":
 			return "this country";
 		case "FROM":
-			return "FROM";
+			return "FROM"; // TODO - Localise
 		default:
 			return localisation.get(id);
 		}
 	}
 
+	/**
+	 * Inserts any parameters of a statement at the appropriate places
+	 * @param type The token type
+	 * @param params The parameters (if any) of the statement
+	 * @return The formatted string. The type is returned if no formatting was found
+	 */
+	public static String formatStatement(String type, String...params) {
+		String statement = statements.get(type);
+		return statement == null ? type : String.format(statement, (Object[]) params);
+	}
+	
+	/**
+	 * Gets a format string for a given token type
+	 * @param type The token type
+	 * @return The format string. The type is returned if no formatting was found
+	 */
 	public static String getStatement(String type) {
 		String statement = statements.get(type);
 		return statement == null ? type : statement;
 	}
 
 	public String getLocalisedValue() {
-		return getValue(type, value);
+		return formatValue(type, value);
 	}
+
+	
 }
