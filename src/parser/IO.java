@@ -132,22 +132,25 @@ public class IO {
 			line = in.readLine();
 		}
 	}
-	
+
 	/**
 	 * Writes a collection of strings to a file
+	 * 
 	 * @param fileName
 	 * @param contents
 	 * @throws IOException
 	 */
 	public static void writeFile(String fileName, Collection<String> contents) throws IOException {
-		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName)));
+		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+				fileName)));
 		for (String string : contents) {
 			out.write(string + "\n");
 		}
 		out.close();
 	}
 
-	public static void readHeaders(String fileName, Collection<String> headerList, int level) throws IOException {
+	public static void readHeaders(String fileName, Collection<String> headerList, int level)
+			throws IOException {
 		Collection<String> file = readFile(fileName);
 		int nesting = 0;
 		for (String line : file) {

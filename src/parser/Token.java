@@ -29,13 +29,13 @@ public class Token {
 	public static void initialize(String path) {
 		try {
 			Files.walk(Paths.get("statements/localisation")).forEach(filePath -> {
-			    if (Files.isRegularFile(filePath)) {
-			        try {
-			        	IO.readLocalisation(filePath.toString(), statements, false);
+				if (Files.isRegularFile(filePath)) {
+					try {
+						IO.readLocalisation(filePath.toString(), statements, false);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-			    }
+				}
 			});
 			IO.readExceptions("statements/lookupRules.txt", lookupRules);
 			Set<String> localisationFiles = new HashSet<String>(Arrays.asList(new String[] {
@@ -44,8 +44,8 @@ public class Token {
 					"flavor_events", "USA_dlc", "nw2", "sikh", "tags_phase4", "flavor_events",
 					"generic_events", "aow", "prov_names", "common_sense", "eldorado" }));
 			localisationFiles.forEach(file -> {
-		        try {
-		        	readLocalisation(path, file);
+				try {
+					readLocalisation(path, file);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -114,7 +114,7 @@ public class Token {
 			String output = statements.get(variations.get(key));
 			return String.format(output, key, value);
 		}
-		
+
 		// Some tokens are localized differently if referring to a country
 		if (COUNTRY.equals(lookupRules.get(key.replace("_false", "")))) {
 			if (isCountry(value))
@@ -201,7 +201,7 @@ public class Token {
 			return loc;
 		return key;
 	}
-	
+
 	private static String getScopeLocalisation(String key) {
 		String key2 = key.replace("_false", "");
 		String loc = null;

@@ -239,19 +239,20 @@ public class ParsingBlock {
 			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
 			Token.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
-			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
-			    if (Files.isRegularFile(filePath)) {
-			        System.out.println(filePath);
-			        try {
-			        	LinkedList<String> list = IO.readFile(filePath.toString());
-			        	Collection<String> output = new ParsingBlock(null, null, list, 0,
-									new LinkedList<String>(), false).getOutput();
-			        	IO.writeFile("output/" + filePath.getFileName(), output);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-			    }
-			});
+			Files.walk(Paths.get(path + "/events")).forEachOrdered(
+					filePath -> {
+						if (Files.isRegularFile(filePath)) {
+							System.out.println(filePath);
+							try {
+								LinkedList<String> list = IO.readFile(filePath.toString());
+								Collection<String> output = new ParsingBlock(null, null, list, 0,
+										new LinkedList<String>(), false).getOutput();
+								IO.writeFile("output/" + filePath.getFileName(), output);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					});
 			IO.writeFile("output/errors.txt", Token.errors);
 		} catch (IOException e) {
 			e.printStackTrace();
