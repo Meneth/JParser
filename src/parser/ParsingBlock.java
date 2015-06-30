@@ -193,7 +193,7 @@ public class ParsingBlock {
 				modifier = token.value.replace("\"", "");
 			}
 		}
-		output(Token.formatStatement(type, v1, v2), output, nesting);
+		output(Localisation.formatStatement(type, v1, v2), output, nesting);
 		if (modifier != null) {
 			Iterable<String> effects = modifiers.get(modifier);
 			if (effects != null)
@@ -244,7 +244,7 @@ public class ParsingBlock {
 	 * @return Whether it overrides inversion
 	 */
 	private static boolean overridesInversion(String type) {
-		return Token.getStatement(type).endsWith(":");
+		return Localisation.getStatement(type).endsWith(":");
 	}
 
 	private static final String HEADER = "\n== %s ==";
@@ -287,7 +287,7 @@ public class ParsingBlock {
 	public static void main(String[] args) {
 		try {
 			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
-			Token.initialize(path);
+			Localisation.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(
 					filePath -> {
@@ -303,7 +303,7 @@ public class ParsingBlock {
 							}
 						}
 					});
-			IO.writeFile("output/errors.txt", Token.errors);
+			IO.writeFile("output/errors.txt", Localisation.errors);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
