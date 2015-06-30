@@ -1,9 +1,13 @@
 package parser;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Collection;
 import java.util.Map;
 import java.util.LinkedList;
 
@@ -28,7 +32,7 @@ public class IO {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
-			line = line.trim();
+			line = line.trim().toLowerCase();
 			// Get rid of comments
 			int commentIndex = line.indexOf('#');
 			if (commentIndex != -1)
@@ -92,7 +96,7 @@ public class IO {
 				line = in.readLine();
 				continue;
 			}
-			String key = line.substring(0, index);
+			String key = line.substring(0, index).toLowerCase();
 			// ": " used as delimiter, so index + 2
 			String value = line.substring(index + 2);
 			map.put(key, value);
@@ -128,14 +132,32 @@ public class IO {
 			line = in.readLine();
 		}
 	}
+	
+	/**
+	 * Writes a collection of strings to a file
+	 * @param fileName
+	 * @param contents
+	 * @throws IOException
+	 */
+	public static void writeFile(String fileName, Collection<String> contents) throws IOException {
+		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName)));
+		for (String string : contents) {
+			out.write(string + "\n");
+		}
+		out.close();
+	}
 
-	public static void main(String[] args) {
-		try {
-			LinkedList<String> list = readFile("cleanup.txt");
-			for (String s : list)
-				System.out.println(s);
-		} catch (IOException e) {
-			e.printStackTrace();
+	public static void readHeaders(String fileName, Collection<String> headerList, int level) throws IOException {
+		Collection<String> file = readFile(fileName);
+		int nesting = 0;
+		for (String line : file) {
+			line = line.trim().toLowerCase();
+			if (line.endsWith("{")) {
+				if (nesting == level)
+					headerList.add(line.split("=")[0].trim().toLowerCase());
+				nesting++;
+			} else if (line.equals("}"))
+				nesting--;
 		}
 	}
 }

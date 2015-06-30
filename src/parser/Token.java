@@ -1,8 +1,14 @@
 package parser;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Token {
@@ -11,40 +17,60 @@ public class Token {
 	private static final Map<String, String> lookupRules = new HashMap<>();
 	private static final Map<String, String> localisation = new HashMap<>();
 	private static final Map<String, String> statements = new HashMap<>();
-	private static final Pattern country = Pattern.compile("[A-Z]{3}");
+	private static final Set<String> regions = new HashSet<>();
+	private static final Map<String, String> variations = new HashMap<>();
+	private static final Pattern country = Pattern.compile("[a-z]{3}");
 	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
 	private static final String PROVINCE = "province";
 	private static final String COUNTRY = "country";
 	private static final String TIME = "time";
+	public static final Set<String> errors = new HashSet<>();
 
 	public static void initialize(String path) {
 		try {
-			IO.readLocalisation("statements/statements.txt", statements, false);
-			IO.readLocalisation("statements/special.txt", statements, false);
+			Files.walk(Paths.get("statements/localisation")).forEach(filePath -> {
+			    if (Files.isRegularFile(filePath)) {
+			        try {
+			        	IO.readLocalisation(filePath.toString(), statements, false);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			    }
+			});
 			IO.readExceptions("statements/lookupRules.txt", lookupRules);
-			readLocalisation(path, "countries");
-			readLocalisation(path, "EU4");
-			readLocalisation(path, "text");
-			readLocalisation(path, "opinions");
-			readLocalisation(path, "powers_and_ideas");
-			readLocalisation(path, "decisions");
-			readLocalisation(path, "modifers");
-			readLocalisation(path, "muslim_dlc");
-			readLocalisation(path, "Purple_Phoenix");
-			readLocalisation(path, "core");
-			readLocalisation(path, "missions");
-			readLocalisation(path, "diplomacy");
-			readLocalisation(path, "flavor_events");
-			readLocalisation(path, "USA_dlc");
-			readLocalisation(path, "nw2");
-			readLocalisation(path, "sikh");
-			readLocalisation(path, "tags_phase4");
-			readLocalisation(path, "flavor_events");
-			readLocalisation(path, "generic_events");
-			readLocalisation(path, "aow");
-			readLocalisation(path, "prov_names");
+			Set<String> localisationFiles = new HashSet<String>(Arrays.asList(new String[] {
+					"countries", "EU4", "text", "opinions", "powers_and_ideas", "decisions",
+					"modifers", "muslim_dlc", "Purple_Phoenix", "core", "missions", "diplomacy",
+					"flavor_events", "USA_dlc", "nw2", "sikh", "tags_phase4", "flavor_events",
+					"generic_events", "aow", "prov_names", "common_sense", "eldorado" }));
+			localisationFiles.forEach(file -> {
+		        try {
+		        	readLocalisation(path, file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
 			ParsingBlock.parseModifiers(IO.readFile(path
 					+ "/common/event_modifiers/00_event_modifiers.txt"));
+			IO.readHeaders(path + "/map/region.txt", regions, 0);
+			IO.readHeaders(path + "/map/continent.txt", regions, 0);
+			IO.readHeaders(path + "/common/colonial_regions/00_colonial_regions.txt", regions, 0);
+			Map<String, String> variationFiles = new HashMap<>();
+			IO.readLocalisation("statements/variations.txt", variationFiles, false);
+			variationFiles.forEach((localisation, param) -> {
+				try {
+					String[] params = param.split(", ");
+					Collection<String> vars = new HashSet<>();
+					IO.readHeaders(path + params[0], vars, Integer.parseInt(params[1]));
+					for (String string : vars) {
+						variations.put(string, localisation);
+						variations.put(string + "_false", localisation);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +86,6 @@ public class Token {
 
 	public Token(String type, String value, boolean negative) {
 		super();
-		type = type.toLowerCase();
 		if (value != null && value.equalsIgnoreCase("no"))
 			negative = !negative;
 		if (negative)
@@ -85,15 +110,25 @@ public class Token {
 	}
 
 	private static String lookup(String key, String value) {
-		if ("country".equals(lookupRules.get(key.replace("_false", "")))) {
+		if (variations.containsKey(key)) {
+			String output = statements.get(variations.get(key));
+			return String.format(output, key, value);
+		}
+		
+		// Some tokens are localized differently if referring to a country
+		if (COUNTRY.equals(lookupRules.get(key.replace("_false", "")))) {
 			if (isCountry(value))
 				key += "_country";
 		}
 		value = getValue(key, value);
 
 		String output = statements.get(key);
-		if (output == null)
+		if (output == null) {
+			output = getScopeLocalisation(key);
+			if (!output.equals(key))
+				return output;
 			return key + ": " + value;
+		}
 		if (value != null)
 			try {
 				float f = Float.parseFloat(value);
@@ -166,24 +201,57 @@ public class Token {
 			return loc;
 		return key;
 	}
+	
+	private static String getScopeLocalisation(String key) {
+		String key2 = key.replace("_false", "");
+		String loc = null;
+		while (true) {
+			if (regions.contains(key2))
+				loc = localisation.get(key2);
+			if (loc != null)
+				break;
+			loc = getProvince(key2);
+			if (loc != null)
+				break;
+			if (isCountry(key2)) {
+				loc = getCountry(key2);
+				if (loc != null)
+					break;
+			}
+			break;
+		}
+		if (loc == null) {
+			errors.add(key);
+			return key;
+		}
+		if (key.endsWith("_false"))
+			loc += " - not all of the following";
+		loc += ":";
+		return loc;
+	}
 
 	private static String getProvince(String id) {
-		return getLocalisation("PROV" + id);
+		return localisation.get("prov" + id);
 	}
 
 	private static String getCountry(String id) {
 		switch (id) {
 		case "":
-
 			return null;
-
+		case "ROOT":
+			return "our country";
+		case "THIS":
+			return "this country";
+		case "FROM":
+			return "FROM";
 		default:
-			return getLocalisation(id);
+			return localisation.get(id);
 		}
 	}
 
 	public static String getStatement(String type) {
-		return statements.get(type);
+		String statement = statements.get(type);
+		return statement == null ? type : statement;
 	}
 
 	public String getLocalisedValue() {

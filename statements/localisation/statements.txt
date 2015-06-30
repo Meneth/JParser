@@ -1,0 +1,27 @@
+potential: Potential:
+allow: Allow:
+effect: Effect:
+success: Success:
+abort: Abort:
+chance: Acquisition chance:
+trigger: Trigger:
+title: %s
+mean_time_to_happen: Mean time to happen:
+immediate: Immediate effects:
+limit: Limited to:
+or: Any of the following:
+or_false: None of the following:
+and: All of the following:
+and_false: Not all of the following:
+tooltip: Tooltip:
+custom_tooltip:
+hidden_effect: Hidden effect:
+if: If:
+type:
+modifier:
+years: Base mean time to happen of %s years
+months: Base mean time to happen of %s months
+days: Base mean time to happen of %s days
+ai_chance: Base AI chance of %s
+name: Option "%s":
+option: Option "%s":

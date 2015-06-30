@@ -216,3 +216,4 @@ pip-log.txt
 
 # Test files and output
 /*.txt
+/output/*

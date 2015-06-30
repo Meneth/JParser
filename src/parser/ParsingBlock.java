@@ -1,6 +1,8 @@
 package parser;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -178,9 +180,11 @@ public class ParsingBlock {
 		}
 		output(String.format(Token.getStatement(type), v1, v2), output, nesting);
 		if (modifier != null) {
-			for (String effect : modifiers.get(modifier)) {
-				output(effect, output, nesting + 1);
-			}
+			Iterable<String> effects = modifiers.get(modifier);
+			if (effects != null)
+				for (String effect : effects) {
+					output(effect, output, nesting + 1);
+				}
 		}
 	}
 
@@ -196,16 +200,12 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> INVERSIONOVERRIDES = new HashSet<String>(
-			Arrays.asList(new String[] { "option", "modifier", "ai_chance", "any_", "all_" }));
+			Arrays.asList(new String[] { "option", "modifier", "ai_chance" }));
 	private static final Set<String> INVERSIONOVERRIDEPREFIXES = new HashSet<String>(
 			Arrays.asList(new String[] { "any_", "all_" }));
 
 	private static boolean overridesInversion(String type) {
-		boolean start = false;
-		for (String s : INVERSIONOVERRIDEPREFIXES)
-			if (type.startsWith(s))
-				start = true;
-		return start || INVERSIONOVERRIDES.contains(type);
+		return Token.getStatement(type).endsWith(":");
 	}
 
 	private static final String HEADER = "\n== %s ==";
@@ -236,15 +236,23 @@ public class ParsingBlock {
 
 	public static void main(String[] args) {
 		try {
-			Token.initialize("E:/Steam/SteamApps/common/Europa Universalis IV");
+			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
+			Token.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
-			LinkedList<String> list = IO
-					.readFile("E:/Steam/SteamApps/common/Europa Universalis IV/events/CanalEvents.txt");
-			Collection<String> output = new ParsingBlock(null, null, list, 0,
-					new LinkedList<String>(), false).getOutput();
-			for (String string : output) {
-				System.out.println(string);
-			}
+			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
+			    if (Files.isRegularFile(filePath)) {
+			        System.out.println(filePath);
+			        try {
+			        	LinkedList<String> list = IO.readFile(filePath.toString());
+			        	Collection<String> output = new ParsingBlock(null, null, list, 0,
+									new LinkedList<String>(), false).getOutput();
+			        	IO.writeFile("output/" + filePath.getFileName(), output);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			    }
+			});
+			IO.writeFile("output/errors.txt", Token.errors);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
