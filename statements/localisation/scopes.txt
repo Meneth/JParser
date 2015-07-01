@@ -20,6 +20,8 @@ most_province_trade_power: Country with most provincial trade power in node:
 most_province_trade_power_false: Country with most provincial trade power in node - not all of the following:
 colonial_parent: Colonial parent:
 colonial_parent_false: Colonial parent - not all of the following:
+sea_zone: The sea zone associated with the province:
+sea_zone_false: The sea zone associated with the province - not all of the following:
 
 random_province: Random province in the world:
 every_province: Every province in the world:

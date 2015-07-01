@@ -186,6 +186,7 @@ add_base_manpower: Changes the province's base manpower by %s
 add_base_production: Changes the province's base production authority by %s
 add_base_tax: Changes the province's base tax by %s
 add_cardinal: Adds a cardinal to the province
+remove_cardinal: Removes the cardinal from the province
 add_church_power: Changes church power by %s
 add_devotion: Changes devotion by %s
 add_heir_support: Changes Sejm heir support by %s
@@ -200,3 +201,16 @@ elector_false: Ceases to be an elector
 back_current_issue: Back the current parliamentary issue
 back_current_issue_false: Cease backing the current parliamentary issue
 end_disaster: End the %s disaster
+add_church_aspect: Adds the %s church aspect
+remove_church_aspect: Removes the %s church aspect
+add_historical_friend: Adds %s as a historical friend
+remove_historical_friend: Removes %s as a historical friend
+set_government_rank: Sets the country's government rank to %s
+set_hre_heretic_religion: Sets %s to the HRE's heretic religion
+set_hre_religion: Sets %s to the HRE's primary religion
+set_hre_religion_locked: Locks the HRE's religion
+set_hre_religion_treaty: Enables religious peace in the HRE
+set_hre_religion_treaty_false: Disables religious peace in the HRE
+set_seat_in_parliament: Gives the province a seat in parliament
+set_seat_in_parliament_false: Removes the province's seat in parliament
+change_statists_vs_orangists: Changes the Statists vs. Orangists balance by %s%%

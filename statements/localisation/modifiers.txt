@@ -150,4 +150,5 @@ accepted_culture_threshold: %s%% accepted culture threshold
 culture_conversion_cost: %s%% culture conversion cost
 global_unrest: %s global unrest
 global_autonomy: %s monthly autonomy change
-local_development_cost: %s%% development cost
+local_development_cost: %s%% local development cost
+development_cost: %s%% development cost

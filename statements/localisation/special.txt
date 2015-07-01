@@ -7,7 +7,10 @@ has_opinion_modifier: Has the opinion modifier %s with %s
 has_opinion_modifier_false: Doesn't have the opinion modifier %s with %s
 reverse_has_opinion: Has an opinion of at least %s of %s
 reverse_has_opinion_false: Has an opinion lower than %s of %s
+reverse_has_opinion_modifier: Has the opinion modifier %s with %s
+reverse_has_opinion_modifier_false: Doesn't have the opinion modifier %s with %s
 add_opinion: Adds the opinion modifier "%s" towards %s
+remove_opinion: Removes the opinion modifier "%s" towards %s
 reverse_add_opinion: Adds the opinion modifier "%s" from %s
 num_of_religion: At least %s provinces follow the %s religion
 num_of_religion_false: Less than %s provinces follow the %s religion
@@ -34,10 +37,11 @@ set_variable: Sets the variable "%2$s" to %1$s
 change_variable: Changes the variable "%2$s" by %1$s
 check_variable: The variable %2$s is equal or higher than %1$s
 check_variable_false: The variable %2$s is lower than %1$s
-trade_share: %s has a share of at least %s percent in the trade node
-trade_share_false: %s has a share lower than %s percent in the trade node
-attitude: Set attitude towards %2$s to %1$s
-
+trade_share: %2$s has a share of at least %1$s percent in the trade node
+trade_share_false: %2$s has a share lower than %1$s percent in the trade node
+set_ai_attitude: Set attitude towards %2$s to %1$s
+privateer_power: Privateers have a share of at least %s percent in the trade node
+privateer_power_false: Privateers have a share lower than %s percent in the trade node
 
 # Variations
 num_of_building: Has at least %2$s of the %1$s building

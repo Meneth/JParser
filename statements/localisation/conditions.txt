@@ -661,3 +661,17 @@ is_religion_reformed: Has reformed its religion
 is_religion_reformed_false: Has not reformed its religion
 is_threat: Is a threat to %s
 is_threat_false: Is not a threat to %s
+ruler_age: Ruler is at least %s years old
+ruler_age_false: Ruler is less than %s years old
+ruler_is_foreigner: Ruler is from a foreign country
+ruler_is_foreigner_false: Ruler is not from a foreign country
+num_of_rebel_armies: Has at least %s rebel armies within their borders
+num_of_rebel_armies_false: Has fewer than %s rebel armies within their borders
+num_of_rebel_controlled_provinces: Has at least %s provinces controlled by rebels
+num_of_rebel_controlled_provinces: Has fewer than %s provinces controlled by rebels
+offensive_war_with: Is in an offensive war with %s
+offensive_war_with_false: Is not an offensive war with %s
+sieged_by: Under siege by %s
+sieged_by_false: Not under siege by %s
+statists_vs_orangists: Statists vs. Organgists balance is at least %s%%
+statists_vs_orangists_false: Statists vs. Organgists balance is less than %s%%
