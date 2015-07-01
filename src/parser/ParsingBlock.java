@@ -142,7 +142,7 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(new String[] {
-			"factor", "name" }));
+			"factor", "name", "amount" }));
 
 	/**
 	 * Determines whether a token type should be used to name a section
@@ -156,7 +156,7 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(new String[] {
-			"option", "modifier", "ai_chance" }));
+			"option", "modifier", "ai_chance", "calc_true_if" }));
 
 	/**
 	 * Determines whether a section needs to fetch a name further down in the
