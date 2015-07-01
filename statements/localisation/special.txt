@@ -34,6 +34,9 @@ set_variable: Sets the variable "%2$s" to %1$s
 change_variable: Changes the variable "%2$s" by %1$s
 check_variable: The variable %2$s is equal or higher than %1$s
 check_variable_false: The variable %2$s is lower than %1$s
+trade_share: %s has a share of at least %s percent in the trade node
+trade_share_false: %s has a share lower than %s percent in the trade node
+attitude: Set attitude towards %2$s to %1$s
 
 
 # Variations
@@ -45,3 +48,5 @@ num_of_trade_good: More than %2$s provinces producing %1$s
 num_of_trade_good_false: Fewer than %2$s provinces producing %1$s
 num_of_religion: At least %2$s provinces following the %1$s religion
 num_of_religion_false: Fewer than %2$s provinces following the %1$s religion
+num_of_ideas; Has at least %2$s of the %1$s ideas
+num_of_ideas_false; Has fewer than %2$s of the %1$s ideas

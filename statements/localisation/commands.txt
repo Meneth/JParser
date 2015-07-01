@@ -46,6 +46,7 @@ add_army_tradition: Changes army tradition by %s
 add_navy_tradition: Changes navy tradition by %s
 cavalry: Spawns a cavalry unit in %s
 infantry: Spawns an infantry unit in %s
+artillery: Spawns an artillery unit in %s
 heavy_ship: Spawns a heavy ship in %s
 light_ship: Spawns a light ship in %s
 galley: Spawns a galley in %s
@@ -194,3 +195,8 @@ add_reform_center: Adds a reform center of the %s religion
 add_scaled_republican_tradition: Changes republican tradition by %s%%
 add_tariff_value: Changes tariffs by %s%%
 add_westernisation: Changes westernization progress by %s months
+elector: Becomes an elector
+elector_false: Ceases to be an elector
+back_current_issue: Back the current parliamentary issue
+back_current_issue_false: Cease backing the current parliamentary issue
+end_disaster: End the %s disaster

@@ -81,11 +81,17 @@ any_trade_node_member_province: Any province owned by a trade node member:
 any_trade_node_member_province_false: No province owned by a trade node member:
 all_trade_node_member_province: All provinces owned by a trade node member:
 
-random_active_trade_node: Random active trade node:
-every_active_trade_node: Every active trade node:
-any_active_trade_node: Any active trade node:
-any_active_trade_node_false: No active trade node:
-all_active_trade_node: All active trade nodes:
+random_trade_node: Random trade node:
+every_trade_node: Every trade node:
+any_trade_node: Any trade node:
+any_trade_node_false: No trade node:
+all_trade_node: All trade node:
+
+random_active_trade_node: Random trade node with an active merchant:
+every_active_trade_node: Every trade node with an active merchant:
+any_active_trade_node: Any trade node with an active merchant:
+any_active_trade_node_false: No trade node with an active merchant:
+all_active_trade_node: All trade node with an active merchant:
 
 random_trade_node_member_country: Random member of the trade node:
 every_trade_node_member_country: Every member of the trade node:
@@ -97,7 +103,7 @@ random_neighbor_country: Random neighbor country:
 every_neighbor_country: Every neighbor country:
 any_neighbor_country: Any neighbor country:
 any_neighbor_country_false: No neighbor country:
-all_neighbor_country_false: All neighbor countries:
+all_neighbor_country: All neighbor countries:
 
 random_rival_country: Random rival country:
 every_rival_country: Every rival country:
@@ -133,4 +139,10 @@ random_subject_country: Random subject country:
 every_subject_country: Every subject country:
 any_subject_country: Any subject country:
 any_subject_country_false: No subject country:
-all_subject_country: No subject country:
+all_subject_country: All subject countries:
+
+random_privateering_country: Random country privateering in the node:
+every_privateering_country: Every country privateering in the node:
+any_privateering_country: Any country privateering in the node:
+any_subject_country_false: No country privateering in the node:
+all_privateering_country: All countries privateering in the node:

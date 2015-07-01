@@ -318,8 +318,18 @@ num_of_royal_marriages: Has at least %s royal marriages
 num_of_royal_marriages_false: Has less than %s royal marriages
 is_part_of_hre: Is part of the Holy Roman Empire
 is_part_of_hre_false: Is not part of the Holy Roman Empire
-num_of_infantry: Has at least as much infantry as %s
-num_of_infantry_false: Has less infantry than %s
+num_of_infantry_country: Has at least as much infantry as %s
+num_of_infantry_false_country: Has less infantry than %s
+num_of_infantry: Has at least %s units of infantry
+num_of_infantry_false: Has fewer than %s units of infantry
+num_of_cavalry_country: Has at least as much cavalry as %s
+num_of_cavalry_false_country: Has less cavalry than %s
+num_of_cavalry: Has at least %s units of cavalry
+num_of_cavalry_false: Has fewer than %s units of cavalry
+num_of_artillery_country: Has at least as much artillery as %s
+num_of_artillery_false_country: Has less artillery than %s
+num_of_artillery: Has at least %s units of artillery
+num_of_artillery_false: Has fewer than %s units of artillery
 num_of_mercenaries: Has at least %s mercenaries
 num_of_mercenaries_false: Has less than %s mercenaries
 is_neighbor_of: Is a neighbor of %s
@@ -346,6 +356,10 @@ has_port: Is coastal
 has_port_false: Is not coastal
 base_tax: Has a base tax of at least %s
 base_tax_false: Has a base tax lower than %s
+base_manpower: Has a base manpower of at least %s
+base_manpower_false: Has a base manpower lower than %s
+base_production: Has a base production of at least %s
+base_production_false: Has a base production lower than %s
 revolt_percentage: At least %s%% of provinces are in revolt
 revolt_percentage_false: Less than %s%% of provinces are in revolt
 has_siege: The province is under siege
@@ -589,3 +603,61 @@ hre_religion_treaty_false: The HRE doesn't have religious peace
 in_league: In the %s league
 in_league_false: Not in the %s league
 is_colonial_nation_of: Is a colonial nation of %s
+had_recent_war: Most recent war was less than %s years ago
+had_recent_war_false: Most recent war was more than %s years ago
+has_embargo_rivals: Is embargoing its overlords' rivals
+has_embargo_rivals_false: Is not embargoing its overlords' rivals
+has_subsidize_armies: Is having its armies subsidized by its overlord
+has_subsidize_armies_false: Is not having its armies subsidized by its overlord
+has_foreign_heir: Has a heir from a foreign country
+has_foreign_heir_false: Doesn't have a heir from a foreign country
+num_of_aspects: Has at least %s Protestant aspects
+num_of_aspects_false: Has fewer than %s Protestant aspects
+has_winter: Is suffering from %s
+has_winter_false: Is not suffering from %s
+is_protectorate: Is a protectorate
+is_protectorate_false: Is not a protectorate
+is_vassal: Is a vassal
+is_vassal_false: Is not a vassal
+is_march: Is a march
+is_march_false: Is not a march
+is_wasteland: Is an empty, uncolonizable province
+is_wasteland_false: Is not an empty, uncolonizable province
+devotion: Has a devotion of at least %s
+devotion_false: Has a devotion lower than %s
+fort_level: Fort level is at least %s
+fort_level_false: Fort level is lower than %s
+local_autonomy: Local autonomy is at least %s percent
+local_autonomy_false: Local autonomy is lower than %s percent
+is_blockaded: Is being blockaded
+is_blockaded_false: Is not being blockaded
+is_great_power: Is a great power
+is_great_power_false: Is not a great power
+is_colonial_nation_of: Is a colonial nation of %s
+is_colonial_nation_of_false: Is a colonial nation of %s
+is_in_league_war: Is fighting in a league war
+is_in_league_war_false: Is not fighting in a league war
+is_league_enemy: Is in the opposing religious league as compared to %s
+is_league_enemy_false: Is not in the opposing religious league as compared to %s
+is_league_friend: Is in the same religious league as %s
+is_league_friend_false: Is not in the same religious league as %s
+is_league_leader: Leads a religious league
+is_league_leader_false: Doesn't lead a religious league
+is_looted: Has not yet recovered from recent looting
+is_looted_false: Has not been looted recently
+is_orangists_in_power: The Orangists are in power
+is_orangists_in_power_false: The Orangists are not in power
+is_statists_in_power: The Statists are in power
+is_statists_in_power_false: The Statists are not in power
+is_owned_by_trade_company: Is owned by a trade company
+is_owned_by_trade_company_false: Is not owned by a trade company
+is_papal_controller: Is the Papal controller
+is_papal_controller_false: Is not the Papal controller
+is_previous_papal_controller: Was the previous Papal controller
+is_previous_papal_controller_false: Was not the previous Papal controller
+is_reformation_center: Is a reformation center
+is_reformation_center_false: Is not a reformation center
+is_religion_reformed: Has reformed its religion
+is_religion_reformed_false: Has not reformed its religion
+is_threat: Is a threat to %s
+is_threat_false: Is not a threat to %s
