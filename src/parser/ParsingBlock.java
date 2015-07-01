@@ -14,6 +14,7 @@ import java.util.Set;
 
 public class ParsingBlock {
 	private static final Map<String, String> exceptions = new HashMap<>();
+	private static final Map<String, String> exceptionValues = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
 	private final String type;
 	private final ParsingBlock parent;
@@ -182,7 +183,7 @@ public class ParsingBlock {
 			if (s.equals("}"))
 				break;
 			Token token = Token.tokenize(s, false);
-			String pos = exceptions.get(token.type);
+			String pos = exceptionValues.get(token.type);
 			if (pos == null) {
 				System.out.println(token.type + " is not in the exceptions list!");
 			} else if (pos.equals("value1"))
@@ -302,6 +303,7 @@ public class ParsingBlock {
 			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
 			Localisation.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
+			IO.readExceptions("statements/exceptionValues.txt", exceptionValues);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					System.out.println(filePath);
