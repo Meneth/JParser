@@ -2,11 +2,15 @@ package parser;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 import java.util.LinkedList;
@@ -151,7 +155,17 @@ public class IO {
 
 	public static void readHeaders(String fileName, Collection<String> headerList, int level)
 			throws IOException {
-		Collection<String> file = readFile(fileName);
+		File f = new File(fileName);
+		Collection<String> file;
+		if (f.isFile())
+			file = readFile(fileName);
+		else {
+			file = new LinkedList<>();
+			for (Object fi : Files.walk(Paths.get(fileName)).toArray()) {
+				if (((Path) fi).toFile().isFile())
+					file.addAll(readFile(fi.toString()));
+			}
+		}
 		int nesting = 0;
 		for (String line : file) {
 			line = line.trim().toLowerCase();
