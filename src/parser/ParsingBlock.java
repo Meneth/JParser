@@ -16,6 +16,8 @@ public class ParsingBlock {
 	private static final Map<String, String> exceptions = new HashMap<>();
 	private static final Map<String, String> exceptionValues = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
+	private static final String TRUE = "yes";
+	private static final String FALSE = "no";
 	private final String type;
 	private final ParsingBlock parent;
 	private int nesting;
@@ -183,13 +185,18 @@ public class ParsingBlock {
 			if (s.equals("}"))
 				break;
 			Token token = Token.tokenize(s, false);
-			String pos = exceptionValues.get(token.type);
+			String pos = exceptionValues.get(token.type.replace("_false", ""));
 			if (pos == null) {
 				System.out.println(token.type + " is not in the exceptions list!");
-			} else if (pos.equals("value1"))
-				v1 = token.getLocalisedValue();
-			else
-				v2 = token.getLocalisedValue();
+			} else {
+				if (token.value.equals(FALSE))
+					type = Token.tokenize(this.type, !inversion).type;
+				if (pos.equals("value1"))
+					v1 = token.getLocalisedValue();
+				else
+					v2 = token.getLocalisedValue();
+			}
+			
 			if (token.type.equals("name")) {
 				modifier = token.value.replace("\"", "");
 			}
