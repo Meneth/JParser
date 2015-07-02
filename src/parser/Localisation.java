@@ -21,7 +21,9 @@ public class Localisation {
 	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
 	private static final String PROVINCE = "province";
 	private static final String COUNTRY = "country";
-	private static final String TIME = "time";
+	private static final String DAYS = "days";
+	private static final String MONTHS = "months";
+	private static final String YEARS = "years";
 	public static final Set<String> errors = new HashSet<>();
 
 	/**
@@ -46,7 +48,7 @@ public class Localisation {
 					"countries", "EU4", "text", "opinions", "powers_and_ideas", "decisions",
 					"modifers", "muslim_dlc", "Purple_Phoenix", "core", "missions", "diplomacy",
 					"flavor_events", "USA_dlc", "nw2", "sikh", "tags_phase4", "flavor_events",
-					"generic_events", "aow", "prov_names", "common_sense", "eldorado" }));
+					"generic_events", "aow", "prov_names", "common_sense", "eldorado", "mercantilism" }));
 			localisationFiles.forEach(file -> {
 				try {
 					readLocalisation(path, file);
@@ -70,7 +72,7 @@ public class Localisation {
 					IO.readHeaders(path + params[0], vars, Integer.parseInt(params[1]));
 					for (String string : vars) {
 						variations.put(string, localisation);
-						variations.put(string + "_false", localisation);
+						variations.put(string + "_false", localisation + "_false");
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -150,6 +152,7 @@ public class Localisation {
 			targetType = COUNTRY;
 		if (value != null) {
 			if (targetType != null) {
+				int val;
 				switch (targetType) {
 				case PROVINCE:
 					return getProvince(value);
@@ -158,14 +161,22 @@ public class Localisation {
 						return getCountry(value);
 					}
 					break;
-				case TIME:
-					int val = Integer.parseInt(value);
+				case DAYS:
+					val = Integer.parseInt(value);
 					if (val == -1)
 						value = "the rest of the campaign";
 					else if (val < 365)
 						value = (int) ((float) val / 365 * 12) + " months";
 					else
 						value = val / 365 + " years";
+					return value;
+				case MONTHS:
+				case YEARS:
+					val = Integer.parseInt(value);
+					if (val == -1)
+						value = "the rest of the campaign";
+					else
+						value = val + " " + targetType;
 					return value;
 				}
 			}
@@ -200,14 +211,15 @@ public class Localisation {
 	 * @return The localisation found. The key provided is returned if no localisation is found
 	 */
 	private static String getLocalisation(String key) {
-		key = key.replace("\"", "");
-		String loc = localisation.get(key);
+		String key2 = key.replace("\"", "");
+		key2 = key.replace("_false", "");
+		String loc = localisation.get(key2);
 		if (loc != null)
 			return loc;
-		loc = localisation.get("building_" + key);
+		loc = localisation.get("building_" + key2);
 		if (loc != null)
 			return loc;
-		loc = localisation.get(key + "_title");
+		loc = localisation.get(key2 + "_title");
 		if (loc != null)
 			return loc;
 		return key;
