@@ -22,6 +22,10 @@ colonial_parent: Colonial parent:
 colonial_parent_false: Colonial parent - not all of the following:
 sea_zone: The sea zone associated with the province:
 sea_zone_false: The sea zone associated with the province - not all of the following:
+employed_advisor: Any employed advisor:
+employed_advisor_false: No employed advisor:
+overlord: Overlord:
+overlord_false: Overlord - not all of the following:
 
 random_province: Random province in the world:
 every_province: Every province in the world:

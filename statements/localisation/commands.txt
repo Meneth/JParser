@@ -214,3 +214,10 @@ set_hre_religion_treaty_false: Disables religious peace in the HRE
 set_seat_in_parliament: Gives the province a seat in parliament
 set_seat_in_parliament_false: Removes the province's seat in parliament
 change_statists_vs_orangists: Changes the Statists vs. Orangists balance by %s%%
+change_personal_deity: Change personal deity to %s
+collapse_nation: Force the nation into collapse
+collapse_nation_false: Force the nation out of collapse
+create_alliance: Create an alliance with %s
+create_march: %s becomes a march
+release_all_subjects: Release all subjects from bondage
+release_vassal: Release %s as a vassal

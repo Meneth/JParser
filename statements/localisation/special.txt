@@ -42,6 +42,8 @@ trade_share_false: %2$s has a share lower than %1$s percent in the trade node
 set_ai_attitude: Set attitude towards %2$s to %1$s
 privateer_power: Privateers have a share of at least %s percent in the trade node
 privateer_power_false: Privateers have a share lower than %s percent in the trade node
+war_score_against: Has a war score of at least %s against %s
+war_score_against_false: Has a war score lower than %s against %s
 
 # Variations
 num_of_building: Has at least %2$s of the %1$s building
@@ -50,7 +52,7 @@ has_advisor_with_skill: Has a %s with a skill of at least %s
 has_advisor_with_skill_false: Does not have a %s with a skill of at least %s
 num_of_trade_good: More than %2$s provinces producing %1$s
 num_of_trade_good_false: Fewer than %2$s provinces producing %1$s
-num_of_religion: At least %2$s provinces following the %1$s religion
-num_of_religion_false: Fewer than %2$s provinces following the %1$s religion
+num_of_religion: %2$s or more %1$s provinces compared to the religion 
+num_of_religion_false: Less than %2$s %1$s provinces compared to state religion
 num_of_ideas; Has at least %2$s of the %1$s ideas
 num_of_ideas_false; Has fewer than %2$s of the %1$s ideas

@@ -25,5 +25,4 @@ days: Base mean time to happen of %s days
 ai_chance: Base AI chance of %s
 name: Option "%s":
 option: Option "%s":
-calc_true_if: The following returns at least %s entities:
-calc_true_if_false: The following returns fewer than %s entities:
+custom_tooltip: "%s"

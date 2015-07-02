@@ -26,6 +26,7 @@ global_colonial_growth: %s global settler increase
 light_ship_cost: %s%% light ship cost
 heavy_ship_cost: %s%% heavy ship cost
 galley_cost: %s%% galley cost
+transport_cost: %s%% transport cost
 global_ship_cost: %s%% ship cost
 naval_maintenance_modifier: %s%% naval maintenance
 merc_maintenance_modifier: %s%% mercenary maintenance
@@ -152,3 +153,17 @@ global_unrest: %s global unrest
 global_autonomy: %s monthly autonomy change
 local_development_cost: %s%% local development cost
 development_cost: %s%% development cost
+church_power_modifier: %s%% church power gain rate
+fort_maintenance_modifier: %s%% fort maintenance
+global_trade_goods_size_modifier: %s%% trade goods production
+trade_goods_size_modifier: %s%% trade goods production
+global_tax_income: %s tax income
+tax_income: %s tax income
+local_hostile_attrition: %s local hostile attrition
+local_movement_speed: %s%% local movement speed
+local_movement_speed: %s max attrition
+monthly_fervor_increase: %s monthly fervor increase
+mr_aristocrats_influence: %s%% The Aristocrats influence
+mr_guilds_influence: %s%% The Guilds influence
+mr_traders_influence: %s%% The Traders influence
+province_trade_power_modifier: %s%% provincial trade power

@@ -295,4 +295,6 @@ public class Localisation {
 		String statement = statements.get(type);
 		return statement == null ? type : statement;
 	}
+	
+	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good solution.
 }

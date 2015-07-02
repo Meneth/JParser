@@ -60,38 +60,6 @@ mil_power_false: Has less than %s military power
 dip_power_false: Has less than %s diplomatic power
 has_leader: Has the military leader %s
 has_leader_false: Does not have the military leader %s
-aristocracy_ideas: Has at least %s Aristocratic ideas
-plutocracy_ideas: Has at least %s Plutocratic ideas
-innovativeness_ideas: Has at least %s Innovative ideas
-religious_ideas: Has at least %s Religious ideas
-spy_ideas: Has at least %s Espionage ideas
-diplomatic_ideas: Has at least %s Diplomatic ideas
-offensive_ideas: Has at least %s Offensive ideas
-defensive_ideas: Has at least %s Defensive ideas
-trade_ideas: Has at least %s Trade ideas
-economic_ideas: Has at least %s Economic ideas
-exploration_ideas: Has at least %s Exploration ideas
-naval_ideas: Has at least %s Naval ideas
-quality_ideas: Has at least %s Quality ideas
-quantity_ideas: Has at least %s Quantity ideas
-expansion_ideas: Has at least %s Expansion ideas
-administrative_ideas: Has at least %s Administrative ideas
-aristocracy_ideas_false: Has less than %s Aristocratic ideas
-plutocracy_ideas_false: Has less than %s Plutocratic ideas
-innovativeness_ideas_false: Has less than %s Innovative ideas
-religious_ideas_false: Has less than %s Religious ideas
-spy_ideas_false: Has less than %s Espionage ideas
-diplomatic_ideas_false: Has less than %s Diplomatic ideas
-offensive_ideas_false: Has less than %s Offensive ideas
-defensive_ideas_false: Has less than %s Defensive ideas
-trade_ideas_false: Has less than %s Trade ideas
-economic_ideas_false: Has less than %s Economic ideas
-exploration_ideas_false: Has less than %s Exploration ideas
-naval_ideas_false: Has less than %s Naval ideas
-quality_ideas_false: Has less than %s Quality ideas
-quantity_ideas_false: Has less than %s Quantity ideas
-expansion_ideas_false: Has less than %s Expansion ideas
-administrative_ideas_false: Has less than %s Administrative ideas
 has_idea_group: Has the idea group %s
 has_idea_group_false: Does not have the idea group %s
 government: Has the %s government type
@@ -120,46 +88,6 @@ has_building: Has the %s building
 has_building_false: Does not have the %s building
 has_construction: Is constructing %s
 has_construction_false: Is not constructing %s
-grain:Has at least %s provinces producing grain
-wine:Has at least %s provinces producing wine
-wool:Has at least %s provinces producing wool
-cloth:Has at least %s provinces producing cloth
-fish:Has at least %s provinces producing fish
-fur:Has at least %s provinces producing fur
-salt:Has at least %s provinces producing salt
-naval_supplies:Has at least %s provinces producing naval supplies
-copper:Has at least %s provinces producing copper
-gold:Has at least %s provinces producing gold
-iron:Has at least %s provinces producing iron
-slaves:Has at least %s provinces producing slaves
-ivory:Has at least %s provinces producing ivory
-tea:Has at least %s provinces producing tea
-chinaware:Has at least %s provinces producing Chinaware 
-spices:Has at least %s provinces producing spices
-coffee:Has at least %s provinces producing coffee
-cotton:Has at least %s provinces producing cotton
-sugar:Has at least %s provinces producing sugar
-tobacco:Has at least %s provinces producing tobacco
-grain_false:Has less than %s provinces producing grain
-wine_false:Has less than %s provinces producing wine
-wool_false:Has less than %s provinces producing wool
-cloth_false:Has less than %s provinces producing cloth
-fish_false:Has less than %s provinces producing fish
-fur_false:Has less than %s provinces producing fur
-salt_false:Has less than %s provinces producing salt
-naval_supplies_false:Has less than %s provinces producing naval supplies
-copper_false:Has less than %s provinces producing copper
-gold_false:Has less than %s provinces producing gold
-iron_false:Has less than %s provinces producing iron
-slaves_false:Has less than %s provinces producing slaves
-ivory_false:Has less than %s provinces producing ivory
-tea_false:Has less than %s provinces producing tea
-chinaware_false:Has less than %s provinces producing Chinaware 
-spices_false:Has less than %s provinces producing spices
-coffee_false:Has less than %s provinces producing coffee
-cotton_false:Has less than %s provinces producing cotton
-sugar_false:Has less than %s provinces producing sugar
-tobacco_false:Has less than %s provinces producing tobacco
 culture_group: Culture group is %s
 culture_group_false: Culture group is not %s
 culture_group_country: Culture group is the same as %s
@@ -438,30 +366,6 @@ unit_in_siege: Is besieged
 unit_in_siege_false: Is not besieged
 knows_country: Has discovered %s
 knows_false_country: Has not discovered %s
-catholic: %s or more Catholic provinces compared to state religion
-protestant: %s or more Protestant provinces compared to state religion
-reformed: %s or more Reformed provinces compared to state religion
-orthodox: %s or more Orthodox provinces compared to state religion
-sunni: %s or more Sunni provinces compared to state religion
-shiite: %s or more Shiite provinces compared to state religion
-buddhism: %s or more Buddhist provinces compared to state religion
-hinduism: %s or more Hindu provinces compared to state religion
-confucianism: %s or more Confucian provinces compared to state religion
-shinto: %s or more Shinto provinces compared to state religion
-animism: %s or more Animist provinces compared to state religion
-shamanism: %s or more Shamanist provinces compared to state religion
-catholic_false: Less than %s Catholic provinces compared to state religion
-protestant_false: Less than %s Protestant provinces compared to state religion
-reformed_false: Less than %s Reformed provinces compared to state religion
-orthodox_false: Less than %s Orthodox provinces compared to state religion
-sunni_false: Less than %s Sunni provinces compared to state religion
-shiite_false: Less than %s Shiite provinces compared to state religion
-buddhism_false: Less than %s Buddhist provinces compared to state religion
-hinduism_false: Less than %s Hindu provinces compared to state religion
-confucianism_false: Less than %s Confucian provinces compared to state religion
-shinto_false: Less than %s Shinto provinces compared to state religion
-animism_false: Less than %s Animist provinces compared to state religion
-shamanism_false: Less than %s Shamanist provinces compared to state religion
 months_since_defection: Province last switched owner at least %s months ago
 months_since_defection_false: Province last switched owner less than %s months ago
 hre_size: The Holy Roman Empire has at least %s members
@@ -481,7 +385,7 @@ army_size_false: Army is smaller than as %s's
 navy_size: Navy is at least as large as %s's
 navy_size_false: Navy is smaller than %s's
 is_westernising: Is currently westernizing
-is_westernising: Is not currently westernizing
+is_westernising_false: Is not currently westernizing
 will_back_next_reform: Backs the next Holy Roman Empire reform
 will_back_next_reform_false: Does not back the next Holy Roman Empire reform
 set_in_empire: Adds the province to the Holy Roman Empire
@@ -603,6 +507,7 @@ hre_religion_treaty_false: The HRE doesn't have religious peace
 in_league: In the %s league
 in_league_false: Not in the %s league
 is_colonial_nation_of: Is a colonial nation of %s
+is_colonial_nation_of_false: Is not a colonial nation of %s
 had_recent_war: Most recent war was less than %s years ago
 had_recent_war_false: Most recent war was more than %s years ago
 has_embargo_rivals: Is embargoing its overlords' rivals
@@ -668,10 +573,60 @@ ruler_is_foreigner_false: Ruler is not from a foreign country
 num_of_rebel_armies: Has at least %s rebel armies within their borders
 num_of_rebel_armies_false: Has fewer than %s rebel armies within their borders
 num_of_rebel_controlled_provinces: Has at least %s provinces controlled by rebels
-num_of_rebel_controlled_provinces: Has fewer than %s provinces controlled by rebels
+num_of_rebel_controlled_provinces_false: Has fewer than %s provinces controlled by rebels
 offensive_war_with: Is in an offensive war with %s
 offensive_war_with_false: Is not an offensive war with %s
 sieged_by: Under siege by %s
 sieged_by_false: Not under siege by %s
 statists_vs_orangists: Statists vs. Organgists balance is at least %s%%
 statists_vs_orangists_false: Statists vs. Organgists balance is less than %s%%
+average_home_autonomy: Average local autonomy in home provinces is at least %s percent
+average_home_autonomy_false: Average local autonomy in home provinces is less than %s percent
+cb_on_primitives: Has a free CB against Primitives
+cb_on_primitives_false: Doesn't have a free CB against Primitives
+home_religion: Spawned in a province of the %s religion
+home_religion_false: Spawned in a province not of the %s religion
+type: Is the %s advisor type
+type_false: Is not the %s advisor type
+country_or_vassal_holds: Is (fully) held by %s or its vassals
+country_or_vassal_holds_false: Is not (fully) held by %s or its vassals
+current_debate: Current parliamentary debate is on the topic %s 
+current_debate_false: Current parliamentary debate is not on the topic %s
+calc_true_if: The following returns at least %s entities:
+calc_true_if_false: The following returns fewer than %s entities:
+gold_income_percentage: At least %s%% of their income is from gold
+gold_income_percentage_false: Less than %s%% of their income is from gold
+government_rank: At least government rank %s
+government_rank_false: Less than government rank %s
+has_any_disaster: Has a disaster ongoing
+has_any_disaster_false: Has no disasters ongoing
+has_faction: Has the %s faction
+has_faction_false: Doesn't have the %s faction
+has_influencing_fort: Is covered by a fort's zone of control
+has_influencing_fort_false: Is not covered by a fort's zone of control
+has_privateers: Is using privateers
+has_privateers_false: Is not using privateers
+nationalism: Separatism of at least %s
+nationalism_false: Separatism lower than %s
+normal_or_historical_nations: Doesn't have a random New World, or random nations, enabled
+normal_or_historical_nations_false: Has a random New World, or random nations, enabled
+num_free_building_slots: Has at least %s free building slots
+num_free_building_slots_false: Has fewer than %s free building slots
+num_of_colonists: Has at least %s colonists
+num_of_colonists_false: Has fewer than %s colonists
+num_of_missionaries: Has at least %s missionaries
+num_of_missionaries_false: Has fewer than %s missionaries
+percentage_backing_issue: At least %s%% of MPs are backing the issue being debated in parliament
+percentage_backing_issue_false: Fewer than %s%% of MPs are backing the issue being debated in parliament
+previous_owner: Previous owner was %s
+previous_owner_false: Previous owner was not %s
+tariff_value: Tariffs of at least %s%%
+tariff_value_false: Tariffs lower than %s%%
+tolerance_to_this: At least %s tolerance of the province's faith
+tolerance_to_this_false: Lower than %s tolerance of the province's faith
+total_number_of_cardinals: There are at least %s cardinals in the world
+total_number_of_cardinals_false: There are fewer than %s cardinals in the world
+trade_company_size: The trade company holds at least %s provinces
+trade_company_size_false: The trade company holds less than %s provinces
+trade_embargo_by: Is being embargoed by %s
+trade_embargo_by_false: Is not being embargoed by %s
