@@ -104,7 +104,7 @@ public class Localisation {
 	 */
 	public static String formatToken(String type, String value) {
 		if (variations.containsKey(type)) {
-			return formatStatement(variations.get(type), type, value);
+			return formatStatement(variations.get(type), getLocalisation(type), value);
 		}
 
 		// Some tokens are localized differently if referring to a country
