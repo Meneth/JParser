@@ -56,5 +56,5 @@ num_of_trade_good: More than %2$s provinces producing %1$s
 num_of_trade_good_false: Fewer than %2$s provinces producing %1$s
 num_of_religion: %2$s or more %1$s provinces compared to the religion 
 num_of_religion_false: Less than %2$s %1$s provinces compared to state religion
-num_of_ideas; Has at least %2$s of the %1$s ideas
-num_of_ideas_false; Has fewer than %2$s of the %1$s ideas
+num_of_ideas: Has at least %2$s of the %1$s ideas
+num_of_ideas_false: Has fewer than %2$s of the %1$s ideas

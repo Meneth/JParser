@@ -1,2 +1,2 @@
 value1: value, name, modifier, type, faction, flag, casus_belli, key, share, attitude
-value2: duration, who, religion, target, size, influence, days, skill, trade_goods, which, country, trade_goods
+value2: duration, days, months, years, who, religion, target, size, influence, days, skill, trade_goods, which, country, trade_goods
