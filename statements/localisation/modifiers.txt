@@ -161,9 +161,10 @@ global_tax_income: %s tax income
 tax_income: %s tax income
 local_hostile_attrition: %s local hostile attrition
 local_movement_speed: %s%% local movement speed
-local_movement_speed: %s max attrition
+max_attrition: %s max attrition
 monthly_fervor_increase: %s monthly fervor increase
 mr_aristocrats_influence: %s%% The Aristocrats influence
 mr_guilds_influence: %s%% The Guilds influence
 mr_traders_influence: %s%% The Traders influence
 province_trade_power_modifier: %s%% provincial trade power
+picture: Uses the "%s" picture

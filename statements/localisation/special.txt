@@ -44,6 +44,8 @@ privateer_power: Privateers have a share of at least %s percent in the trade nod
 privateer_power_false: Privateers have a share lower than %s percent in the trade node
 war_score_against: Has a war score of at least %s against %s
 war_score_against_false: Has a war score lower than %s against %s
+trading_bonus: Has a trading bonus in %2$s
+trading_bonus_false: Doesn't have a trading bonus in %2$s
 
 # Variations
 num_of_building: Has at least %2$s of the %1$s building

@@ -630,3 +630,5 @@ trade_company_size: The trade company holds at least %s provinces
 trade_company_size_false: The trade company holds less than %s provinces
 trade_embargo_by: Is being embargoed by %s
 trade_embargo_by_false: Is not being embargoed by %s
+has_new_dynasty: Current ruler is of a different dynasty than the previous ruler
+has_new_dynasty_false: Current ruler is of the same dynasty as the previous ruler
