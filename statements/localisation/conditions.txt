@@ -348,8 +348,8 @@ naval_forcelimit: Has a naval force limit of at least %s
 naval_forcelimit_false: Has a naval force limit lower than %s
 land_forcelimit: Has a land force limit of at least %s
 land_forcelimit_false: Has a land force limit lower than %s
-has_advisor: Has at least one advisor
-has_advisor_false: Has no advisors
+has_advisor: Has a %s advisor
+has_advisor_false: Doesn't have a %s advisor
 advisor_exists: The advisor with the id %s exists
 advisor_exists_false: The advisor with the id %s does not exist
 is_advisor_employed: Employs the advisor with the id %s

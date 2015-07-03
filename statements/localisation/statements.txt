@@ -18,11 +18,16 @@ custom_tooltip:
 hidden_effect: Hidden effect:
 if: If:
 type:
-modifier:
-years: Base mean time to happen of %s
-months: Base mean time to happen of %s
-days: Base mean time to happen of %s
-ai_chance: Base AI chance of %s
-name: Option "%s":
-option: Option "%s":
+modifier_factor:
+mtth_years: Base mean time to happen of %s
+mtth_months: Base mean time to happen of %s
+mtth_days: Base mean time to happen of %s
+ai_chance_factor: Base AI chance of %s
+modifier_factor: Multiplies value by %s:
+option_name: Option "%s":
 custom_tooltip: "%s"
+province_event_title: %s
+country_event_title: %s
+days: In %s
+months: In %s
+years: In %s

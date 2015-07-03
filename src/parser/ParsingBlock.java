@@ -82,7 +82,7 @@ public class ParsingBlock {
 			} else {
 				if (localNesting == 0 && nesting > 1) {
 					Token t = Token.tokenize(s, inversion);
-					if (isOutputType(t.type))
+					if (isOutputType(t.type, type))
 						output(t.toString(), output, nesting + 1);
 				}
 			}
@@ -125,8 +125,8 @@ public class ParsingBlock {
 	 *            The type of token
 	 * @return Whether it should be output
 	 */
-	private static boolean isOutputType(String type) {
-		return !isName(type);
+	private static boolean isOutputType(String type, String parent) {
+		return !isName(type) || !needsName(parent);
 	}
 
 	/**
@@ -136,7 +136,8 @@ public class ParsingBlock {
 		for (String s : contents) {
 			Token token = Token.tokenize(s, false);
 			if (isName(token.type)) {
-				output(token.toString(), output, nesting);
+				String out = new Token(type + "_" + token.type, token.value, false).toString();
+				output(out, output, nesting);
 				return;
 			}
 		}

@@ -169,6 +169,8 @@ public class Localisation {
 				val = Integer.parseInt(token.value);
 				if (val == -1)
 					value = "the rest of the campaign";
+				else if (val < 31)
+					value = val + " days";
 				else if (val < 365)
 					value = (int) ((float) val / 365 * 12) + " months";
 				else
@@ -358,4 +360,5 @@ public class Localisation {
 
 	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good
 	// solution.
+	// TODO - Fix "has_advisor = yes/no"
 }

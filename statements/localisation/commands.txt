@@ -63,9 +63,6 @@ change_culture: Changes culture to %s
 cede_province: Cedes province to %s
 create_union: Creates a union with %s
 inherit: Inherit %s
-factor: Multiplies value by %s:
-modifier: Multiplies value by %s:
-factor_base: Base chance of %s
 remove_claim: Removes claim on %s
 remove_claim_country: Removes %s's claim
 remove_faction: Removes the %s
