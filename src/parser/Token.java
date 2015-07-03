@@ -17,7 +17,10 @@ public class Token {
 			this.type = type + "_false";
 		else
 			this.type = type;
-		this.value = value;
+		if (value != null)
+			this.value = value.replace("\"", "");
+		else
+			this.value = null;
 		baseType = type;
 	}
 

@@ -185,7 +185,7 @@ public class ParsingBlock {
 			if (s.equals("}"))
 				break;
 			Token token = Token.tokenize(s, false);
-			String pos = exceptionValues.get(token.type.replace("_false", ""));
+			String pos = exceptionValues.get(token.baseType);
 			if (pos == null) {
 				System.out.println(token.type + " is not in the exceptions list!");
 			} else {
@@ -198,7 +198,7 @@ public class ParsingBlock {
 			}
 			
 			if (token.type.equals("name")) {
-				modifier = token.value.replace("\"", "");
+				modifier = token.value;
 			}
 		}
 		output(Localisation.formatStatement(type, v1, v2), output, nesting);
