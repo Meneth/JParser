@@ -2,6 +2,7 @@ package parser;
 
 public class Token {
 	public final String type;
+	public final String baseType;
 	public final String value;
 	
 	public Token(String type, boolean negative) {
@@ -17,6 +18,7 @@ public class Token {
 		else
 			this.type = type;
 		this.value = value;
+		baseType = type;
 	}
 
 	/**
