@@ -80,12 +80,10 @@ public class ParsingBlock {
 						inversion = true;
 				}
 			} else {
-				if (localNesting == 0) {
+				if (localNesting == 0 && nesting > 1) {
 					Token t = Token.tokenize(s, inversion);
-					if (nesting > 1 && isOutputType(t.type))
+					if (isOutputType(t.type))
 						output(t.toString(), output, nesting + 1);
-					else if (t.type.equals("title"))
-						output(t.toString(), output, nesting);
 				}
 			}
 		}
@@ -96,22 +94,25 @@ public class ParsingBlock {
 	 * inversion and scope headers
 	 */
 	private void handleBlockType() {
-		if (type != null && nesting > 1) {
-			if (needsName(type)) {
+		if (type != null) {
+			if (needsName(type) || nesting == 1) {
 				handleName();
-			} else if (isInversion(type)) {
-				// "NOT" in the game code means NOR, so can simply be handled by
-				// inverting everything within a block
-				inversion = !inversion;
-				nesting--;
-			} else {
-				output(Token.tokenize(type, inversion).toString(), output, nesting);
-				// The following will indicate that inversion applies to
-				// everything nested below them,
-				// so inversion is overridden
-				if (inversion && overridesInversion(type)) {
-					inversion = false;
-					inversionOverride = true;
+			} else if (nesting > 1) {
+				if (isInversion(type)) {
+					// "NOT" in the game code means NOR, so can simply be handled by
+					// inverting everything within a block
+					inversion = !inversion;
+					nesting--;
+				}
+				else {
+					output(Token.tokenize(type, inversion).toString(), output, nesting);
+					// The following will indicate that inversion applies to
+					// everything nested below them,
+					// so inversion is overridden
+					if (inversion && overridesInversion(type)) {
+						inversion = false;
+						inversionOverride = true;
+					}
 				}
 			}
 		}
@@ -135,7 +136,6 @@ public class ParsingBlock {
 		for (String s : contents) {
 			Token token = Token.tokenize(s, false);
 			if (isName(token.type)) {
-				token = new Token(type, token.value, false);
 				output(token.toString(), output, nesting);
 				return;
 			}
@@ -144,7 +144,7 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(new String[] {
-			"factor", "name", "amount" }));
+			"factor", "name", "amount", "title" }));
 
 	/**
 	 * Determines whether a token type should be used to name a section

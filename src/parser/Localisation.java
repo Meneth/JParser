@@ -2,6 +2,7 @@ package parser;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,14 +45,11 @@ public class Localisation {
 				}
 			});
 			IO.readExceptions("statements/lookupRules.txt", lookupRules);
-			Set<String> localisationFiles = new HashSet<String>(Arrays.asList(new String[] {
-					"countries", "EU4", "text", "opinions", "powers_and_ideas", "decisions",
-					"modifers", "muslim_dlc", "Purple_Phoenix", "core", "missions", "diplomacy",
-					"flavor_events", "USA_dlc", "nw2", "sikh", "tags_phase4", "flavor_events",
-					"generic_events", "aow", "prov_names", "common_sense", "eldorado", "mercantilism" }));
-			localisationFiles.forEach(file -> {
+			Files.walk(Paths.get(path + "/localisation")).forEach(file -> {
 				try {
-					readLocalisation(path, file);
+					if (((Path) file).toFile().isFile())
+						if(file.toString().contains("_l_english"))
+							IO.readLocalisation(file.toString(), localisation, true);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -212,7 +210,7 @@ public class Localisation {
 	 */
 	private static String getLocalisation(String key) {
 		String key2 = key.replace("\"", "");
-		key2 = key.replace("_false", "");
+		key2 = key2.replace("_false", "");
 		String loc = localisation.get(key2);
 		if (loc != null)
 			return loc;
