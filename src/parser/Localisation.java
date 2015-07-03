@@ -22,7 +22,7 @@ public class Localisation {
 	public static final Set<String> errors = new HashSet<>();
 
 	public static enum ValueType {
-		COUNTRY, PROVINCE, DAY, MONTH, YEAR, OTHER;
+		COUNTRY, PROVINCE, DAYS, MONTHS, YEARS, OTHER;
 		
 		public String toString() {
 	        return name().toLowerCase();
@@ -32,20 +32,7 @@ public class Localisation {
 	private static final ValueType getValueType(String s) {
 		if (s == null)
 			return ValueType.OTHER;
-		switch (s) {
-		case "province":
-			return ValueType.PROVINCE;
-		case "country":
-			return ValueType.COUNTRY;
-		case "days":
-			return ValueType.DAY;
-		case "months":
-			return ValueType.MONTH;
-		case "years":
-			return ValueType.YEAR;
-		default:
-			return ValueType.OTHER;
-		}
+		return ValueType.valueOf(s.toUpperCase());
 	}
 
 	/**
@@ -165,7 +152,7 @@ public class Localisation {
 					return getCountry(token.value);
 				}
 				break;
-			case DAY:
+			case DAYS:
 				val = Integer.parseInt(token.value);
 				if (val == -1)
 					value = "the rest of the campaign";
@@ -176,13 +163,13 @@ public class Localisation {
 				else
 					value = val / 365 + " years";
 				return value;
-			case MONTH:
-			case YEAR:
+			case MONTHS:
+			case YEARS:
 				val = Integer.parseInt(token.value);
 				if (val == -1)
 					value = "the rest of the campaign";
 				else
-					value = val + " " + token.valueType + "s";
+					value = val + " " + token.valueType;
 				return value;
 			case OTHER:
 				if (isLookup(token.value))
@@ -340,9 +327,9 @@ public class Localisation {
 	public static ValueType getValueType(String type, String value) {
 		ValueType valType = getValueType(lookupRules.get(type));
 		switch (valType) {
-		case DAY:
-		case MONTH:
-		case YEAR:
+		case DAYS:
+		case MONTHS:
+		case YEARS:
 		case OTHER:
 			return valType;
 		case PROVINCE:
