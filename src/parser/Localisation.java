@@ -19,12 +19,34 @@ public class Localisation {
 	private static final Map<String, String> variations = new HashMap<>();
 	private static final Pattern country = Pattern.compile("[a-z]{3}");
 	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
-	private static final String PROVINCE = "province";
-	private static final String COUNTRY = "country";
-	private static final String DAYS = "days";
-	private static final String MONTHS = "months";
-	private static final String YEARS = "years";
 	public static final Set<String> errors = new HashSet<>();
+
+	public static enum ValueType {
+		COUNTRY, PROVINCE, DAY, MONTH, YEAR, OTHER;
+		
+		public String toString() {
+	        return name().toLowerCase();
+	    }
+	};
+
+	private static final ValueType getValueType(String s) {
+		if (s == null)
+			return ValueType.OTHER;
+		switch (s) {
+		case "province":
+			return ValueType.PROVINCE;
+		case "country":
+			return ValueType.COUNTRY;
+		case "days":
+			return ValueType.DAY;
+		case "months":
+			return ValueType.MONTH;
+		case "years":
+			return ValueType.YEAR;
+		default:
+			return ValueType.OTHER;
+		}
+	}
 
 	/**
 	 * Loads all info needed in order to run the parser
@@ -47,7 +69,7 @@ public class Localisation {
 			Files.walk(Paths.get(path + "/localisation")).forEach(file -> {
 				try {
 					if (((Path) file).toFile().isFile())
-						if(file.toString().contains("_l_english"))
+						if (file.toString().contains("_l_english"))
 							IO.readLocalisation(file.toString(), localisation, true);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -83,28 +105,26 @@ public class Localisation {
 
 	/**
 	 * Formats a token
-	 * @param type The type of token
-	 * @param value The value of the token
+	 * 
+	 * @param type
+	 *            The type of token
+	 * @param value
+	 *            The value of the token
 	 * @return The formatted string
 	 */
-	public static String formatToken(String type, String value) {
-		if (variations.containsKey(type)) {
-			return formatStatement(variations.get(type), getLocalisation(type), value);
+	public static String formatToken(Token token) {
+		if (variations.containsKey(token.type)) {
+			return formatStatement(variations.get(token.type), getLocalisation(token.type),
+					token.value);
 		}
+		String value = formatValue(token);
 
-		// Some tokens are localized differently if referring to a country
-		if (COUNTRY.equals(lookupRules.get(type.replace("_false", "")))) {
-			if (isCountry(value))
-				type += "_country";
-		}
-		value = formatValue(type, value);
-
-		String output = statements.get(type);
+		String output = statements.get(token.type);
 		if (output == null) {
-			output = getScopeLocalisation(type);
-			if (!output.equals(type))
+			output = getScopeLocalisation(token.type);
+			if (!output.equals(token.type))
 				return output;
-			return type + ": " + value;
+			return token.type + ": " + value;
 		}
 		if (value != null)
 			try {
@@ -115,7 +135,9 @@ public class Localisation {
 					value = "+" + value;
 			} catch (NumberFormatException e) {
 			}
-		return formatStatement(type, value);
+		if (token.valueType == ValueType.COUNTRY)
+			return formatStatement(token.type + "_country", value);
+		return formatStatement(token.type, value);
 	}
 
 	private static boolean isBoolean(String value) {
@@ -124,54 +146,57 @@ public class Localisation {
 
 	/**
 	 * Formats a token's value
-	 * @param type The type of the token
-	 * @param value The value of the token
+	 * 
+	 * @param type
+	 *            The type of the token
+	 * @param value
+	 *            The value of the token
 	 * @return The formatted value
 	 */
-	public static String formatValue(String type, String value) {
-		String targetType;
-		targetType = lookupRules.get(type.replace("_false", ""));
-		if (type.endsWith(COUNTRY))
-			targetType = COUNTRY;
-		if (value != null) {
-			if (targetType != null) {
-				int val;
-				switch (targetType) {
-				case PROVINCE:
-					return getProvince(value);
-				case COUNTRY:
-					if (!isBoolean(value)) {
-						return getCountry(value);
-					}
-					break;
-				case DAYS:
-					val = Integer.parseInt(value);
-					if (val == -1)
-						value = "the rest of the campaign";
-					else if (val < 365)
-						value = (int) ((float) val / 365 * 12) + " months";
-					else
-						value = val / 365 + " years";
-					return value;
-				case MONTHS:
-				case YEARS:
-					val = Integer.parseInt(value);
-					if (val == -1)
-						value = "the rest of the campaign";
-					else
-						value = val + " " + targetType;
-					return value;
+	public static String formatValue(Token token) {
+		String value = null;
+		if (token.value != null) {
+			int val;
+			switch (token.valueType) {
+			case PROVINCE:
+				return getProvince(token.value);
+			case COUNTRY:
+				if (!isBoolean(token.value)) {
+					return getCountry(token.value);
 				}
+				break;
+			case DAY:
+				val = Integer.parseInt(token.value);
+				if (val == -1)
+					value = "the rest of the campaign";
+				else if (val < 365)
+					value = (int) ((float) val / 365 * 12) + " months";
+				else
+					value = val / 365 + " years";
+				return value;
+			case MONTH:
+			case YEAR:
+				val = Integer.parseInt(token.value);
+				if (val == -1)
+					value = "the rest of the campaign";
+				else
+					value = val + " " + token.valueType + "s";
+				return value;
+			case OTHER:
+				if (isLookup(token.value))
+					return getLocalisation(token.value);
+				return token.value;
 			}
-			if (isLookup(value))
-				return getLocalisation(value);
 		}
 		return value;
 	}
 
 	/**
-	 * Determines whether the parser should try to look up a given token value in the game localisation
-	 * @param value The token's value
+	 * Determines whether the parser should try to look up a given token value
+	 * in the game localisation
+	 * 
+	 * @param value
+	 *            The token's value
 	 * @return Whether it should be looked up
 	 */
 	private static boolean isLookup(String value) {
@@ -180,7 +205,9 @@ public class Localisation {
 
 	/**
 	 * Determines whether a given token value refers to a country
-	 * @param value The token's value
+	 * 
+	 * @param value
+	 *            The token's value
 	 * @return Whether it refers to a country
 	 */
 	private static boolean isCountry(String value) {
@@ -190,8 +217,11 @@ public class Localisation {
 
 	/**
 	 * Attempts to find the game localisation for a given type or value
-	 * @param key The type or value to be localised
-	 * @return The localisation found. The key provided is returned if no localisation is found
+	 * 
+	 * @param key
+	 *            The type or value to be localised
+	 * @return The localisation found. The key provided is returned if no
+	 *         localisation is found
 	 */
 	private static String getLocalisation(String key) {
 		String key2 = key.replace("\"", "");
@@ -210,8 +240,11 @@ public class Localisation {
 
 	/**
 	 * Attemps to find the game localisation for a given scope
-	 * @param scope The scope to localise
-	 * @return The localisation found, plus formatting. The scope provided is returned if no localisation is found
+	 * 
+	 * @param scope
+	 *            The scope to localise
+	 * @return The localisation found, plus formatting. The scope provided is
+	 *         returned if no localisation is found
 	 */
 	private static String getScopeLocalisation(String scope) {
 		String key2 = scope.replace("_false", "");
@@ -243,7 +276,9 @@ public class Localisation {
 
 	/**
 	 * Looks up a province name
-	 * @param id The ID of the province
+	 * 
+	 * @param id
+	 *            The ID of the province
 	 * @return The province's name
 	 */
 	private static String getProvince(String id) {
@@ -252,7 +287,9 @@ public class Localisation {
 
 	/**
 	 * Looks up a country name
-	 * @param id The ID of the country
+	 * 
+	 * @param id
+	 *            The ID of the country
 	 * @return The country's name
 	 */
 	private static String getCountry(String id) {
@@ -272,24 +309,53 @@ public class Localisation {
 
 	/**
 	 * Inserts any parameters of a statement at the appropriate places
-	 * @param type The token type
-	 * @param params The parameters (if any) of the statement
-	 * @return The formatted string. The type is returned if no formatting was found
+	 * 
+	 * @param type
+	 *            The token type
+	 * @param params
+	 *            The parameters (if any) of the statement
+	 * @return The formatted string. The type is returned if no formatting was
+	 *         found
 	 */
-	public static String formatStatement(String type, String...params) {
+	public static String formatStatement(String type, String... params) {
 		String statement = statements.get(type);
 		return statement == null ? type : String.format(statement, (Object[]) params);
 	}
-	
+
 	/**
 	 * Gets a format string for a given token type
-	 * @param type The token type
-	 * @return The format string. The type is returned if no formatting was found
+	 * 
+	 * @param type
+	 *            The token type
+	 * @return The format string. The type is returned if no formatting was
+	 *         found
 	 */
 	public static String getStatement(String type) {
 		String statement = statements.get(type);
 		return statement == null ? type : statement;
 	}
-	
-	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good solution.
+
+	public static ValueType getValueType(String type, String value) {
+		ValueType valType = getValueType(lookupRules.get(type));
+		switch (valType) {
+		case DAY:
+		case MONTH:
+		case YEAR:
+		case OTHER:
+			return valType;
+		case PROVINCE:
+			if (isCountry(value))
+				return ValueType.COUNTRY;
+			return valType;
+		case COUNTRY:
+			if (isCountry(value))
+				return ValueType.COUNTRY;
+			return ValueType.OTHER;
+		default:
+			throw new IllegalStateException("Invalid enum!");
+		}
+	}
+
+	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good
+	// solution.
 }

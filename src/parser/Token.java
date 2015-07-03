@@ -1,9 +1,12 @@
 package parser;
 
+import parser.Localisation.ValueType;
+
 public class Token {
 	public final String type;
 	public final String baseType;
 	public final String value;
+	public final ValueType valueType;
 	
 	public Token(String type, boolean negative) {
 		this(type, null, negative);
@@ -22,6 +25,7 @@ public class Token {
 		else
 			this.value = null;
 		baseType = type;
+		valueType = Localisation.getValueType(type, value);
 	}
 
 	/**
@@ -44,10 +48,10 @@ public class Token {
 	}
 	
 	public String getLocalisedValue() {
-		return Localisation.formatValue(type, value);
+		return Localisation.formatValue(this);
 	}
 
 	public String toString() {
-		return Localisation.formatToken(type, value);
+		return Localisation.formatToken(this);
 	}
 }

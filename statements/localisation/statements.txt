@@ -19,9 +19,9 @@ hidden_effect: Hidden effect:
 if: If:
 type:
 modifier:
-years: Base mean time to happen of %s years
-months: Base mean time to happen of %s months
-days: Base mean time to happen of %s days
+years: Base mean time to happen of %s
+months: Base mean time to happen of %s
+days: Base mean time to happen of %s
 ai_chance: Base AI chance of %s
 name: Option "%s":
 option: Option "%s":
