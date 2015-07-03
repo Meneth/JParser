@@ -192,17 +192,6 @@ public class Localisation {
 		return !noLookup.matcher(value).matches();
 	}
 
-	/**
-	 * Determines whether a given token value refers to a country
-	 * 
-	 * @param value
-	 *            The token's value
-	 * @return Whether it refers to a country
-	 */
-	private static boolean isCountry(String value) {
-		return country.matcher(value).matches() || value.equalsIgnoreCase("root")
-				|| value.equalsIgnoreCase("this") || value.equalsIgnoreCase("from");
-	}
 
 	/**
 	 * Attempts to find the game localisation for a given type or value
@@ -273,6 +262,28 @@ public class Localisation {
 	private static String getProvince(String id) {
 		return localisation.get("prov" + id);
 	}
+	
+	
+	private enum Country {
+		ROOT, THIS, FROM, CONTROLLER, OWNER;
+		
+		public String toString() {
+			switch (this) {
+			case ROOT:
+				return "our country";
+			case THIS:
+				return "this country";
+			case FROM:
+				return "from"; // TODO - Localise
+			case CONTROLLER:
+				return "the province's controller";
+			case OWNER:
+				return "the province's owner";
+			default:
+				throw new IllegalArgumentException(this + " is an unlocalized enum.");
+			}
+		}
+	}
 
 	/**
 	 * Looks up a country name
@@ -282,17 +293,24 @@ public class Localisation {
 	 * @return The country's name
 	 */
 	private static String getCountry(String id) {
-		switch (id) {
-		case "":
-			return null;
-		case "ROOT":
-			return "our country";
-		case "THIS":
-			return "this country";
-		case "FROM":
-			return "FROM"; // TODO - Localise
-		default:
+		if (country.matcher(id).matches())
 			return localisation.get(id);
+		return Country.valueOf(id.toUpperCase()).toString();
+	}
+	
+	/**
+	 * Determines whether a given token value refers to a country
+	 * 
+	 * @param value
+	 *            The token's value
+	 * @return Whether it refers to a country
+	 */
+	private static boolean isCountry(String value) {
+		try {
+			Country.valueOf(value.toUpperCase());
+			return true;
+		} catch (IllegalArgumentException e) {
+			return country.matcher(value).matches();
 		}
 	}
 

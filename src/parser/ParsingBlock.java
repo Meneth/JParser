@@ -41,7 +41,7 @@ public class ParsingBlock {
 	 * Recursively parses a block of code
 	 */
 	private void parseBlock() {
-		if (isSpecialCommand(type)) {
+		if (nesting > 1 && isSpecialCommand(type)) {
 			handleSpecialCommand();
 			return; // Nothing more to do
 		}
@@ -126,7 +126,7 @@ public class ParsingBlock {
 	 * @return Whether it should be output
 	 */
 	private static boolean isOutputType(String type, String parent) {
-		return !isName(type) || !needsName(parent);
+		return !isName(type, parent) || !needsName(parent);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class ParsingBlock {
 	private void handleName() {
 		for (String s : contents) {
 			Token token = Token.tokenize(s, false);
-			if (isName(token.type)) {
+			if (isName(token.type, type)) {
 				String out = new Token(type + "_" + token.type, token.value, false).toString();
 				output(out, output, nesting);
 				return;
@@ -145,7 +145,7 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(new String[] {
-			"factor", "name", "amount", "title" }));
+			"factor", "name", "amount", "title", "days", "months", "years" })); // TODO - Properly handle calling other events
 
 	/**
 	 * Determines whether a token type should be used to name a section
@@ -154,12 +154,12 @@ public class ParsingBlock {
 	 *            The token type
 	 * @return Whether it should be used to name a section
 	 */
-	private static boolean isName(String type) {
-		return BLOCKNAMES.contains(type);
+	private static boolean isName(String type, String parent) {
+		return BLOCKNAMES.contains(type) && needsName(parent);
 	}
 
 	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(new String[] {
-			"option", "modifier", "ai_chance", "calc_true_if" }));
+			"option", "modifier", "ai_chance", "calc_true_if", "mean_time_to_happen", "country_event", "province_event" }));
 
 	/**
 	 * Determines whether a section needs to fetch a name further down in the
