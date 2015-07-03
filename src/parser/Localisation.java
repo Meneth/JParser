@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,20 +79,6 @@ public class Localisation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Reads a localisation file and adds all localisation to the "localisation"
-	 * map
-	 * 
-	 * @param path
-	 *            The path to the game folder
-	 * @param file
-	 *            The localisation file to be read
-	 * @throws IOException
-	 */
-	private static void readLocalisation(String path, String file) throws IOException {
-		IO.readLocalisation(path + "/localisation/" + file + "_l_english.yml", localisation, true);
 	}
 
 	/**
