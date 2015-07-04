@@ -314,7 +314,7 @@ public class Localisation {
 			Scope.valueOf(value.toUpperCase());
 			return true;
 		} catch (IllegalArgumentException e) {
-			return country.matcher(value).matches();
+			return country.matcher(value).matches() && !value.equals("yes");
 		}
 	}
 
@@ -358,7 +358,7 @@ public class Localisation {
 		case OTHER:
 			return valType;
 		case PROVINCE:
-			if (country.matcher(type).matches())
+			if (country.matcher(value).matches() && !value.equals("yes"))
 				return ValueType.COUNTRY;
 			return valType;
 		case COUNTRY:

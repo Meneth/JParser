@@ -47,10 +47,7 @@ public class IO {
 			line = line.replace("}", "\n}");
 
 			// Handle multiple actions in one line
-			String value = "=[\\s]*[\\w]*";
-			String quotedValue = "=[\\s]*\"[\\w ]*\"";
-
-			line = line.replaceAll("(" + value + "|" + quotedValue + ") ([\\w]*[\\s]*=)", "$1\n$2");
+			line = line.replaceAll("([\\w.\"])\\s+(\\w+\\s*=)", "$1\n$2");
 
 			int start = 0;
 			int end = line.indexOf('\n');

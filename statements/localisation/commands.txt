@@ -39,6 +39,7 @@ swap_free_idea_group: Switch to new country's idea group
 add_core: Adds core on %s
 add_core_country: Gives %s a core on the province
 remove_core: Removes core on %s
+remove_core_core: Removes %s's core on the province
 add_legitimacy: Adds %s legitimacy
 release: Release %s as a vassal
 add_war_exhaustion: Changes war exhaustion by %s
@@ -90,7 +91,15 @@ add_building: Constructs the %s building
 remove_building: Removes the %s building
 create_marriage: Creates a royal marriage with %s
 define_heir: Spawns an heir:
+define_heir_dynasty: From the "%s" dynasty
+define_heir_adm: With %s administrative skill
+define_heir_dip: With %s diplomatic skill
+define_heir_mil: With %s military skill
 define_ruler: Spawns a ruler:
+define_ruler_dynasty: From the "%s" dynasty
+define_ruler_adm: With %s administrative skill
+define_ruler_dip: With %s diplomatic skill
+define_ruler_mil: With %s military skill
 fixed: Ruler skills are not random
 regency: As a regent
 birth_date: Born on %s
@@ -197,3 +206,10 @@ release_all_subjects: Release all subjects from bondage
 release_vassal: Release %s as a vassal
 enable_hre_leagues: Enable HRE religious leagues
 enable_hre_leagues_false: Disable HRE religious leagues
+build_to_forcelimit: Spawns units until the following are achieved:
+build_to_forcelimit_light_ship: Light ships are %s%% of the country's force limit
+build_to_forcelimit_heavy_ship: Heavy ships are %s%% of the country's force limit
+build_to_forcelimit_transport: Transports are %s%% of the country's force limit
+build_to_forcelimit_artillery: Artillery is %s%% of the country's force limit
+build_to_forcelimit_infantry: Infantry is %s%% of the country's force limit
+build_to_forcelimit_cavalry: Cavalry is %s%% of the country's force limit

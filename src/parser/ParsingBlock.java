@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class ParsingBlock {
 	private static final Map<String, String[]> exceptions = new HashMap<>();
+	private static final Map<String, String[]> parentExceptions = new HashMap<>();
 	private static final Map<String, String[]> namedBlocks = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
 	private static final String TRUE = "yes";
@@ -83,8 +84,13 @@ public class ParsingBlock {
 			} else {
 				if (localNesting == 0 && nesting > 1) {
 					Token t = Token.tokenize(s, inversion);
-					if (isOutputType(t.type, type))
+					if (isOutputType(t.type, type)) {
+						String[] vals = parentExceptions.get(type);
+						if (vals != null && Arrays.asList(vals).contains(t.baseType)) {
+							t = new Token(type + "_" + t.baseType, t.value, inversion);
+						}
 						output(t.toString(), output, nesting + 1);
+					}
 				}
 			}
 		}
@@ -323,6 +329,7 @@ public class ParsingBlock {
 			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
 			Localisation.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
+			IO.readExceptions("statements/parentExceptions.txt", parentExceptions);
 			IO.readExceptions("statements/namedSections.txt", namedBlocks);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
 				if (Files.isRegularFile(filePath)) {
@@ -342,6 +349,4 @@ public class ParsingBlock {
 			e.printStackTrace();
 		}
 	}
-	
-	// TODO - Localise based on parent scope for build_to_forcelimit, define_ruler, and define_heir
 }

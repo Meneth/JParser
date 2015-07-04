@@ -1,0 +1,3 @@
+build_to_forcelimit: infantry, cavalry, artillery, heavy_ship, light_ship, transport
+define_ruler: adm, dip, mil, dynasty
+define_heir: adm, dip, mil, dynasty
