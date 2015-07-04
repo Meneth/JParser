@@ -12,7 +12,7 @@ remove_opinion: modifier, who
 num_of_religion: value, religion
 religion_years: num_of_religion
 has_casus_belli: type, target
-spawn_rebels: size, type
+spawn_rebels: type, size
 add_faction_influence: faction, influence
 add_casus_belli: type, target, months
 reverse_add_casus_belli: type, target, months

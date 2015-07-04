@@ -266,7 +266,7 @@ public class Localisation {
 	}
 	
 	
-	private enum Country {
+	private enum Scope {
 		ROOT, THIS, FROM, CONTROLLER, OWNER, PREV;
 		
 		public String toString() {
@@ -299,7 +299,7 @@ public class Localisation {
 	private static String getCountry(String id) {
 		if (country.matcher(id).matches())
 			return localisation.get(id);
-		return Country.valueOf(id.toUpperCase()).toString();
+		return Scope.valueOf(id.toUpperCase()).toString();
 	}
 	
 	/**
@@ -311,7 +311,7 @@ public class Localisation {
 	 */
 	private static boolean isCountry(String value) {
 		try {
-			Country.valueOf(value.toUpperCase());
+			Scope.valueOf(value.toUpperCase());
 			return true;
 		} catch (IllegalArgumentException e) {
 			return country.matcher(value).matches();

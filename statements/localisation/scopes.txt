@@ -2,8 +2,8 @@ capital_scope: Capital:
 capital_scope_false: Capital - not all of the following:
 prev: Previous scope:
 prev_false: Previous scope - not all of the following:
-from: Country sending the event:
-from_false: Country sending the event - not all of the following:
+from: Country/province sending the event:
+from_false: Country/province sending the event - not all of the following:
 root: Our country:
 root_false: Our country - not all of the following:
 owner: Province owner:

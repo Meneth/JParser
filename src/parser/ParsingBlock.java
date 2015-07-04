@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class ParsingBlock {
 	private static final Map<String, String[]> exceptions = new HashMap<>();
+	private static final Map<String, String[]> namedBlocks = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
 	private static final String TRUE = "yes";
 	private static final String FALSE = "no";
@@ -144,9 +145,6 @@ public class ParsingBlock {
 		throw new IllegalStateException("No valid name found.");
 	}
 
-	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(new String[] {
-			"factor", "name", "amount", "title", "days", "months", "years" }));
-
 	// TODO - Properly handle calling other events
 
 	/**
@@ -157,12 +155,13 @@ public class ParsingBlock {
 	 * @return Whether it should be used to name a section
 	 */
 	private static boolean isName(String type, String parent) {
-		return BLOCKNAMES.contains(type) && needsName(parent);
+		if (!needsName(parent))
+			return false;
+		for (String s : namedBlocks.get(parent))
+			if (s.equals(type))
+				return true;
+		return false;
 	}
-
-	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(new String[] {
-			"option", "modifier", "ai_chance", "calc_true_if", "mean_time_to_happen",
-			"country_event", "province_event" }));
 
 	/**
 	 * Determines whether a section needs to fetch a name further down in the
@@ -173,7 +172,7 @@ public class ParsingBlock {
 	 * @return Whether it needs to fetch a name further down
 	 */
 	private static boolean needsName(String type) {
-		return NAMEDBLOCKS.contains(type);
+		return namedBlocks.containsKey(type);
 	}
 
 	/**
@@ -320,6 +319,7 @@ public class ParsingBlock {
 			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
 			Localisation.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
+			IO.readExceptions("statements/namedSections.txt", namedBlocks);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					System.out.println(filePath);
