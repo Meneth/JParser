@@ -39,7 +39,7 @@ swap_free_idea_group: Switch to new country's idea group
 add_core: Adds core on %s
 add_core_country: Gives %s a core on the province
 remove_core: Removes core on %s
-remove_core_core: Removes %s's core on the province
+remove_core_country: Removes %s's core on the province
 add_legitimacy: Adds %s legitimacy
 release: Release %s as a vassal
 add_war_exhaustion: Changes war exhaustion by %s

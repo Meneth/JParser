@@ -333,7 +333,7 @@ public class ParsingBlock {
 			IO.readExceptions("statements/namedSections.txt", namedBlocks);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
 				if (Files.isRegularFile(filePath)) {
-					System.out.println(filePath);
+					System.out.println("Parsing " + filePath.getFileName());
 					try {
 						LinkedList<String> list = IO.readFile(filePath.toString());
 						Collection<String> output = new LinkedList<>();
