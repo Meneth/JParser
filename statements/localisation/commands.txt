@@ -100,7 +100,8 @@ define_general: Creates a general:
 define_admiral: Creates an admiral:
 define_explorer: Creates an explorer:
 define_conquistador: Creates a conquistador:
-define_advisor: Creates an advisor of the %s type:
+define_advisor: Creates an advisor:
+discount: Is discounted
 shock: %s skill in shock
 fire: %s skill in fire
 siege: %s skill in siege
