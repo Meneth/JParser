@@ -21,7 +21,7 @@ owns_false: Does not own %s
 is_core: Has core on %s
 is_core_false: Has no core on %s
 is_core_country: Is cored by %s
-is_core_country_false: Is cored by %s
+is_core_false_country: Is cored by %s
 owned_by: The province is owned by %s
 owned_by_false: The province is not owned by %s
 mercantilism: Mercantilism is at least %s%%

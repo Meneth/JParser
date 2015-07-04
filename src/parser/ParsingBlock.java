@@ -221,7 +221,7 @@ public class ParsingBlock {
 	 * @return Whether it has to be handled differently
 	 */
 	private static boolean isSpecialCommand(String type) {
-		return exceptions.containsKey(type) && exceptions.get(type).equals("specialCommands");
+		return "specialCommands".equals(exceptions.get(type));
 	}
 
 	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(new String[] {

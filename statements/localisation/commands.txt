@@ -32,8 +32,8 @@ set_global_flag: Sets the global flag "%s"
 clr_global_flag: Removes the global flag "%s"
 set_province_flag: Sets the province flag "%s"
 clr_province_flag: Removes the province flag "%s"
-country_event: Gets the country event:
-province_event: Gets the province event:
+country_event_id: Gets the country event "%s"
+province_event_id: Gets the province event "%s"
 id: ID is %s
 swap_free_idea_group: Switch to new country's idea group
 add_core: Adds core on %s
@@ -59,7 +59,9 @@ add_manpower: Changes national manpower reserves by %s years worth
 add_inflation: Changes inflation by %s
 add_piety: Changes piety by %s%%
 change_religion: Changes religion to %s
+change_religion_country: Changes religion to %s's religion
 change_culture: Changes culture to %s
+change_culture_country: Changes culture to %s's religion
 cede_province: Cedes province to %s
 create_union: Creates a union with %s
 inherit: Inherit %s
