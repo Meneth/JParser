@@ -400,8 +400,6 @@ has_missionary: The province is currently being converted
 has_missionary_false: The province is not currently being converted
 has_colonist: The province currently has a colonist in it
 has_colonist_false: The province does not currently have a colonist in it
-num_of_owned_provinces_with: Has at least %s provinces where all of the following is true:
-num_of_owned_provinces_with_false: Has less than %s provinces where all of the following is true:
 native_ferocity: Native ferocity is at least %s
 native_ferocity_false: Native ferocity is less than %s
 native_hostileness: Native hostilty is at least %s
@@ -594,8 +592,6 @@ country_or_vassal_holds: Is (fully) held by %s or its vassals
 country_or_vassal_holds_false: Is not (fully) held by %s or its vassals
 current_debate: Current parliamentary debate is on the topic %s 
 current_debate_false: Current parliamentary debate is not on the topic %s
-calc_true_if: The following returns at least %s entities:
-calc_true_if_false: The following returns fewer than %s entities:
 gold_income_percentage: At least %s%% of their income is from gold
 gold_income_percentage_false: Less than %s%% of their income is from gold
 government_rank: At least government rank %s

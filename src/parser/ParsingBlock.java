@@ -98,6 +98,10 @@ public class ParsingBlock {
 		if (type != null) {
 			if (needsName(type) || nesting == 1) {
 				handleName();
+				if (inversion) {
+					inversion = false;
+					inversionOverride = true;
+				}
 			} else if (nesting > 1) {
 				if (isInversion(type)) {
 					// "NOT" in the game code means NOR, so can simply be
@@ -338,4 +342,6 @@ public class ParsingBlock {
 			e.printStackTrace();
 		}
 	}
+	
+	// TODO - Localise based on parent scope for build_to_forcelimit, define_ruler, and define_heir
 }

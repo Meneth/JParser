@@ -70,8 +70,6 @@ remove_claim_country: Removes %s's claim
 remove_faction: Removes the %s
 add_papal_influence: Changes Papal Influence by %s
 add_unrest: Changes unrest by %s
-add_ruler_modifier: Adds the ruler modifier "%s" until the ruler's death:
-add_province_modifier: Adds the modifier "%s" until the end of the campaign:
 create_advisor: Creates a %s advisor
 kill_advisor: Kills the %s advisor
 remove_advisor: Removes the %s advisor
@@ -96,6 +94,8 @@ define_ruler: Spawns a ruler:
 fixed: Ruler skills are not random
 regency: As a regent
 birth_date: Born on %s
+name: Named %s
+hidden: With hidden stats
 define_general: Creates a general:
 define_admiral: Creates an admiral:
 define_explorer: Creates an explorer:

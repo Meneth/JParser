@@ -81,8 +81,7 @@ public class Localisation {
 						variations.put(string + "_false", localisation + "_false");
 					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new IllegalStateException(e.toString());
 				}
 			});
 		} catch (IOException e) {
@@ -109,8 +108,10 @@ public class Localisation {
 		String output = statements.get(token.type);
 		if (output == null) {
 			output = getScopeLocalisation(token.type);
-			if (!output.equals(token.type))
+			if (!output.equals(token.type)) {
 				return output;
+			}
+			errors.add(token.type);
 			return token.type + ": " + value;
 		}
 		if (value != null)
@@ -245,7 +246,6 @@ public class Localisation {
 			break;
 		}
 		if (loc == null) {
-			errors.add(scope);
 			return scope;
 		}
 		if (scope.endsWith("_false"))
@@ -330,6 +330,9 @@ public class Localisation {
 	 */
 	public static String formatStatement(String type, String... params) {
 		String statement = statements.get(type);
+		if (statement == null) {
+			errors.add(type);
+		}
 		return statement == null ? type : String.format(statement, (Object[]) params);
 	}
 
@@ -355,7 +358,7 @@ public class Localisation {
 		case OTHER:
 			return valType;
 		case PROVINCE:
-			if (isCountry(value))
+			if (country.matcher(type).matches())
 				return ValueType.COUNTRY;
 			return valType;
 		case COUNTRY:

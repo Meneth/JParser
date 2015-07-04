@@ -31,3 +31,7 @@ country_event_title: %s
 days: In %s
 months: In %s
 years: In %s
+calc_true_if_amount: The following returns at least %s entities:
+calc_true_if_amount_false: The following returns fewer than %s entities:
+num_of_owned_provinces_with_value: Has at least %s provinces where all of the following is true:
+num_of_owned_provinces_with_value_false: Has less than %s provinces where all of the following is true:

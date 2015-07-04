@@ -2,6 +2,7 @@ add_country_modifier: name, duration, hidden
 add_province_modifier: name, duration, hidden
 add_permanent_province_modifier: name, duration, hidden
 add_ruler_modifier: name, duration, hidden
+add_disaster_modifier: name, disaster, duration, hidden
 has_opinion: value, who
 reverse_has_opinion: value, who
 has_opinion_modifier: modifier, who
@@ -34,3 +35,4 @@ war_score_against: who, value
 trading_bonus: trade_goods, value
 country_event: id, days, months, years, tooltip
 province_event: id, days, months, years, tooltip
+change_price: key, trade_goods, value, duration

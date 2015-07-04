@@ -5,3 +5,4 @@ calc_true_if: amount
 mean_time_to_happen: days, months, years
 country_event: title
 province_event: title
+num_of_owned_provinces_with: value
