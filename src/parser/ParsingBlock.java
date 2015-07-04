@@ -3,6 +3,7 @@ package parser;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,8 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ParsingBlock {
-	private static final Map<String, String> exceptions = new HashMap<>();
-	private static final Map<String, String> exceptionValues = new HashMap<>();
+	private static final Map<String, String[]> exceptions = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
 	private static final String TRUE = "yes";
 	private static final String FALSE = "no";
@@ -99,12 +99,12 @@ public class ParsingBlock {
 				handleName();
 			} else if (nesting > 1) {
 				if (isInversion(type)) {
-					// "NOT" in the game code means NOR, so can simply be handled by
+					// "NOT" in the game code means NOR, so can simply be
+					// handled by
 					// inverting everything within a block
 					inversion = !inversion;
 					nesting--;
-				}
-				else {
+				} else {
 					output(Token.tokenize(type, inversion).toString(), output, nesting);
 					// The following will indicate that inversion applies to
 					// everything nested below them,
@@ -145,7 +145,9 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> BLOCKNAMES = new HashSet<String>(Arrays.asList(new String[] {
-			"factor", "name", "amount", "title", "days", "months", "years" })); // TODO - Properly handle calling other events
+			"factor", "name", "amount", "title", "days", "months", "years" }));
+
+	// TODO - Properly handle calling other events
 
 	/**
 	 * Determines whether a token type should be used to name a section
@@ -159,7 +161,8 @@ public class ParsingBlock {
 	}
 
 	private static final Set<String> NAMEDBLOCKS = new HashSet<String>(Arrays.asList(new String[] {
-			"option", "modifier", "ai_chance", "calc_true_if", "mean_time_to_happen", "country_event", "province_event" }));
+			"option", "modifier", "ai_chance", "calc_true_if", "mean_time_to_happen",
+			"country_event", "province_event" }));
 
 	/**
 	 * Determines whether a section needs to fetch a name further down in the
@@ -178,31 +181,37 @@ public class ParsingBlock {
 	 * a single line plus potential modifiers
 	 */
 	private void handleSpecialCommand() {
-		String v1 = null;
-		String v2 = null;
+		String[] associatedValues = exceptions.get(type);
+		Collection<String> values = new ArrayList<>();
 		String modifier = null;
 		String type = Token.tokenize(this.type, inversion).type;
-		for (String s : contents) {
-			if (s.equals("}"))
-				break;
-			Token token = Token.tokenize(s, false);
-			String pos = exceptionValues.get(token.baseType);
-			if (pos == null) {
-				System.out.println(token.type + " is not in the exceptions list!");
-			} else {
-				if (token.value.equals(FALSE))
-					type = Token.tokenize(this.type, !inversion).type;
-				if (pos.equals("value1"))
-					v1 = token.getLocalisedValue();
-				else
-					v2 = token.getLocalisedValue();
+		for (String val : associatedValues) {
+			boolean found = false;
+			for (String s : contents) {
+				Token token = Token.tokenize(s, false);
+				if (token.baseType.equals(val)) {
+					values.add(token.getLocalisedValue());
+					if (token.value.equals(FALSE))
+						type = Token.tokenize(this.type, !inversion).type;
+					if (token.baseType.equals("name")) {
+						modifier = token.value;
+					}
+					found = true;
+					break;
+				} else if (val.equals(Localisation.getVariation(token.baseType))) {
+					Token t2 = new Token(null, token.type, false);
+					values.add(t2.getLocalisedValue());
+					values.add(token.getLocalisedValue());
+					found = true;
+					break;
+				}
 			}
-			
-			if (token.type.equals("name")) {
-				modifier = token.value;
-			}
+			if (!found && val.equals("duration"))
+				values.add(" for the rest of the campaign");
 		}
-		output(Localisation.formatStatement(type, v1, v2), output, nesting);
+
+		output(Localisation.formatStatement(type, values.toArray(new String[values.size()])),
+				output, nesting);
 		if (modifier != null) {
 			Iterable<String> effects = modifiers.get(modifier);
 			if (effects != null)
@@ -221,7 +230,7 @@ public class ParsingBlock {
 	 * @return Whether it has to be handled differently
 	 */
 	private static boolean isSpecialCommand(String type) {
-		return "specialCommands".equals(exceptions.get(type));
+		return exceptions.containsKey(type);
 	}
 
 	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(new String[] {
@@ -311,7 +320,6 @@ public class ParsingBlock {
 			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
 			Localisation.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
-			IO.readExceptions("statements/exceptionValues.txt", exceptionValues);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					System.out.println(filePath);

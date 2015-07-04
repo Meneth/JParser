@@ -117,7 +117,34 @@ public class IO {
 	 *            Map to add the exceptions to
 	 * @throws IOException
 	 */
-	public static void readExceptions(String fileName, Map<String, String> map) throws IOException {
+	public static void readExceptions(String fileName, Map<String, String[]> map) throws IOException {
+		BufferedReader in = getReader(fileName);
+		String line = in.readLine();
+		while (line != null) {
+			line = line.trim();
+			int index = line.indexOf(": ");
+			if (index == -1) {
+				line = in.readLine();
+				continue;
+			}
+			String key = line.substring(0, index);
+			// ": " used as delimiter, so index + 2
+			String[] values = line.substring(index + 2).split(", ");
+			map.put(key, values);
+			line = in.readLine();
+		}
+	}
+	
+	/**
+	 * Reads a YAML-esque exceptions file. Does not handle nesting
+	 * 
+	 * @param fileName
+	 *            Name of the file to be read. Full file path or relative path
+	 * @param map
+	 *            Map to add the exceptions to
+	 * @throws IOException
+	 */
+	public static void readLookupRules(String fileName, Map<String, String> map) throws IOException {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {

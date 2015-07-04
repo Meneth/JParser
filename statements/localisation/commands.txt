@@ -37,7 +37,7 @@ province_event_id: Gets the province event "%s"
 id: ID is %s
 swap_free_idea_group: Switch to new country's idea group
 add_core: Adds core on %s
-add_core_country: Gives %s core on the province
+add_core_country: Gives %s a core on the province
 remove_core: Removes core on %s
 add_legitimacy: Adds %s legitimacy
 release: Release %s as a vassal

@@ -52,7 +52,7 @@ public class Localisation {
 					}
 				}
 			});
-			IO.readExceptions("statements/lookupRules.txt", lookupRules);
+			IO.readLookupRules("statements/lookupRules.txt", lookupRules);
 			Files.walk(Paths.get(path + "/localisation")).forEach(file -> {
 				try {
 					if (((Path) file).toFile().isFile())
@@ -172,6 +172,8 @@ public class Localisation {
 					value = val + " " + token.valueType;
 				return value;
 			case OTHER:
+				if (isCountry(token.value))
+					return getCountry(token.value);
 				if (isLookup(token.value))
 					return getLocalisation(token.value);
 				return token.value;
@@ -265,7 +267,7 @@ public class Localisation {
 	
 	
 	private enum Country {
-		ROOT, THIS, FROM, CONTROLLER, OWNER;
+		ROOT, THIS, FROM, CONTROLLER, OWNER, PREV;
 		
 		public String toString() {
 			switch (this) {
@@ -279,6 +281,8 @@ public class Localisation {
 				return "the province's controller";
 			case OWNER:
 				return "the province's owner";
+			case PREV:
+				return "the previous scope";
 			default:
 				throw new IllegalArgumentException(this + " is an unlocalized enum.");
 			}
@@ -361,6 +365,10 @@ public class Localisation {
 		default:
 			throw new IllegalStateException("Invalid enum!");
 		}
+	}
+	
+	public static String getVariation(String variation) {
+		return variations.get(variation);
 	}
 
 	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good

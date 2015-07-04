@@ -16,11 +16,11 @@ num_of_religion: At least %s provinces follow the %s religion
 num_of_religion_false: Less than %s provinces follow the %s religion
 religion_years: The %s religion has existed for at least %s years
 religion_years_false: The %s religion has existed for less than %s years
-add_casus_belli: Gives the %s casus belli against %s
+add_casus_belli: Gets the %s casus belli against %s
 reverse_add_casus_belli: Gives the %s casus belli against the country to %s
 has_casus_belli: Has the %s casus belli against %s
 has_casus_belli_false: Does not have the %s casus belli against %s
-spawn_rebels: Spawns revolt of size %2$s of %1$s rebels
+spawn_rebels: Spawns revolt of size %s of %s rebels
 add_faction_influence: Changes the influence of %s by %s
 had_country_flag: Has had the country flag "%s" for at least %s days
 had_province_flag: Has had the province flag "%s" for at least %s days
@@ -30,24 +30,24 @@ trading_part: Controls at least %s%% of the %s market
 trading_part_false: Controls less than %s%% of the %s market
 building: Has at least %s of the %s building
 building_false: Has less than %s of the %s building
-has_trade_modifier: %2$s has the "%1$s" trade modifier
-has_trade_modifier_false: %2$s doesn't have the "%1$s" trade modifier
-remove_trade_modifier: Removes %2$s's "%1$s" trade modifier
-set_variable: Sets the variable "%2$s" to %1$s
-change_variable: Changes the variable "%2$s" by %1$s
-check_variable: The variable %2$s is equal or higher than %1$s
-check_variable_false: The variable %2$s is lower than %1$s
-trade_share: %2$s has a share of at least %1$s percent in the trade node
-trade_share_false: %2$s has a share lower than %1$s percent in the trade node
-set_ai_attitude: Set attitude towards %2$s to %1$s
+has_trade_modifier: %s has the "%s" trade modifier
+has_trade_modifier_false: %s doesn't have the "%s" trade modifier
+remove_trade_modifier: Removes %s's "%s" trade modifier
+set_variable: Sets the variable "%s" to %s
+change_variable: Changes the variable "%s" by %s
+check_variable: The variable %s is equal or higher than %s
+check_variable_false: The variable %s is lower than %s
+trade_share: %s has a share of at least %s percent in the trade node
+trade_share_false: %s has a share lower than %s percent in the trade node
+set_ai_attitude: Set attitude towards %s to %s
 privateer_power: Privateers have a share of at least %s percent in the trade node
 privateer_power_false: Privateers have a share lower than %s percent in the trade node
 war_score_against: Has a war score of at least %s against %s
 war_score_against_false: Has a war score lower than %s against %s
-trading_bonus: Has a trading bonus in %2$s
-trading_bonus_false: Doesn't have a trading bonus in %2$s
-country_event: Causes the event %s
-province_event: Causes the province event %s
+trading_bonus: Has a trading bonus in %s
+trading_bonus_false: Doesn't have a trading bonus in %s
+country_event: Gets the event %s
+province_event: Gets the province event %s
 
 # Variations
 num_of_building: Has at least %2$s of the %1$s building
