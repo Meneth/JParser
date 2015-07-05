@@ -632,3 +632,5 @@ has_new_dynasty: Current ruler is of a different dynasty than the previous ruler
 has_new_dynasty_false: Current ruler is of the same dynasty as the previous ruler
 has_first_revolution_started: The first revolution has started
 has_first_revolution_started_false: The first revolution hasn't started
+is_in_capital_area: Is in the same area as the country's capital
+is_in_capital_area_false: Is in the same area as the country's capital
