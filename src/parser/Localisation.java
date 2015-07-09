@@ -377,5 +377,4 @@ public class Localisation {
 	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good
 	// solution.
 	// TODO - Fix "has_advisor = yes/no"
-	// TODO - Figure out what "is_in_capital_area" actually means
 }
