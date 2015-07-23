@@ -278,8 +278,8 @@ is_colony: The province is a colony
 is_colony_false: The province is not a colony
 set_papacy_active: Enables the Papacy
 set_papacy_active_false: Disables the Papacy
-manpower: Has a base manpower of at least %s
-manpower_false: Has a base manpower lower than %s
+manpower: Has at least %s months of manpower stored
+manpower_false: Has less than %s months of manpower stored
 heir_claim: The heir has a legitimacy of at least %s
 heir_claim_false: The heir has a legitimacy lower than %s
 has_port: Is coastal
