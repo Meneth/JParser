@@ -1,5 +1,6 @@
 package parser;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -326,6 +327,8 @@ public class ParsingBlock {
 
 	public static void main(String[] args) throws IOException {
 		try {
+			File dir = new File("output");
+			dir.mkdir();
 			HashMap<String, String> settings = new HashMap<>();
 			IO.readLocalisation("settings.txt", settings, false);
 			String path = settings.get("path");
