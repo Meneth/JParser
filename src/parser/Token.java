@@ -14,6 +14,8 @@ public class Token {
 
 	public Token(String type, String value, boolean negative) {
 		super();
+		if (type != null)
+			type = type.toLowerCase();
 		if (value != null && value.equalsIgnoreCase("no"))
 			negative = !negative;
 		if (negative)

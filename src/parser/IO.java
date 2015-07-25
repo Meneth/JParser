@@ -3,10 +3,10 @@ package parser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,8 +16,12 @@ import java.util.Map;
 import java.util.LinkedList;
 
 public class IO {
-	public static BufferedReader getReader(String fileName) throws FileNotFoundException {
-		return new BufferedReader(new FileReader(fileName));
+	public static BufferedReader getReader(String fileName) throws IOException {
+		return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF8"));
+	}
+	
+	public static BufferedReader getANSIReader(String fileName) throws IOException {
+		return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "Cp1252"));
 	}
 
 	/**
@@ -33,10 +37,10 @@ public class IO {
 	 */
 	public static LinkedList<String> readFile(String fileName) throws IOException {
 		LinkedList<String> lines = new LinkedList<>();
-		BufferedReader in = getReader(fileName);
+		BufferedReader in = getANSIReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
-			line = line.trim().toLowerCase();
+			line = line.trim();
 			// Get rid of comments
 			int commentIndex = line.indexOf('#');
 			if (commentIndex != -1)
@@ -172,7 +176,7 @@ public class IO {
 	 */
 	public static void writeFile(String fileName, Collection<String> contents) throws IOException {
 		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-				fileName)));
+				fileName), "UTF8"));
 		for (String string : contents) {
 			out.write(string + "\n");
 		}

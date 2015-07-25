@@ -17,7 +17,7 @@ public class Localisation {
 	private static final Map<String, String> statements = new HashMap<>();
 	private static final Set<String> regions = new HashSet<>();
 	private static final Map<String, String> variations = new HashMap<>();
-	private static final Pattern country = Pattern.compile("[a-z]{3}");
+	private static final Pattern country = Pattern.compile("[a-zA-Z]{3}");
 	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
 	public static final Set<String> errors = new HashSet<>();
 
@@ -100,12 +100,12 @@ public class Localisation {
 	 */
 	public static String formatToken(Token token) {
 		if (variations.containsKey(token.type)) {
-			return formatStatement(variations.get(token.type), getLocalisation(token.type),
+			return formatStatement(variations.get(token.type), findLocalisation(token.type),
 					token.value);
 		}
 		String value = formatValue(token);
 
-		String output = statements.get(token.type);
+		String output = getStatement(token.type);
 		if (output == null) {
 			output = getScopeLocalisation(token.type);
 			if (!output.equals(token.type)) {
@@ -176,7 +176,7 @@ public class Localisation {
 				if (isCountry(token.value))
 					return getCountry(token.value);
 				if (isLookup(token.value))
-					return getLocalisation(token.value);
+					return findLocalisation(token.value);
 				return token.value;
 			}
 		}
@@ -204,23 +204,43 @@ public class Localisation {
 	 * @return The localisation found. The key provided is returned if no
 	 *         localisation is found
 	 */
-	private static String getLocalisation(String key) {
+	private static String findLocalisation(String key) {
 		String key2 = key.replace("\"", "");
 		key2 = key2.replace("_false", "");
-		String loc = localisation.get(key2);
+		String loc = getLocalisation(key2);
 		if (loc != null)
 			return loc;
-		loc = localisation.get("building_" + key2);
+		loc = getLocalisation("building_" + key2);
 		if (loc != null)
 			return loc;
-		loc = localisation.get(key2 + "_title");
+		loc = getLocalisation(key2 + "_title");
 		if (loc != null)
 			return loc;
 		return key;
 	}
+	
+	/**
+	 * Looks up a string in the "localisation" map
+	 * @param key The key to the string
+	 * @return The string found. Null if not found
+	 */
+	private static String getLocalisation(String key) {
+		return localisation.get(key.toLowerCase());
+	}
+	
+	/**
+	 * Gets a format string for a given token type
+	 * 
+	 * @param type
+	 *            The token type
+	 * @return The format string. Null if not found
+	 */
+	public static String getStatement(String type) {
+		return statements.get(type.toLowerCase());
+	}
 
 	/**
-	 * Attemps to find the game localisation for a given scope
+	 * Attempts to find the game localisation for a given scope
 	 * 
 	 * @param scope
 	 *            The scope to localise
@@ -228,11 +248,11 @@ public class Localisation {
 	 *         returned if no localisation is found
 	 */
 	private static String getScopeLocalisation(String scope) {
-		String key2 = scope.replace("_false", "");
+		String key2 = scope.replace("_false", "").toLowerCase();
 		String loc = null;
 		while (true) {
 			if (regions.contains(key2))
-				loc = localisation.get(key2);
+				loc = getLocalisation(key2);
 			if (loc != null)
 				break;
 			loc = getProvince(key2);
@@ -262,7 +282,7 @@ public class Localisation {
 	 * @return The province's name
 	 */
 	private static String getProvince(String id) {
-		return localisation.get("prov" + id);
+		return getLocalisation("prov" + id);
 	}
 	
 	
@@ -298,7 +318,7 @@ public class Localisation {
 	 */
 	private static String getCountry(String id) {
 		if (country.matcher(id).matches())
-			return localisation.get(id);
+			return getLocalisation(id);
 		return Scope.valueOf(id.toUpperCase()).toString();
 	}
 	
@@ -329,7 +349,7 @@ public class Localisation {
 	 *         found
 	 */
 	public static String formatStatement(String type, String... params) {
-		String statement = statements.get(type);
+		String statement = getStatement(type);
 		if (statement == null) {
 			errors.add(type);
 		}
@@ -344,8 +364,8 @@ public class Localisation {
 	 * @return The format string. The type is returned if no formatting was
 	 *         found
 	 */
-	public static String getStatement(String type) {
-		String statement = statements.get(type);
+	public static String fetchStatement(String type) {
+		String statement = getStatement(type);
 		return statement == null ? type : statement;
 	}
 

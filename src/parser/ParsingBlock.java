@@ -254,7 +254,7 @@ public class ParsingBlock {
 	 * @return Wheter it inverts everything within it
 	 */
 	private static boolean isInversion(String type) {
-		return NEGATIONS.contains(type);
+		return NEGATIONS.contains(type.toLowerCase());
 	}
 
 	/**
@@ -267,7 +267,7 @@ public class ParsingBlock {
 	 * @return Whether it overrides inversion
 	 */
 	private static boolean overridesInversion(String type) {
-		return Localisation.getStatement(type).endsWith(":");
+		return Localisation.fetchStatement(type).endsWith(":");
 	}
 
 	private static final String HEADER = "\n== %s ==";
