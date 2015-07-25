@@ -324,9 +324,11 @@ public class ParsingBlock {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		try {
-			String path = "E:/Steam/SteamApps/common/Europa Universalis IV";
+			HashMap<String, String> settings = new HashMap<>();
+			IO.readLocalisation("settings.txt", settings, false);
+			String path = settings.get("path");
 			Localisation.initialize(path);
 			IO.readExceptions("statements/exceptions.txt", exceptions);
 			IO.readExceptions("statements/parentExceptions.txt", parentExceptions);
@@ -345,8 +347,12 @@ public class ParsingBlock {
 				}
 			});
 			IO.writeFile("output/errors.txt", Localisation.errors);
+			System.out.println("Parsing complete. Press enter to close the program");
+			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("Parsing failed. Press enter to close the program");
+			System.in.read();
 		}
 	}
 }

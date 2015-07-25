@@ -82,6 +82,8 @@ public class IO {
 	 * @param map
 	 *            Map to add the localisation to, rather than returning a map,
 	 *            as one might often want to read several files into one map
+	 * @param ignoreQuotes
+	 *            If set to true, all quote-signs will be stripped out
 	 * @throws IOException
 	 */
 	public static void readLocalisation(String fileName, Map<String, String> map,
