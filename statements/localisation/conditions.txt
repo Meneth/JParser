@@ -266,8 +266,8 @@ is_neighbor_of: Is a neighbor of %s
 is_neighbor_of_false: Is not a neighbor of %s
 unrest: Unrest of at least %s
 unrest_false: Unrest lower than %s
-manpower_percentage: Manpower are at least %s%% of maximum
-manpower_percentage_false: Manpower are less than %s%% of maximum
+manpower_percentage: Manpower reserves are at least %s%% of maximum
+manpower_percentage_false: Manpower reserves are less than %s%% of maximum
 is_month: It is the %s. month of the year or later
 is_month_false: It is before the %s. month of the year
 has_owner_culture: The province has the same culture as its owner
@@ -278,8 +278,8 @@ is_colony: The province is a colony
 is_colony_false: The province is not a colony
 set_papacy_active: Enables the Papacy
 set_papacy_active_false: Disables the Papacy
-manpower: Has at least %s months of manpower stored
-manpower_false: Has less than %s months of manpower stored
+manpower: Has at least %s000 manpower stored
+manpower_false: Has less than %s000 of manpower stored
 heir_claim: The heir has a legitimacy of at least %s
 heir_claim_false: The heir has a legitimacy lower than %s
 has_port: Is coastal

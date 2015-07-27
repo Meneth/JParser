@@ -397,4 +397,5 @@ public class Localisation {
 	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good
 	// solution.
 	// TODO - Fix "has_advisor = yes/no"
+	// TODO - Handle "add_manpower" having different location for |values| < 1
 }
