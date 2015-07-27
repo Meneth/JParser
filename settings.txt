@@ -1,0 +1,2 @@
+# The path to the game's folder
+path: E:/Steam/SteamApps/common/Europa Universalis IV
