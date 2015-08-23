@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -117,8 +118,13 @@ public class Localisation {
 		if (value != null)
 			try {
 				float f = Float.parseFloat(value);
-				if (output.contains("%%"))
-					value = "" + (int) (f * 100);
+				if (output.contains("%%")) {
+					f *= 100;
+					if (Math.abs(f) >= 1)
+						value = "" + (int) f;
+					else
+						value = "" + String.format(Locale.US, "%.1f", f);
+				}
 				if (output.startsWith("%s") && f > 0)
 					value = "+" + value;
 			} catch (NumberFormatException e) {
