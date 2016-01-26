@@ -293,7 +293,7 @@ base_production_false: Has a base production lower than %s
 revolt_percentage: At least %s%% of provinces are in revolt
 revolt_percentage_false: Less than %s%% of provinces are in revolt
 has_siege: The province is under siege
-has_siege_false: The province is nto under siege
+has_siege_false: The province is not under siege
 has_spawned_rebels: %s rebels have are spawned in the country
 has_spawned_rebels_false: %s rebels are not currently spawned in the country
 likely_rebels: Most likely rebel type is %s
