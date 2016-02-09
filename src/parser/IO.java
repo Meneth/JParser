@@ -51,7 +51,7 @@ public class IO {
 			line = line.replace("}", "\n}");
 
 			// Handle multiple actions in one line
-			line = line.replaceAll("([\\w.\"])\\s+(\\w+\\s*=)", "$1\n$2");
+			line = line.replaceAll("([\\w.\"])\\s+(\\w+\\s*[=<>])", "$1\n$2");
 
 			int start = 0;
 			int end = line.indexOf('\n');

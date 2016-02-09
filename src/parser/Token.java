@@ -41,7 +41,14 @@ public class Token {
 	 */
 	public static Token tokenize(String s, boolean negative) {
 		Token token;
+		// TODO: Find a way to properly handle the possible operators
+		// Consider dynamic formatting; inserting "equals", "greater than", etc. via code
 		int index = s.indexOf('=');
+		index = s.indexOf('>') != -1 ? s.indexOf('>') : index;
+		if (s.indexOf('<') != -1) {
+			index = s.indexOf('<');
+			negative = !negative;
+		}
 		if (index == -1)
 			token = new Token(s, negative);
 		else

@@ -153,7 +153,7 @@ public class ParsingBlock {
 				return;
 			}
 		}
-		throw new IllegalStateException("No valid name found.");
+		//throw new IllegalStateException("No valid name found.");
 	}
 
 	// TODO - Properly handle calling other events
@@ -251,7 +251,7 @@ public class ParsingBlock {
 	 * 
 	 * @param type
 	 *            The section name
-	 * @return Wheter it inverts everything within it
+	 * @return Whether it inverts everything within it
 	 */
 	private static boolean isInversion(String type) {
 		return NEGATIONS.contains(type.toLowerCase());
@@ -332,10 +332,11 @@ public class ParsingBlock {
 			HashMap<String, String> settings = new HashMap<>();
 			IO.readLocalisation("settings.txt", settings, false);
 			String path = settings.get("path");
-			Localisation.initialize(path);
-			IO.readExceptions("statements/exceptions.txt", exceptions);
-			IO.readExceptions("statements/parentExceptions.txt", parentExceptions);
-			IO.readExceptions("statements/namedSections.txt", namedBlocks);
+			String game = settings.get("game").toLowerCase();
+			Localisation.initialize(path, game);
+			IO.readExceptions(String.format("statements/%s/exceptions.txt", game), exceptions);
+			IO.readExceptions(String.format("statements/%s/parentExceptions.txt", game), parentExceptions);
+			IO.readExceptions(String.format("statements/%s/namedSections.txt", game), namedBlocks);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					System.out.println("Parsing " + filePath.getFileName());

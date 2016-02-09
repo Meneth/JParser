@@ -42,9 +42,9 @@ public class Localisation {
 	 * @param path
 	 *            The path to the game folder
 	 */
-	public static void initialize(String path) {
+	public static void initialize(String path, String game) {
 		try {
-			Files.walk(Paths.get("statements/localisation")).forEach(filePath -> {
+			Files.walk(Paths.get(String.format("statements/%s/localisation", game))).forEach(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					try {
 						IO.readLocalisation(filePath.toString(), statements, false);
@@ -53,7 +53,7 @@ public class Localisation {
 					}
 				}
 			});
-			IO.readLookupRules("statements/lookupRules.txt", lookupRules);
+			IO.readLookupRules(String.format("statements/%s/lookupRules.txt", game), lookupRules);
 			Files.walk(Paths.get(path + "/localisation")).forEach(file -> {
 				try {
 					if (((Path) file).toFile().isFile())
@@ -69,7 +69,7 @@ public class Localisation {
 			IO.readHeaders(path + "/map/continent.txt", regions, 0);
 			IO.readHeaders(path + "/common/colonial_regions/00_colonial_regions.txt", regions, 0);
 			Map<String, String> variationFiles = new HashMap<>();
-			IO.readLocalisation("statements/variations.txt", variationFiles, false);
+			IO.readLocalisation(String.format("statements/%s/variations.txt", game), variationFiles, false);
 			variationFiles.forEach((localisation, param) -> {
 				try {
 					if (localisation.startsWith("#"))
