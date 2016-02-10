@@ -88,7 +88,7 @@ public class ParsingBlock {
 					if (isOutputType(t.type, type)) {
 						String[] vals = parentExceptions.get(type);
 						if (vals != null && Arrays.asList(vals).contains(t.baseType)) {
-							t = new Token(type + "_" + t.baseType, t.value, inversion);
+							t = new Token(type + "_" + t.baseType, t.value, t.operator, inversion);
 						}
 						output(t.toString(), output, nesting + 1);
 					}
@@ -148,7 +148,7 @@ public class ParsingBlock {
 		for (String s : contents) {
 			Token token = Token.tokenize(s, false);
 			if (isName(token.type, type)) {
-				String out = new Token(type + "_" + token.type, token.value, false).toString();
+				String out = new Token(type + "_" + token.type, token.value, token.operator, false).toString();
 				output(out, output, nesting);
 				return;
 			}
@@ -209,7 +209,7 @@ public class ParsingBlock {
 					found = true;
 					break;
 				} else if (val.equals(Localisation.getVariation(token.baseType))) {
-					Token t2 = new Token(null, token.type, false);
+					Token t2 = new Token(null, token.type, null, false);
 					values.add(t2.getLocalisedValue());
 					values.add(token.getLocalisedValue());
 					found = true;

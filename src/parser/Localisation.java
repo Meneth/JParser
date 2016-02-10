@@ -29,6 +29,10 @@ public class Localisation {
 	        return name().toLowerCase();
 	    }
 	};
+	
+	public static enum Operator {
+		LESS, NOTLESS, MORE, NOTMORE, EQUAL, NOTEQUAL;
+	}
 
 	private static final ValueType getValueType(String s) {
 		if (s == null)

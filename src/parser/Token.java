@@ -1,18 +1,20 @@
 package parser;
 
 import parser.Localisation.ValueType;
+import parser.Localisation.Operator;
 
 public class Token {
 	public final String type;
 	public final String baseType;
 	public final String value;
 	public final ValueType valueType;
+	public final Operator operator;
 	
 	public Token(String type, boolean negative) {
-		this(type, null, negative);
+		this(type, null, null, negative);
 	}
 
-	public Token(String type, String value, boolean negative) {
+	public Token(String type, String value, Operator operator, boolean negative) {
 		super();
 		if (type != null)
 			type = type.toLowerCase();
@@ -28,6 +30,9 @@ public class Token {
 			this.value = null;
 		baseType = type;
 		valueType = Localisation.getValueType(type, value);
+		if (negative && operator != null) // Opposite version is offset by one
+			operator = Operator.values()[operator.ordinal() + 1];
+		this.operator = operator;
 	}
 
 	/**
@@ -43,16 +48,23 @@ public class Token {
 		Token token;
 		// TODO: Find a way to properly handle the possible operators
 		// Consider dynamic formatting; inserting "equals", "greater than", etc. via code
-		int index = s.indexOf('=');
-		index = s.indexOf('>') != -1 ? s.indexOf('>') : index;
-		if (s.indexOf('<') != -1) {
+		
+		Operator operator = null;
+		int index = -1;
+		if (s.indexOf('=') != -1) {
+			operator = Operator.EQUAL;
+			index = s.indexOf('=');
+		} else if (s.indexOf('<') != -1) {
+			operator = Operator.LESS;
 			index = s.indexOf('<');
-			negative = !negative;
+		} else if (s.indexOf('>') != -1) {
+			operator = Operator.MORE;
+			index = s.indexOf('>');
 		}
 		if (index == -1)
 			token = new Token(s, negative);
 		else
-			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim(), negative);
+			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim(), operator, negative);
 		return token;
 	}
 	
