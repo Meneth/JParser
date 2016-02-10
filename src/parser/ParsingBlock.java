@@ -333,7 +333,7 @@ public class ParsingBlock {
 			File dir = new File("output");
 			dir.mkdir();
 			HashMap<String, String> settings = new HashMap<>();
-			IO.readLocalisation("settings.txt", settings, false);
+			IO.readLocalisation("settings.txt", settings);
 			String path = settings.get("path");
 			String game = settings.get("game").toLowerCase();
 			Localisation.initialize(path, game);

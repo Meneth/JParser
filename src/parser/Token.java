@@ -20,10 +20,7 @@ public class Token {
 			type = type.toLowerCase();
 		if (value != null && value.equalsIgnoreCase("no"))
 			negative = !negative;
-		if (negative)
-			this.type = type + "_false";
-		else
-			this.type = type;
+		this.type = type;
 		if (value != null)
 			this.value = value.replace("\"", "");
 		else

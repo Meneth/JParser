@@ -90,14 +90,12 @@ public class IO {
 	 *            If set to true, all quote-signs will be stripped out
 	 * @throws IOException
 	 */
-	public static void readLocalisation(String fileName, Map<String, String> map,
-			boolean ignoreQuotes) throws IOException {
+	public static void readLocalisation(String fileName, Map<String, String> map) throws IOException {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
 			line = line.trim();
-			if (ignoreQuotes)
-				line = line.replace("\"", "");
+			line = line.replaceFirst(":\\d* ", ": ");
 			int index = line.indexOf(": ");
 			if (index == -1) {
 				line = in.readLine();
@@ -106,6 +104,7 @@ public class IO {
 			String key = line.substring(0, index).toLowerCase();
 			// ": " used as delimiter, so index + 2
 			String value = line.substring(index + 2);
+			value = value.replaceAll("^\"(.*)\"$", "$1");
 			map.put(key, value);
 			line = in.readLine();
 		}

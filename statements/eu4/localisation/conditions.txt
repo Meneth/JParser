@@ -3,7 +3,7 @@ tag_false: Country is not %s
 is_year: Year is at least %s
 is_year_false: Year is less than %s
 exists_country: %s exists
-exists_false_country: %s does not exist
+exists_country_false: %s does not exist
 exists: Country exists
 exists_false: Country does not exist
 is_subject: Is a vassal
@@ -21,7 +21,7 @@ owns_false: Does not own %s
 is_core: Has core on %s
 is_core_false: Has no core on %s
 is_core_country: Is cored by %s
-is_core_false_country: Is cored by %s
+is_core_country_false: Is cored by %s
 owned_by: The province is owned by %s
 owned_by_false: The province is not owned by %s
 mercantilism: Mercantilism is at least %s%%
@@ -80,8 +80,8 @@ religion_false: Does not follow the %s religion
 religion_group_false: Is not in %s's religion group
 religion_country: Follows %s's religion
 religion_group_country: Is in %s's religion group
-religion_false_country: Does not follow %s's religion
-religion_group_false_country: Is not in %s's religion group
+religion_country_false: Does not follow %s's religion
+religion_group_country_false: Is not in %s's religion group
 has_idea: Has the idea %s
 has_idea_false: Does not have the idea %s
 overextension_percentage: Overextension is at least %s%%
@@ -93,15 +93,15 @@ has_construction_false: Is not constructing %s
 culture_group: Culture group is %s
 culture_group_false: Culture group is not %s
 culture_group_country: Culture group is the same as %s
-culture_group_false_country: Culture group is not the same as %s
+culture_group_country_false: Culture group is not the same as %s
 primary_culture: Primary culture is %s
 primary_culture_false: Primary culture is not %s
 primary_culture_country: Primary culture is the same as in %s
-primary_culture_false_country: Primary culture is not the same as in %s
+primary_culture_country_false: Primary culture is not the same as in %s
 culture: Culture is %s
 culture_false: Culture is not %s
 culture_country: Culture is the same as %s
-culture_false_country: Culture is not the same as %s
+culture_country_false: Culture is not the same as %s
 dominant_culture: The dominant culture is the same as in %s
 dominant_culture_false: The dominant culture is not the same as in %s
 dominant_religion: The dominant religion is %s
@@ -141,7 +141,7 @@ has_ruler_flag_false: Does not have the ruler flag "%s"
 has_discovered: Has discovered %s
 has_discovered_false: Has not discovered %s
 has_discovered_country: Has been discovered by %s
-has_discovered_false_country: Has not been discovered by %s
+has_discovered_country_false: Has not been discovered by %s
 trade_income_percentage: Trade is at least %s%% of the country's income
 trade_income_percentage_false: Trade is less than %s%% of the country's income
 monthly_income: Monthly income is at least %s ducats
@@ -239,7 +239,7 @@ historical_friend_with_false: Is not historical friend of %s
 is_claim: Has a claim on %s
 is_claim_false: Has no claim on %s
 is_claim_country: The province is claimed by %s
-is_claim_false_country: The province is not claimed by %s
+is_claim_country_false: The province is not claimed by %s
 alliance_with: Is allied with %s
 alliance_with_false: Is not allied with %s
 num_of_allies: Has at least %s allies
@@ -249,15 +249,15 @@ num_of_royal_marriages_false: Has less than %s royal marriages
 is_part_of_hre: Is part of the Holy Roman Empire
 is_part_of_hre_false: Is not part of the Holy Roman Empire
 num_of_infantry_country: Has at least as much infantry as %s
-num_of_infantry_false_country: Has less infantry than %s
+num_of_infantry_country_false: Has less infantry than %s
 num_of_infantry: Has at least %s units of infantry
 num_of_infantry_false: Has fewer than %s units of infantry
 num_of_cavalry_country: Has at least as much cavalry as %s
-num_of_cavalry_false_country: Has less cavalry than %s
+num_of_cavalry_country_false: Has less cavalry than %s
 num_of_cavalry: Has at least %s units of cavalry
 num_of_cavalry_false: Has fewer than %s units of cavalry
 num_of_artillery_country: Has at least as much artillery as %s
-num_of_artillery_false_country: Has less artillery than %s
+num_of_artillery_country_false: Has less artillery than %s
 num_of_artillery: Has at least %s units of artillery
 num_of_artillery_false: Has fewer than %s units of artillery
 num_of_mercenaries: Has at least %s mercenaries
@@ -315,7 +315,7 @@ luck_false: Is not a lucky nation
 accepted_culture: Accepts the %s culture
 accepted_culture_false: Does not accept the %s culture
 accepted_culture_country: Accepts the primary culture of %s
-accepted_culture_false_country: Does not accept the primary culture of %s
+accepted_culture_country_false: Does not accept the primary culture of %s
 is_bankrupt: Is bankrupt
 is_bankrupt_false: Is not bankrupt
 num_of_loans: Has at least %s active loans
@@ -367,7 +367,7 @@ galleys_in_province_false: Less than %s galleys in the province
 unit_in_siege: Is besieged
 unit_in_siege_false: Is not besieged
 knows_country: Has discovered %s
-knows_false_country: Has not discovered %s
+knows_country_false: Has not discovered %s
 months_since_defection: Province last switched owner at least %s months ago
 months_since_defection_false: Province last switched owner less than %s months ago
 hre_size: The Holy Roman Empire has at least %s members

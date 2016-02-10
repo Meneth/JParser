@@ -19,6 +19,8 @@ public class Localisation {
 	private static final Set<String> regions = new HashSet<>();
 	private static final Map<String, String> variations = new HashMap<>();
 	private static final Map<String, String> operators = new HashMap<>();
+	private static final Set<String> operatorTypes = new HashSet<>();
+	
 	private static final Pattern country = Pattern.compile("[a-zA-Z]{3}");
 	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
 	public static final Set<String> errors = new HashSet<>();
@@ -53,18 +55,23 @@ public class Localisation {
 			Files.walk(Paths.get(String.format("statements/%s/localisation", game))).forEach(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					try {
-						IO.readLocalisation(filePath.toString(), statements, false);
+						IO.readLocalisation(filePath.toString(), statements);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 			});
+			for (String key : statements.keySet()) {
+				if (statements.get(key).contains(OPERATOR))
+					operatorTypes.add(key);
+			}
+			
 			IO.readLookupRules(String.format("statements/%s/lookupRules.txt", game), lookupRules);
 			Files.walk(Paths.get(path + "/localisation")).forEach(file -> {
 				try {
 					if (((Path) file).toFile().isFile())
 						if (file.toString().contains("_l_english"))
-							IO.readLocalisation(file.toString(), localisation, true);
+							IO.readLocalisation(file.toString(), localisation);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -77,7 +84,7 @@ public class Localisation {
 			}
 			IO.readHeaders(path + "/map/continent.txt", regions, 0);
 			Map<String, String> variationFiles = new HashMap<>();
-			IO.readLocalisation(String.format("statements/%s/variations.txt", game), variationFiles, false);
+			IO.readLocalisation(String.format("statements/%s/variations.txt", game), variationFiles);
 			variationFiles.forEach((localisation, param) -> {
 				try {
 					if (localisation.startsWith("#"))
@@ -87,13 +94,12 @@ public class Localisation {
 					IO.readHeaders(path + params[0], vars, Integer.parseInt(params[1]));
 					for (String string : vars) {
 						variations.put(string, localisation);
-						variations.put(string + "_false", localisation + "_false");
 					}
 				} catch (Exception e) {
 					throw new IllegalStateException(e.toString());
 				}
 			});
-			IO.readLocalisation("statements/operators.txt", operators, true);
+			IO.readLocalisation("statements/operators.txt", operators);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -117,7 +123,7 @@ public class Localisation {
 
 		String output = getStatement(token.type);
 		if (output == null) {
-			output = getScopeLocalisation(token.type);
+			output = getScopeLocalisation(token.type, token.operator);
 			if (!output.equals(token.type)) {
 				return output;
 			}
@@ -222,7 +228,6 @@ public class Localisation {
 	 */
 	private static String findLocalisation(String key) {
 		String key2 = key.replace("\"", "");
-		key2 = key2.replace("_false", "");
 		String loc = getLocalisation(key2);
 		if (loc != null)
 			return loc;
@@ -263,8 +268,8 @@ public class Localisation {
 	 * @return The localisation found, plus formatting. The scope provided is
 	 *         returned if no localisation is found
 	 */
-	private static String getScopeLocalisation(String scope) {
-		String key2 = scope.replace("_false", "").toLowerCase();
+	private static String getScopeLocalisation(String scope, Operator operator) {
+		String key2 = scope.toLowerCase();
 		String loc = null;
 		while (true) {
 			if (regions.contains(key2))
@@ -284,7 +289,7 @@ public class Localisation {
 		if (loc == null) {
 			return scope;
 		}
-		if (scope.endsWith("_false"))
+		if (operator == Operator.NOTEQUAL)
 			loc += " - not all of the following";
 		loc += ":";
 		return loc;
@@ -365,12 +370,16 @@ public class Localisation {
 	 *         found
 	 */
 	public static String formatStatement(String type, Operator operator, String... params) {
+		if (operator == Operator.NOTEQUAL && !operatorTypes.contains(type))
+			type += "_false";
 		String statement = getStatement(type);
 		if (statement == null) {
 			errors.add(type);
-		} else if (statement.contains(OPERATOR))
+			return statement;
+		}
+		if (statement.contains(OPERATOR))
 			statement = insertOperator(statement, operator);
-		return statement == null ? type : String.format(statement, (Object[]) params);
+		return String.format(statement, (Object[]) params);
 	}
 
 	/**
