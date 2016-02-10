@@ -117,7 +117,10 @@ public class ParsingBlock {
 					inversion = !inversion;
 					nesting--;
 				} else {
-					output(Token.tokenize(type, inversion).toString(), output, nesting);
+					if (parentExceptions.containsKey(parent.type))
+						output(Token.tokenize(type + "_" + parent, inversion).toString(), output, nesting);
+					else
+						output(Token.tokenize(type, inversion).toString(), output, nesting);
 					// The following will indicate that inversion applies to
 					// everything nested below them,
 					// so inversion is overridden
@@ -220,7 +223,7 @@ public class ParsingBlock {
 				values.add(" for the rest of the campaign");
 		}
 
-		output(Localisation.formatStatement(type, values.toArray(new String[values.size()])),
+		output(Localisation.formatStatement(type, null, values.toArray(new String[values.size()])),
 				output, nesting);
 		if (modifier != null) {
 			Iterable<String> effects = modifiers.get(modifier);

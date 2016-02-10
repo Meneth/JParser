@@ -18,6 +18,7 @@ public class Localisation {
 	private static final Map<String, String> statements = new HashMap<>();
 	private static final Set<String> regions = new HashSet<>();
 	private static final Map<String, String> variations = new HashMap<>();
+	private static final Map<String, String> operators = new HashMap<>();
 	private static final Pattern country = Pattern.compile("[a-zA-Z]{3}");
 	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
 	public static final Set<String> errors = new HashSet<>();
@@ -67,11 +68,13 @@ public class Localisation {
 					e.printStackTrace();
 				}
 			});
-			ParsingBlock.parseModifiers(IO.readFile(path
-					+ "/common/event_modifiers/00_event_modifiers.txt"));
-			IO.readHeaders(path + "/map/region.txt", regions, 0);
+			if (game.equals("eu4")) {
+				ParsingBlock.parseModifiers(IO.readFile(path 
+						+ "/common/event_modifiers/00_event_modifiers.txt"));		
+				IO.readHeaders(path + "/map/region.txt", regions, 0);
+				IO.readHeaders(path + "/common/colonial_regions/00_colonial_regions.txt", regions, 0);
+			}
 			IO.readHeaders(path + "/map/continent.txt", regions, 0);
-			IO.readHeaders(path + "/common/colonial_regions/00_colonial_regions.txt", regions, 0);
 			Map<String, String> variationFiles = new HashMap<>();
 			IO.readLocalisation(String.format("statements/%s/variations.txt", game), variationFiles, false);
 			variationFiles.forEach((localisation, param) -> {
@@ -89,6 +92,7 @@ public class Localisation {
 					throw new IllegalStateException(e.toString());
 				}
 			});
+			IO.readLocalisation("statements/operators.txt", operators, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,7 +109,7 @@ public class Localisation {
 	 */
 	public static String formatToken(Token token) {
 		if (variations.containsKey(token.type)) {
-			return formatStatement(variations.get(token.type), findLocalisation(token.type),
+			return formatStatement(variations.get(token.type), token.operator, findLocalisation(token.type),
 					token.value);
 		}
 		String value = formatValue(token);
@@ -119,7 +123,7 @@ public class Localisation {
 			errors.add(token.type);
 			return token.type + ": " + value;
 		}
-		if (value != null)
+		if (value != null) {
 			try {
 				float f = Float.parseFloat(value);
 				if (output.contains("%%")) {
@@ -133,9 +137,10 @@ public class Localisation {
 					value = "+" + value;
 			} catch (NumberFormatException e) {
 			}
+		}
 		if (token.valueType == ValueType.COUNTRY)
-			return formatStatement(token.type + "_country", value);
-		return formatStatement(token.type, value);
+			return formatStatement(token.type + "_country", token.operator, value);
+		return formatStatement(token.type, token.operator, value);
 	}
 
 	private static boolean isBoolean(String value) {
@@ -358,11 +363,12 @@ public class Localisation {
 	 * @return The formatted string. The type is returned if no formatting was
 	 *         found
 	 */
-	public static String formatStatement(String type, String... params) {
+	public static String formatStatement(String type, Operator operator, String... params) {
 		String statement = getStatement(type);
 		if (statement == null) {
 			errors.add(type);
-		}
+		} else if (statement.contains("OPERATOR"))
+			statement = insertOperator(statement, operator);
 		return statement == null ? type : String.format(statement, (Object[]) params);
 	}
 
@@ -402,6 +408,11 @@ public class Localisation {
 	
 	public static String getVariation(String variation) {
 		return variations.get(variation);
+	}
+	
+	private static String insertOperator(String output, Operator operator) {
+		String out = output.replace("OPERATOR", operators.get(operator.toString().toLowerCase()));
+		return out;
 	}
 
 	// TODO - Handle text highlighting. E.G., §Ytrade§!. Regex might be a good
