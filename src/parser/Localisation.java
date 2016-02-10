@@ -27,7 +27,7 @@ public class Localisation {
 	private static final String OPERATOR = "[OPERATOR]";
 
 	public static enum ValueType {
-		COUNTRY, PROVINCE, DAYS, MONTHS, YEARS, OTHER;
+		COUNTRY, PROVINCE, STATE, DAYS, MONTHS, YEARS, OTHER;
 		
 		public String toString() {
 	        return name().toLowerCase();
@@ -100,6 +100,9 @@ public class Localisation {
 				}
 			});
 			IO.readLocalisation("statements/operators.txt", operators);
+			
+			if (game.equals("hoi4"))
+				IO.readLocalisation("statements/hoi4/localisation/countries.txt", localisation);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -170,6 +173,8 @@ public class Localisation {
 			switch (token.valueType) {
 			case PROVINCE:
 				return getProvince(token.value);
+			case STATE:
+				return getState(token.value);
 			case COUNTRY:
 				if (!isBoolean(token.value)) {
 					return getCountry(token.value);
@@ -279,6 +284,9 @@ public class Localisation {
 			loc = getProvince(key2);
 			if (loc != null)
 				break;
+			loc = getState(key2);
+			if (loc != null)
+				break;
 			if (isCountry(key2)) {
 				loc = getCountry(key2);
 				if (loc != null)
@@ -306,6 +314,16 @@ public class Localisation {
 		return getLocalisation("prov" + id);
 	}
 	
+	/**
+	 * Looks up a state name
+	 * 
+	 * @param id
+	 *            The ID of the state
+	 * @return The state's name
+	 */
+	private static String getState(String id) {
+		return getLocalisation("state_" + id);
+	}
 	
 	private enum Scope {
 		ROOT, THIS, FROM, CONTROLLER, OWNER, PREV;
@@ -404,6 +422,7 @@ public class Localisation {
 		case OTHER:
 			return valType;
 		case PROVINCE:
+		case STATE:
 			if (country.matcher(value).matches() && !value.equals("yes"))
 				return ValueType.COUNTRY;
 			return valType;
