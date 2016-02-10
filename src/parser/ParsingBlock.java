@@ -118,7 +118,7 @@ public class ParsingBlock {
 					nesting--;
 				} else {
 					if (parentExceptions.containsKey(parent.type))
-						output(Token.tokenize(type + "_" + parent, inversion).toString(), output, nesting);
+						output(Token.tokenize(type + "_" + parent.type, inversion).toString(), output, nesting);
 					else
 						output(Token.tokenize(type, inversion).toString(), output, nesting);
 					// The following will indicate that inversion applies to

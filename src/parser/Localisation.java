@@ -22,6 +22,7 @@ public class Localisation {
 	private static final Pattern country = Pattern.compile("[a-zA-Z]{3}");
 	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
 	public static final Set<String> errors = new HashSet<>();
+	private static final String OPERATOR = "[OPERATOR]";
 
 	public static enum ValueType {
 		COUNTRY, PROVINCE, DAYS, MONTHS, YEARS, OTHER;
@@ -367,7 +368,7 @@ public class Localisation {
 		String statement = getStatement(type);
 		if (statement == null) {
 			errors.add(type);
-		} else if (statement.contains("OPERATOR"))
+		} else if (statement.contains(OPERATOR))
 			statement = insertOperator(statement, operator);
 		return statement == null ? type : String.format(statement, (Object[]) params);
 	}
@@ -411,7 +412,7 @@ public class Localisation {
 	}
 	
 	private static String insertOperator(String output, Operator operator) {
-		String out = output.replace("OPERATOR", operators.get(operator.toString().toLowerCase()));
+		String out = output.replace(OPERATOR, operators.get(operator.toString().toLowerCase()));
 		return out;
 	}
 
