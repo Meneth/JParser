@@ -94,16 +94,17 @@ public class IO {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
+			line = line.replaceAll("#[^\"]*$", "");
 			line = line.trim();
-			line = line.replaceFirst(":\\d* ", ": ");
-			int index = line.indexOf(": ");
+			line = line.replaceFirst(":\\d* ", ":");
+			int index = line.indexOf(":");
 			if (index == -1) {
 				line = in.readLine();
 				continue;
 			}
 			String key = line.substring(0, index).toLowerCase();
-			// ": " used as delimiter, so index + 2
-			String value = line.substring(index + 2);
+			// ":" used as delimiter, so index + 1
+			String value = line.substring(index + 1);
 			value = value.replaceAll("^\"(.*)\"$", "$1");
 			map.put(key, value);
 			line = in.readLine();
