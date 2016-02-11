@@ -1,31 +1,35 @@
 package parser;
 
+import java.util.Arrays;
+
 import parser.Localisation.ValueType;
 import parser.Localisation.Operator;
 
 public class Token {
-	public final String type;
-	public final String baseType;
-	public final String value;
+	public final String type, baseType, value;
 	public final ValueType valueType;
 	public final Operator operator;
 	
-	public Token(String type, boolean negative) {
-		this(type, null, null, negative);
+	public Token(String type, boolean negative, String parentType) {
+		this(type, null, null, negative, parentType);
 	}
 
-	public Token(String type, String value, Operator operator, boolean negative) {
+	public Token(String type, String value, Operator operator, boolean negative, String parentType) {
 		super();
 		if (type != null)
 			type = type.toLowerCase();
 		if (value != null && value.equalsIgnoreCase("no"))
 			negative = !negative;
+		String[] vals = ParsingBlock.parentExceptions.get(parentType);
+		baseType = type;
+		if (vals != null && Arrays.asList(vals).contains(type)) {
+			type = parentType + "_" + type;
+		}
 		this.type = type;
 		if (value != null)
 			this.value = value.replace("\"", "");
 		else
 			this.value = null;
-		baseType = type;
 		valueType = Localisation.getValueType(type, value);
 		if (negative && operator != null) // Opposite version is offset by one
 			operator = Operator.values()[operator.ordinal() + 1];
@@ -41,10 +45,8 @@ public class Token {
 	 *            Whether or not the token has been inverted by surrounding code
 	 * @return A token generated from the string
 	 */
-	public static Token tokenize(String s, boolean negative) {
+	public static Token tokenize(String s, boolean negative, String parentType) {
 		Token token;
-		// TODO: Find a way to properly handle the possible operators
-		// Consider dynamic formatting; inserting "equals", "greater than", etc. via code
 		
 		Operator operator = null;
 		int index = -1;
@@ -59,9 +61,9 @@ public class Token {
 			index = s.indexOf('>');
 		}
 		if (index == -1)
-			token = new Token(s, negative);
+			token = new Token(s, negative, parentType);
 		else
-			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim(), operator, negative);
+			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim(), operator, negative, parentType);
 		return token;
 	}
 	

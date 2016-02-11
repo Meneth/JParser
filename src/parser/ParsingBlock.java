@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class ParsingBlock {
 	private static final Map<String, String[]> exceptions = new HashMap<>();
-	private static final Map<String, String[]> parentExceptions = new HashMap<>();
+	public static final Map<String, String[]> parentExceptions = new HashMap<>();
 	private static final Map<String, String[]> namedBlocks = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
 	private static final String TRUE = "yes";
@@ -65,7 +65,7 @@ public class ParsingBlock {
 			if (s.endsWith("{")) {
 				localNesting++;
 				if (start == -1) {
-					localType = Token.tokenize(s, false).type;
+					localType = Token.tokenize(s, false, type).type;
 					start = i;
 				}
 			} else if (s.equals("}")) {
@@ -84,12 +84,8 @@ public class ParsingBlock {
 				}
 			} else {
 				if (localNesting == 0 && nesting > 1) {
-					Token t = Token.tokenize(s, inversion);
+					Token t = Token.tokenize(s, inversion, type);
 					if (isOutputType(t.type, type)) {
-						String[] vals = parentExceptions.get(type);
-						if (vals != null && Arrays.asList(vals).contains(t.baseType)) {
-							t = new Token(type + "_" + t.baseType, t.value, t.operator, inversion);
-						}
 						output(t.toString(), output, nesting + 1);
 					}
 				}
@@ -117,10 +113,11 @@ public class ParsingBlock {
 					inversion = !inversion;
 					nesting--;
 				} else {
-					if (parentExceptions.containsKey(parent.type))
-						output(Token.tokenize(type + "_" + parent.type, inversion).toString(), output, nesting);
-					else
-						output(Token.tokenize(type, inversion).toString(), output, nesting);
+					if (type.equals("democratic")) {
+						@SuppressWarnings("unused")
+						int i = 2;
+					}
+					output(Token.tokenize(type, inversion, parent.type).toString(), output, nesting);
 					// The following will indicate that inversion applies to
 					// everything nested below them,
 					// so inversion is overridden
@@ -149,9 +146,9 @@ public class ParsingBlock {
 	 */
 	private void handleName() {
 		for (String s : contents) {
-			Token token = Token.tokenize(s, false);
+			Token token = Token.tokenize(s, false, type);
 			if (isName(token.type, type)) {
-				String out = new Token(type + "_" + token.type, token.value, token.operator, false).toString();
+				String out = new Token(token.type, token.value, token.operator, false, type).toString();
 				output(out, output, nesting);
 				return;
 			}
@@ -172,7 +169,7 @@ public class ParsingBlock {
 		if (!needsName(parent))
 			return false;
 		for (String s : namedBlocks.get(parent))
-			if (s.equals(type))
+			if (s.equals(parent + "_" + type))
 				return true;
 		return false;
 	}
@@ -197,22 +194,22 @@ public class ParsingBlock {
 		String[] associatedValues = exceptions.get(type);
 		Collection<String> values = new ArrayList<>();
 		String modifier = null;
-		String type = Token.tokenize(this.type, inversion).type;
+		String type = Token.tokenize(this.type, inversion, this.type).type;
 		for (String val : associatedValues) {
 			boolean found = false;
 			for (String s : contents) {
-				Token token = Token.tokenize(s, false);
+				Token token = Token.tokenize(s, false, this.type);
 				if (token.baseType.equals(val)) {
 					values.add(token.getLocalisedValue());
 					if (token.value.equals(FALSE))
-						type = Token.tokenize(this.type, !inversion).type;
-					if (token.baseType.equals("name")) {
+						type = Token.tokenize(this.type, !inversion, this.type).type;
+					if (token.type.equals("name")) {
 						modifier = token.value;
 					}
 					found = true;
 					break;
-				} else if (val.equals(Localisation.getVariation(token.baseType))) {
-					Token t2 = new Token(null, token.type, null, false);
+				} else if (val.equals(Localisation.getVariation(token.type))) {
+					Token t2 = new Token(null, token.type, null, false, this.type);
 					values.add(t2.getLocalisedValue());
 					values.add(token.getLocalisedValue());
 					found = true;
@@ -288,6 +285,8 @@ public class ParsingBlock {
 	 *            How deeply nested the string is
 	 */
 	private static void output(String s, Collection<String> output, int nesting) {
+		if (s.equals(""))
+			return; // Blank lines are skipped
 		nesting = nesting - 2;
 		if (nesting == -1) {
 			output.add(String.format(HEADER, s));
@@ -318,12 +317,12 @@ public class ParsingBlock {
 		List<String> effects = new LinkedList<>();
 		for (String line : readFile) {
 			if (line.endsWith("{"))
-				name = Token.tokenize(line, false).type;
+				name = Token.tokenize(line, false, null).type;
 			else if (line.equals("}")) {
 				modifiers.put(name, new LinkedList<>(effects));
 				effects.clear();
 			} else {
-				effects.add(Token.tokenize(line, false).toString());
+				effects.add(Token.tokenize(line, false, null).toString());
 			}
 		}
 	}
