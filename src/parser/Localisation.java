@@ -22,7 +22,7 @@ public class Localisation {
 	private static final Set<String> operatorTypes = new HashSet<>();
 	
 	private static final Pattern country = Pattern.compile("[a-zA-Z]{3}");
-	private static final Pattern noLookup = Pattern.compile("(.* .*)|\\d*");
+	private static final Pattern noLookup = Pattern.compile("(.* .*)|-?\\d*\\.?\\d*");
 	public static final Set<String> errors = new HashSet<>();
 	private static final String OPERATOR = "[OPERATOR]";
 
@@ -133,21 +133,6 @@ public class Localisation {
 			errors.add(token.type);
 			return token.type + ": " + value;
 		}
-		if (value != null) {
-			try {
-				float f = Float.parseFloat(value);
-				if (output.contains("%%")) {
-					f *= 100;
-					if (Math.abs(f) >= 1)
-						value = "" + (int) f;
-					else
-						value = "" + String.format(Locale.US, "%.1f", f);
-				}
-				if (output.startsWith("%s") && f > 0)
-					value = "+" + value;
-			} catch (NumberFormatException e) {
-			}
-		}
 		if (token.valueType == ValueType.COUNTRY)
 			return formatStatement(token.type + "_country", token.operator, value);
 		return formatStatement(token.type, token.operator, value);
@@ -204,7 +189,24 @@ public class Localisation {
 					return getCountry(token.value);
 				if (isLookup(token.value))
 					return findLocalisation(token.value);
-				return token.value;
+				value = token.value;
+				try {
+					float f = Float.parseFloat(value);
+					String output = getStatement(token.type);
+					if (output != null) {
+						if (output.contains("%%")) {
+							f *= 100;
+							if (Math.abs(f) >= 1)
+								value = "" + (int) f;
+							else
+								value = "" + String.format(Locale.US, "%.1f", f);
+						}
+						if (output.startsWith("%s") && f > 0)
+							value = "+" + value;
+					}
+				} catch (NumberFormatException e) {
+				}
+				return value;
 			}
 		}
 		return value;
