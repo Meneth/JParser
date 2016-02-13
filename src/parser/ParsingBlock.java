@@ -169,7 +169,7 @@ public class ParsingBlock {
 		if (!needsName(parent))
 			return false;
 		for (String s : namedBlocks.get(parent))
-			if (s.equals(parent + "_" + type))
+			if (type.equals(parent + "_" + s))
 				return true;
 		return false;
 	}
@@ -338,6 +338,7 @@ public class ParsingBlock {
 			Localisation.initialize(path, game);
 			IO.readExceptions(String.format("statements/%s/exceptions.txt", game), exceptions);
 			IO.readExceptions(String.format("statements/%s/parentExceptions.txt", game), parentExceptions);
+			IO.readExceptions(String.format("statements/%s/namedSections.txt", game), parentExceptions);
 			IO.readExceptions(String.format("statements/%s/namedSections.txt", game), namedBlocks);
 			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
 				if (Files.isRegularFile(filePath)) {
