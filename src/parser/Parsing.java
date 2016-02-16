@@ -13,7 +13,7 @@ import java.util.Set;
 
 import parser.Localisation.Operator;
 
-public class ParsingBlock {
+public class Parsing {
 	private static final Map<String, String[]> namedBlocks = new HashMap<>();
 	private static final Map<String, String[]> multiTokenExpressions = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
