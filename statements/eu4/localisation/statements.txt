@@ -3,7 +3,7 @@ allow: Allow:
 effect: Effect:
 success: Success:
 abort: Abort:
-chance: Acquisition chance:
+#chance: Acquisition chance:
 trigger: Trigger:
 title: %s
 mean_time_to_happen: Mean time to happen:
@@ -17,11 +17,10 @@ tooltip: Tooltip:
 custom_tooltip:
 hidden_effect: Hidden effect:
 if: If:
-type:
 modifier_factor:
-mean_time_to_happen_years: Base mean time to happen of %s years
-mean_time_to_happen_months: Base mean time to happen of %s months
-mean_time_to_happen_days: Base mean time to happen of %s days
+mean_time_to_happen_years: Base mean time to happen of %s
+mean_time_to_happen_months: Base mean time to happen of %s
+mean_time_to_happen_days: Base mean time to happen of %s
 ai_chance_factor: Base AI chance of %s
 modifier_factor: Multiplies value by %s:
 option_name: Option "%s":

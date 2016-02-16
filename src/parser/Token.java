@@ -1,53 +1,39 @@
 package parser;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
-import parser.Localisation.ValueType;
 import parser.Localisation.Operator;
 
 public class Token {
-	public final String type, baseType, value;
-	public final ValueType valueType;
+	public final String type, value;
 	public final Operator operator;
+	public final Token parent;
+	public final List<Token> children;
+	public boolean inverted = false;
+	public boolean disabled = false;
 	
-	public Token(String type, boolean negative, String parentType) {
-		this(type, null, null, negative, parentType);
-	}
-
-	public Token(String type, String value, Operator operator, boolean negative, String parentType) {
+	private Token(String type, String value, Operator operator, Token parent) {
 		super();
-		if (type != null)
-			type = type.toLowerCase();
-		if (value != null && value.equalsIgnoreCase("no"))
-			negative = !negative;
-		String[] vals = ParsingBlock.parentExceptions.get(parentType);
-		baseType = type;
-		if (vals != null && Arrays.asList(vals).contains(type)) {
-			type = parentType + "_" + type;
-		}
-		this.type = type;
-		if (value != null)
-			this.value = value.replace("\"", "");
-		else
+		this.type = type.toLowerCase();
+		if (value == null)
 			this.value = null;
-		valueType = Localisation.getValueType(type, value);
-		if (negative && operator != null) // Opposite version is offset by one
-			operator = Operator.values()[operator.ordinal() + 1];
+		else
+			this.value = value.replaceAll("^\"(.*)\"$", "$1");
 		this.operator = operator;
+		this.parent = parent;
+		if (parent != null)
+			parent.children.add(this);
+		children = new ArrayList<>();
 	}
-
+	
 	/**
-	 * Creates from a string a new token and returns it
-	 * 
-	 * @param s
-	 *            The string to be tokenized
-	 * @param negative
-	 *            Whether or not the token has been inverted by surrounding code
-	 * @return A token generated from the string
+	 * Creates a token from a given string and its parent token
+	 * @param s The string to turn into a token
+	 * @param parent The block it is contained within
+	 * @return The created token
 	 */
-	public static Token tokenize(String s, boolean negative, String parentType) {
-		Token token;
-		
+	public static Token tokenize(String s, Token parent) {
 		Operator operator = null;
 		int index = -1;
 		if (s.indexOf('=') != -1) {
@@ -60,18 +46,54 @@ public class Token {
 			operator = Operator.MORE;
 			index = s.indexOf('>');
 		}
+		
 		if (index == -1)
-			token = new Token(s, negative, parentType);
+			return new Token(s, null, null, parent);
 		else
-			token = new Token(s.substring(0, index).trim(), s.substring(index + 1).trim(), operator, negative, parentType);
-		return token;
+			return new Token(s.substring(0, index).trim(), s.substring(index + 1).trim(), operator, parent);
 	}
 	
-	public String getLocalisedValue() {
-		return Localisation.formatValue(this);
+	/**
+	 * Creates a token tree from a given file (after the file has gone through a first pass in the IO class)
+	 * @param file The lines of the file
+	 * @return The root token
+	 */
+	public static Token tokenize(List<String> file) {
+		Token root = new Token("file", null, null, null);
+		Token block = root;
+		
+		for (String string : file) {
+			if (string.equals("}"))
+				block = block.parent;
+			else if (string.contains("{")) {
+				block = tokenize(string, block);
+			} else {
+				tokenize(string, block);
+			}
+		}
+		
+		return root;
 	}
-
+	
 	public String toString() {
-		return Localisation.formatToken(this);
+		if (value == null)
+			return type;
+		else {
+			char op;
+			switch (operator) {
+			case LESS:
+				op = '<';
+				break;
+			case MORE:
+				op = '>';
+				break;
+			case EQUAL:
+				op = '=';
+				break;
+			default:
+				throw new IllegalStateException("Invalid operator!");
+			}
+			return String.format("%s %s %s", type, op, value);
+		}
 	}
 }

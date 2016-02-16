@@ -1,12 +1,9 @@
 package parser;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -14,216 +11,98 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import parser.Localisation.Operator;
+
 public class ParsingBlock {
-	private static final Map<String, String[]> exceptions = new HashMap<>();
-	public static final Map<String, String[]> parentExceptions = new HashMap<>();
 	private static final Map<String, String[]> namedBlocks = new HashMap<>();
+	private static final Map<String, String[]> multiTokenExpressions = new HashMap<>();
 	private static final Map<String, Iterable<String>> modifiers = new HashMap<>();
-	private static final String TRUE = "yes";
-	private static final String FALSE = "no";
-	private final String type;
-	private final ParsingBlock parent;
-	private int nesting;
-	private final List<String> contents;
-	private final Collection<String> output;
-	private boolean inversion;
-	private boolean inversionOverride = false;
 
-	public ParsingBlock(String type, ParsingBlock parent, List<String> contents, int nesting,
-			Collection<String> output, boolean negative) {
-		this.contents = contents;
-		this.output = output;
-		this.type = type;
-		this.parent = parent;
-		this.nesting = nesting;
-		this.inversion = negative;
-		parseBlock();
-	}
-
-	/**
-	 * Recursively parses a block of code
-	 */
-	private void parseBlock() {
-		if (nesting > 1 && isSpecialCommand(type)) {
-			handleSpecialCommand();
-			return; // Nothing more to do
+	private static void parseTree(Token token, List<String> output,
+			int nesting, boolean inverted) {
+		String out = null;
+		boolean toOutput = true;
+		
+		if (token.disabled)
+			return; // Skip this sub-tree
+		
+		if (isInversion(token.type)) {
+			inverted = !inverted;
+			token.inverted = inverted;
+			nesting--;
+			toOutput = false;
 		}
-		handleBlockType();
-		handleBlockContents();
-	}
-
-	/**
-	 * Handles all contents in the parsing block, including recursive calls
-	 */
-	private void handleBlockContents() {
-		int localNesting = 0;
-		int i = 0, start = -1;
-		String localType = null;
-		for (String s : contents) {
-			i++; // Done at the start so that the line defining the start of a
-			// block doesn't get included when parsing recursively
-			if (s.endsWith("{")) {
-				localNesting++;
-				if (start == -1) {
-					localType = Token.tokenize(s, false, type).type;
-					start = i;
-				}
-			} else if (s.equals("}")) {
-				localNesting--;
-				if (localNesting == 0) {
-					// When local nesting is back down to 0, a full block has
-					// necessarily been iterated through
-					// So that block can then be recursively parsed
-					new ParsingBlock(localType, this, contents.subList(start, i), nesting + 1,
-							output, inversion);
-					start = -1;
-					if (type != null && isInversion(type))
-						inversion = !inversion;
-					else if (inversionOverride)
-						inversion = true;
-				}
-			} else {
-				if (localNesting == 0 && nesting > 1) {
-					Token t = Token.tokenize(s, inversion, type);
-					if (isOutputType(t.type, type)) {
-						output(t.toString(), output, nesting + 1);
-					}
-				}
-			}
+		else if (inverted) {
+			token.inverted = true;
+			inverted = false; // Never persists past more than one level
+		}
+		if (token.value != null && token.value.equals("no"))
+			token.inverted = !token.inverted;
+		
+		if (nesting == -1)
+			out = "";
+		else if (nesting == 0) {
+			if (isBlock(token))
+				out = localize(findName(token));
+			else
+				out = "";
+		} else if (nesting == 1 && !isBlock(token))
+			out = "";
+		else if (isMultiTokenExpression(token)) {
+			outputMultiLineCommand(token, output, nesting);
+			return; // Handles its own children
+		} else if (isNamedBlock(token))
+			out = localize(findName(token));
+		else
+			out = localize(token);
+		
+		if (toOutput)
+			output(out, output, nesting);
+		
+		for (Token child : token.children) {
+			parseTree(child, output, nesting + 1, inverted);
 		}
 	}
 
-	/**
-	 * Handles everything related to the type of the block, which is currently
-	 * inversion and scope headers
-	 */
-	private void handleBlockType() {
-		if (type != null) {
-			if (needsName(type) || nesting == 1) {
-				handleName();
-				if (inversion) {
-					inversion = false;
-					inversionOverride = true;
-				}
-			} else if (nesting > 1) {
-				if (isInversion(type)) {
-					// "NOT" in the game code means NOR, so can simply be
-					// handled by
-					// inverting everything within a block
-					inversion = !inversion;
-					nesting--;
-				} else {
-					if (type.equals("democratic")) {
-						@SuppressWarnings("unused")
-						int i = 2;
-					}
-					output(Token.tokenize(type, inversion, parent.type).toString(), output, nesting);
-					// The following will indicate that inversion applies to
-					// everything nested below them,
-					// so inversion is overridden
-					if (inversion && overridesInversion(type)) {
-						inversion = false;
-						inversionOverride = true;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Determines if a given type of token should be output
-	 * 
-	 * @param type
-	 *            The type of token
-	 * @return Whether it should be output
-	 */
-	private static boolean isOutputType(String type, String parent) {
-		return !isName(type, parent) || !needsName(parent);
-	}
-
-	/**
-	 * Collects and outputs the name of a section
-	 */
-	private void handleName() {
-		for (String s : contents) {
-			Token token = Token.tokenize(s, false, type);
-			if (isName(token.type, type)) {
-				String out = new Token(token.type, token.value, token.operator, false, type).toString();
-				output(out, output, nesting);
-				return;
-			}
-		}
-		//throw new IllegalStateException("No valid name found.");
-	}
-
-	// TODO - Properly handle calling other events
-
-	/**
-	 * Determines whether a token type should be used to name a section
-	 * 
-	 * @param type
-	 *            The token type
-	 * @return Whether it should be used to name a section
-	 */
-	private static boolean isName(String type, String parent) {
-		if (!needsName(parent))
-			return false;
-		for (String s : namedBlocks.get(parent))
-			if (type.equals(parent + "_" + s))
-				return true;
-		return false;
-	}
-
-	/**
-	 * Determines whether a section needs to fetch a name further down in the
-	 * game code
-	 * 
-	 * @param type
-	 *            The token type
-	 * @return Whether it needs to fetch a name further down
-	 */
-	private static boolean needsName(String type) {
-		return namedBlocks.containsKey(type);
-	}
-
-	/**
-	 * Handles commands that go across multiple lines but need to be merged into
-	 * a single line plus potential modifiers
-	 */
-	private void handleSpecialCommand() {
-		String[] associatedValues = exceptions.get(type);
-		Collection<String> values = new ArrayList<>();
-		String modifier = null;
-		String type = Token.tokenize(this.type, inversion, this.type).type;
-		for (String val : associatedValues) {
+	private static void outputMultiLineCommand(Token token, List<String> output, int nesting) {
+		String[] associatedTypes = multiTokenExpressions.get(token.type);
+		int length = associatedTypes.length;
+		List<String> values = new LinkedList<>();
+		
+		// Some multi-line commands specify a modifier to be added
+		String modifierName = null;
+		
+		Operator operator = token.operator;
+		for (int i = 0; i < length; i++) {
 			boolean found = false;
-			for (String s : contents) {
-				Token token = Token.tokenize(s, false, this.type);
-				if (token.baseType.equals(val)) {
-					values.add(token.getLocalisedValue());
-					if (token.value.equals(FALSE))
-						type = Token.tokenize(this.type, !inversion, this.type).type;
-					if (token.type.equals("name")) {
-						modifier = token.value;
+			String target = associatedTypes[i];
+			
+			for (Token child : token.children) {
+				if (child.type.equals(target)) {
+					values.add(localizeValue(child));
+					if (child.operator != Operator.EQUAL)
+						operator = child.operator;
+					if (isModifier(child))
+						modifierName = child.value;
+					found = true;
+				} else if (Localisation.variations.containsKey(child.type)) {
+					String variationName = Localisation.variations.get(child.type);
+					if (variationName.equals(target)) {
+						values.add(Localisation.findLocalisation(child.type));
+						values.add(localizeValue(child));
 					}
 					found = true;
-					break;
-				} else if (val.equals(Localisation.getVariation(token.type))) {
-					Token t2 = new Token(null, token.type, null, false, this.type);
-					values.add(t2.getLocalisedValue());
-					values.add(token.getLocalisedValue());
-					found = true;
-					break;
 				}
 			}
-			if (!found && val.equals("duration"))
-				values.add(" for the rest of the campaign");
+			// Sometimes duration is left out
+			if (!found && target.equals("duration"))
+				values.add("the rest of the campaign");
 		}
-
-		output(Localisation.formatStatement(type, null, values.toArray(new String[values.size()])),
+		
+		output(Localisation.formatString(token.type, operator, token.inverted, (String []) values.toArray(new String[values.size()])),
 				output, nesting);
-		if (modifier != null) {
-			Iterable<String> effects = modifiers.get(modifier);
+		if (modifierName != null) {
+			Iterable<String> effects = modifiers.get(modifierName);
 			if (effects != null)
 				for (String effect : effects) {
 					output(effect, output, nesting + 1);
@@ -231,18 +110,44 @@ public class ParsingBlock {
 		}
 	}
 
-	/**
-	 * Determines whether a command has to be handled differently due to
-	 * spanning multiple lines
-	 * 
-	 * @param type
-	 *            The name of the command
-	 * @return Whether it has to be handled differently
-	 */
-	private static boolean isSpecialCommand(String type) {
-		return exceptions.containsKey(type);
+	private static boolean isModifier(Token child) {
+		// TODO - Game-independent detection
+		return child.type.equals("name");
 	}
 
+	private static String localizeValue(Token token) {
+		return Localisation.localizeValue(token);
+	}
+
+	private static String localize(Token token) {
+		return Localisation.localize(token);
+	}
+
+	private static Token findName(Token token) {
+		String[] nameTokens = namedBlocks.get(token.type);
+		for (String string : nameTokens) {
+			for (Token child : token.children) {
+				if (string.equals(child.type)) {
+					child.disabled = true;
+					return child;
+				}
+			}
+		}
+		throw new IllegalStateException("No name found!");
+	}
+
+	private static boolean isBlock(Token token) {
+		return token.children.size() > 0;
+	}
+	
+	private static boolean isNamedBlock(Token token) {
+		return isBlock(token) && namedBlocks.containsKey(token.type);
+	}
+	
+	private static boolean isMultiTokenExpression(Token token) {
+		return multiTokenExpressions.containsKey(token.type);
+	}
+	
 	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(new String[] {
 			"not", "nor" }));
 
@@ -257,22 +162,9 @@ public class ParsingBlock {
 		return NEGATIONS.contains(type.toLowerCase());
 	}
 
-	/**
-	 * Determines whether tokens within a given section can ignore inversion
-	 * specified outside it due to the inversion being applied to the section
-	 * name instead
-	 * 
-	 * @param type
-	 *            The section type
-	 * @return Whether it overrides inversion
-	 */
-	private static boolean overridesInversion(String type) {
-		return Localisation.fetchStatement(type).endsWith(":");
-	}
-
 	private static final String HEADER = "\n== %s ==";
 	private static final String BOLD = "\n'''%s'''\n";
-
+	
 	/**
 	 * Formats a string based on how deeply nested it is, and adds it to the
 	 * output collection
@@ -284,10 +176,13 @@ public class ParsingBlock {
 	 * @param nesting
 	 *            How deeply nested the string is
 	 */
-	private static void output(String s, Collection<String> output, int nesting) {
+	
+	private static void output(String s, List<String> output, int nesting) {
 		if (s.equals(""))
-			return; // Blank lines are skipped
-		nesting = nesting - 2;
+			return; // Skip blank lines
+		
+		nesting--;
+		
 		if (nesting == -1) {
 			output.add(String.format(HEADER, s));
 			return;
@@ -295,16 +190,16 @@ public class ParsingBlock {
 			output.add(String.format(BOLD, s));
 			return;
 		}
+		
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < nesting; i++) {
 			builder.append('*');
 		}
-		if (nesting != -1)
-			builder.append(" ");
+		builder.append(" ");
 		builder.append(s);
 		output.add(builder.toString());
 	}
-
+	
 	/**
 	 * Reads all event modifiers and converts them to human-readable text, so
 	 * that they can be displayed when a modifier is added
@@ -312,56 +207,50 @@ public class ParsingBlock {
 	 * @param readFile
 	 *            A formatted file containing modifiers
 	 */
-	public static void parseModifiers(List<String> readFile) {
-		String name = null;
-		List<String> effects = new LinkedList<>();
-		for (String line : readFile) {
-			if (line.endsWith("{"))
-				name = Token.tokenize(line, false, null).type;
-			else if (line.equals("}")) {
-				modifiers.put(name, new LinkedList<>(effects));
-				effects.clear();
-			} else {
-				effects.add(Token.tokenize(line, false, null).toString());
+	private static void parseModifiers(Token root) {
+		for (Token child : root.children) {
+			List<String> effects = new LinkedList<>();
+			String name = child.type;
+			for (Token child2 : child.children) {
+				String s = localize(child2);
+				if (s.charAt(0) >= '0' && s.charAt(0) <= '9')
+					s = "+" + s;
+				effects.add(s);
 			}
+			modifiers.put(name, effects);
 		}
 	}
 
 	public static void main(String[] args) throws IOException {
-		try {
-			File dir = new File("output");
-			dir.mkdir();
-			HashMap<String, String> settings = new HashMap<>();
-			IO.readLocalisation("settings.txt", settings);
-			String path = settings.get("path");
-			String game = settings.get("game").toLowerCase();
-			Localisation.initialize(path, game);
-			IO.readExceptions(String.format("statements/%s/exceptions.txt", game), exceptions);
-			IO.readExceptions(String.format("statements/%s/parentExceptions.txt", game), parentExceptions);
-			IO.readExceptions(String.format("statements/%s/namedSections.txt", game), parentExceptions);
-			IO.readExceptions(String.format("statements/%s/namedSections.txt", game), namedBlocks);
-			Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
-				if (Files.isRegularFile(filePath)) {
-					System.out.println("Parsing " + filePath.getFileName());
-					try {
-						LinkedList<String> list = IO.readFile(filePath.toString());
-						Collection<String> output = new LinkedList<>();
-						new ParsingBlock(null, null, list, 0, output, false);
-						IO.writeFile("output/" + filePath.getFileName(), output);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		HashMap<String, String> settings = new HashMap<>();
+		IO.readLocalisation("settings.txt", settings);
+		String path = settings.get("path");
+		String game = settings.get("game").toLowerCase();
+		
+		Localisation.initialize(path, game);
+		
+		IO.readExceptions(String.format("statements/%s/namedSections.txt", game), namedBlocks);
+		IO.readExceptions(String.format("statements/%s/exceptions.txt", game), multiTokenExpressions);
+		parseModifiers(Token.tokenize(IO.readFile(path 
+				+ "/common/event_modifiers/00_event_modifiers.txt")));
+		
+		Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {
+			if (Files.isRegularFile(filePath)) {
+				System.out.println("Parsing " + filePath.getFileName());
+				try {
+					List<String> list = IO.readFile(filePath.toString());
+					Token root = Token.tokenize(list);
+					List<String> output = new LinkedList<>();
+					parseTree(root, output, -1, false);
+					IO.writeFile("output/" + filePath.getFileName(), output);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			});
-			IO.writeFile("output/errors.txt", Localisation.errors);
-			System.out.println("Parsing complete. Press enter to close the program");
-			System.in.read();
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Parsing failed. Press enter to close the program");
-			System.in.read();
-		}
+			}
+		});
+		IO.writeFile("output/errors.txt", Localisation.errors);
 	}
-	
+
+	// TODO - Properly handle calling other events
 	// TODO - Handle event headers (E.G., is_mtth_scaled_to_size)
 }

@@ -149,7 +149,6 @@ change_native_hostileness: Changes hostility of natives by %s
 change_native_size: Changes number of natives by %s000
 recall_merchant: Recalls the merchant of %s from the node
 set_revolution_target: %s will become the main source of the revolution
-random: Randomized by %s
 add_unit_construction: Adds unit construction of the %s type:
 amount: %s will be built
 speed: It will take %s%% of normal time
@@ -213,3 +212,4 @@ build_to_forcelimit_transport: Transports are %s%% of the country's force limit
 build_to_forcelimit_artillery: Artillery is %s%% of the country's force limit
 build_to_forcelimit_infantry: Infantry is %s%% of the country's force limit
 build_to_forcelimit_cavalry: Cavalry is %s%% of the country's force limit
+chance: Has a %s percent chance to happen:

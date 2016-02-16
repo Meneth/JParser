@@ -1,8 +1,8 @@
-add_country_modifier: name, duration, hidden
-add_province_modifier: name, duration, hidden
-add_permanent_province_modifier: name, duration, hidden
-add_ruler_modifier: name, duration, hidden
-add_disaster_modifier: name, disaster, duration, hidden
+add_country_modifier: name, duration
+add_province_modifier: name, duration
+add_permanent_province_modifier: name, duration
+add_ruler_modifier: name, duration
+add_disaster_modifier: name, disaster, duration
 has_opinion: value, who
 reverse_has_opinion: value, who
 has_opinion_modifier: modifier, who
