@@ -48,7 +48,7 @@ public class IO {
 
 			// Handle brackets
 			line = line.replace("{", "{\n");
-			line = line.replace("}", "\n}");
+			line = line.replace("}", "\n}\n");
 
 			// Handle multiple actions in one line
 			line = line.replaceAll("([\\w.\"])\\s+(\\w+\\s*[=<>])", "$1\n$2");
@@ -94,8 +94,11 @@ public class IO {
 		BufferedReader in = getReader(fileName);
 		String line = in.readLine();
 		while (line != null) {
+			// Remove all comments
 			line = line.replaceAll("#[^\"]*$", "");
+			
 			line = line.trim();
+			// Remove localisation versioning; irrelevant to the parser
 			line = line.replaceFirst(":\\d* ", ":");
 			int index = line.indexOf(":");
 			if (index == -1) {
