@@ -133,7 +133,9 @@ public class Parsing {
 				}
 			}
 		}
-		throw new IllegalStateException("No name found!");
+		System.out.println("No name found for " + token);
+		return token;
+		//throw new IllegalStateException("No name found!");
 	}
 
 	private static boolean isBlock(Token token) {
@@ -145,7 +147,7 @@ public class Parsing {
 	}
 	
 	private static boolean isMultiTokenExpression(Token token) {
-		return multiTokenExpressions.containsKey(token.type);
+		return isBlock(token) && multiTokenExpressions.containsKey(token.type);
 	}
 	
 	private static final Set<String> NEGATIONS = new HashSet<String>(Arrays.asList(new String[] {
@@ -231,7 +233,8 @@ public class Parsing {
 		
 		IO.readExceptions(String.format("statements/%s/namedSections.txt", game), namedBlocks);
 		IO.readExceptions(String.format("statements/%s/exceptions.txt", game), multiTokenExpressions);
-		parseModifiers(Token.tokenize(IO.readFile(path 
+		if (game.equals("eu4"))
+			parseModifiers(Token.tokenize(IO.readFile(path 
 				+ "/common/event_modifiers/00_event_modifiers.txt")));
 		
 		Files.walk(Paths.get(path + "/events")).forEachOrdered(filePath -> {

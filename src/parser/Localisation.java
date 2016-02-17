@@ -90,7 +90,7 @@ public class Localisation {
 			IO.readExceptions(String.format("statements/%s/parentExceptions.txt", game), parentExceptions);
 			
 			if (game.equals("hoi4"))
-				IO.readLocalisation("statements/hoi4/localisation/countries.txt", localisation);
+				IO.readLocalisation("statements/hoi4/countries.txt", localisation);
 		
 			Map<String, String> variationFiles = new HashMap<>();
 			IO.readLocalisation(String.format("statements/%s/variations.txt", game), variationFiles);
