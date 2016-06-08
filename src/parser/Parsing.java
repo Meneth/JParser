@@ -245,6 +245,7 @@ public class Parsing {
 					Token root = Token.tokenize(list);
 					List<String> output = new LinkedList<>();
 					parseTree(root, output, -1, false);
+					// TODO - Ensure output folder exists
 					IO.writeFile("output/" + filePath.getFileName(), output);
 				} catch (IOException e) {
 					e.printStackTrace();

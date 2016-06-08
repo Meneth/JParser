@@ -2,13 +2,17 @@
 <project default="create_run_jar" name="Create Runnable Jar for Project Parser">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="${dir.buildfile}/../.."/>
+    <property name="dir.jarfile" value="${dir.workspace}/GitHub/Parser"/>
     <target name="create_run_jar">
-        <jar destfile="E:/Meneth/Documents/GitHub/Parser/parser.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="${dir.jarfile}/parser.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="parser.ParsingBlock"/>
+                <attribute name="Main-Class" value="parser.Parsing"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="E:/Meneth/Documents/GitHub/Parser/bin"/>
+            <fileset dir="${dir.jarfile}/bin"/>
         </jar>
     </target>
 </project>
